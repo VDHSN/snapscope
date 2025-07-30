@@ -4,18 +4,21 @@
 jest.mock('react-native', () => {
   const React = require('react');
 
-  const mockComponent = (name) => jest.fn(({ children, ...props }) =>
-    React.createElement(name, props, children)
-  );
+  const mockComponent = (name) =>
+    jest.fn(({ children, ...props }) => React.createElement(name, props, children));
 
   return {
     View: mockComponent('View'),
     Text: mockComponent('Text'),
     TouchableOpacity: jest.fn(({ children, onPress, ...props }) => {
-      const element = React.createElement('TouchableOpacity', {
-        ...props,
-        onClick: onPress // Map onPress to onClick for testing
-      }, children);
+      const element = React.createElement(
+        'TouchableOpacity',
+        {
+          ...props,
+          onClick: onPress, // Map onPress to onClick for testing
+        },
+        children,
+      );
       return element;
     }),
     ScrollView: mockComponent('ScrollView'),
