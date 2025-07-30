@@ -59,3 +59,35 @@ export type PhotoPosition =
   | "interior"
   | "engine_bay"
   | "damage_detail";
+
+// Simplified interface for Home Screen display
+export interface HomeScreenAssessment {
+  id: string;
+  vehicleMake: string;
+  vehicleModel: string;
+  vin: string;
+  timestamp: Date;
+  status: "done" | "in-progress" | "draft";
+  vehicleEmoji: string;
+}
+
+export const mockAssessments: HomeScreenAssessment[] = [
+  {
+    id: "1",
+    vehicleMake: "Toyota",
+    vehicleModel: "Camry",
+    vin: "4T1B11HK5JU123456",
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+    status: "done",
+    vehicleEmoji: "🚗",
+  },
+  {
+    id: "2",
+    vehicleMake: "Honda",
+    vehicleModel: "CR-V",
+    vin: "7FAR342B5LR789012",
+    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
+    status: "in-progress",
+    vehicleEmoji: "🚙",
+  },
+];

@@ -47,7 +47,8 @@
       "expo-camera",
       "expo-location",
       "expo-media-library",
-      "expo-file-system"
+      "expo-file-system",
+      "expo-router"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,8 +1,12 @@
 module.exports = function (api) {
+  const isTest = api.env("test");
   api.cache(true);
+
   return {
     presets: ["babel-preset-expo"],
     plugins: [
+      // Add Flow type stripping for test environment
+      isTest && "@babel/plugin-transform-flow-strip-types",
       [
         "module-resolver",
         {
@@ -21,6 +25,6 @@ module.exports = function (api) {
         },
       ],
       "react-native-reanimated/plugin",
-    ],
+    ].filter(Boolean),
   };
 };

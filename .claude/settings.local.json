@@ -13,7 +13,12 @@
       "Bash(gh pr list:*)",
       "Bash(gh pr diff:*)",
       "Bash(pnpm typecheck:*)",
-      "Bash(pnpm test:*)"
+      "Bash(pnpm test:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm --filter mobile exec eslint src/app/__tests__/index.test.tsx --fix)"
     ],
     "deny": []
   }

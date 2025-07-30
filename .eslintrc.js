@@ -16,7 +16,10 @@ module.exports = {
     },
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: './tsconfig.json',
+    project: [
+      require('path').resolve(__dirname, 'tsconfig.json'),
+      require('path').resolve(__dirname, 'packages/mobile/tsconfig.eslint.json'),
+    ],
   },
   plugins: ['@typescript-eslint', 'react', 'react-hooks', 'import', 'jsx-a11y', 'prettier'],
   env: {
@@ -89,7 +92,7 @@ module.exports = {
       },
     },
     {
-      files: ['packages/mobile/src/**/*.{ts,tsx}', 'packages/mobile/app/**/*.{ts,tsx}'],
+      files: ['packages/mobile/src/**/*.{ts,tsx}'],
       rules: {
         // Allow styles to be used before definition (common React Native pattern)
         '@typescript-eslint/no-use-before-define': ['error', { variables: false }],
