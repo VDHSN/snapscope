@@ -14,7 +14,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@components": ["./src/components/index"],
       "@components/*": ["./src/components/*"],
+      "@screens": ["./src/screens/index"],
       "@screens/*": ["./src/screens/*"],
       "@services/*": ["./src/services/*"],
       "@hooks/*": ["./src/hooks/*"],
