@@ -22,7 +22,6 @@
     "build:android": "pnpm --filter mobile build:android",
     "lint": "pnpm -r lint",
     "lint:fix": "pnpm -r lint:fix",
-    "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "clean": "pnpm -r clean && rm -rf node_modules",
     "prepare": "husky install"
