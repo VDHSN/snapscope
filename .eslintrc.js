@@ -31,12 +31,13 @@ module.exports = {
     },
     'import/resolver': {
       typescript: {
-        project: ['./tsconfig.json', './packages/*/tsconfig.json'],
+        project: [
+          require('path').resolve(__dirname, 'tsconfig.json'),
+          require('path').resolve(__dirname, 'packages/mobile/tsconfig.eslint.json'),
+        ],
         alwaysTryTypes: true,
-      },
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        moduleDirectory: ['node_modules', './packages/*/node_modules'],
+        warnOnMultipleProjects: false,
+        createDefaultProgram: true,
       },
     },
   },
@@ -88,31 +89,24 @@ module.exports = {
       },
     },
     {
-      files: ['packages/mobile/src/**/*.{ts,tsx}'],
+      files: ['packages/mobile/src/**/*.{ts,tsx}', 'packages/mobile/app/**/*.{ts,tsx}'],
       rules: {
-        'import/extensions': [
-          'error',
-          'always',
-          {
-            js: 'never',
-            jsx: 'never',
-            ts: 'never',
-            tsx: 'never',
-            json: 'never',
-          },
-        ],
+        // Allow styles to be used before definition (common React Native pattern)
+        '@typescript-eslint/no-use-before-define': ['error', { variables: false }],
       },
-      settings: {
-        'import/resolver': {
-          typescript: {
-            project: ['./packages/mobile/tsconfig.json'],
-            alwaysTryTypes: true,
-          },
-          node: {
-            extensions: ['.js', '.jsx', '.ts', '.tsx'],
-            paths: ['./packages/mobile/src'],
-          },
-        },
+    },
+    {
+      files: ['**/*.config.js', '**/jest.setup.js'],
+      rules: {
+        // Allow require() in config files
+        'global-require': 'off',
+      },
+    },
+    {
+      files: ['**/*.test.{ts,tsx}'],
+      rules: {
+        // Allow unused vars in tests that start with underscore
+        '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^_' }],
       },
     },
   ],
