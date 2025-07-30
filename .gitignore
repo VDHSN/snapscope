@@ -63,4 +63,6 @@ yarn-error.*
 .env*.local
 
 # typescript
-*.tsbuildinfo
+*.tsbuildinfo.claude/settings.local.json
+
+.claude/*.local.*
