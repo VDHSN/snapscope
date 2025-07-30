@@ -4,10 +4,12 @@ import HomeScreen from "../index";
 
 // Mock components
 jest.mock("@components/AssessmentCard", () => ({
+  __esModule: true,
   AssessmentCard: jest.fn(() => null),
 }));
 
 jest.mock("@components/FloatingActionButton", () => ({
+  __esModule: true,
   FloatingActionButton: jest.fn(() => null),
 }));
 

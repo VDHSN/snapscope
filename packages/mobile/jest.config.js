@@ -1,6 +1,6 @@
 module.exports = {
   displayName: "SnapScope Mobile",
-  testEnvironment: "node",
+  testEnvironment: "jsdom",
 
   // No problematic setup files
   setupFiles: [],

@@ -22,7 +22,7 @@ describe("FloatingActionButton", () => {
   it("navigates to camera screen when pressed", () => {
     const { getByText } = render(<FloatingActionButton />);
     fireEvent.press(getByText("+"));
-    expect(mockPush).toHaveBeenCalledWith("/camera");
+    expect(mockPush).toHaveBeenCalledWith("./camera");
   });
 
   it("matches wireframe styling with correct positioning", () => {

@@ -7,7 +7,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
-    'plugin:prettier/recommended',
+    'plugin:prettier/recommended', // This must be last to override other configs
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -76,7 +76,24 @@ module.exports = {
         varsIgnorePattern: '^_',
       },
     ],
-    'prettier/prettier': 'error',
+    'prettier/prettier': [
+      'error',
+      {
+        semi: true,
+        trailingComma: 'all',
+        singleQuote: true,
+        printWidth: 100,
+        tabWidth: 2,
+        useTabs: false,
+        bracketSpacing: true,
+        arrowParens: 'always',
+        endOfLine: 'lf',
+      },
+    ],
+    // Disable conflicting rules that Prettier handles
+    quotes: 'off',
+    '@typescript-eslint/quotes': 'off',
+    'jsx-quotes': 'off',
   },
   overrides: [
     {
