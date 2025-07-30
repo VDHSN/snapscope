@@ -6,4 +6,4 @@ export type {
   GPSLocation,
   AssessmentStatus,
   PhotoPosition,
-} from "./Assessment";
+} from './Assessment';

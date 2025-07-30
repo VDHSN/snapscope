@@ -1,46 +1,42 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { HomeScreenAssessment } from "../types/Assessment";
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { HomeScreenAssessment } from '../types/Assessment';
 
 interface AssessmentCardProps {
   assessment: HomeScreenAssessment;
 }
 
-export const AssessmentCard: React.FC<AssessmentCardProps> = ({
-  assessment,
-}) => {
-  const getStatusColor = (status: HomeScreenAssessment["status"]) => {
+export const AssessmentCard: React.FC<AssessmentCardProps> = ({ assessment }) => {
+  const getStatusColor = (status: HomeScreenAssessment['status']) => {
     switch (status) {
-      case "done":
-        return "#10B981";
-      case "in-progress":
-        return "#F59E0B";
+      case 'done':
+        return '#10B981';
+      case 'in-progress':
+        return '#F59E0B';
       default:
-        return "#6B7280";
+        return '#6B7280';
     }
   };
 
-  const getStatusText = (status: HomeScreenAssessment["status"]) => {
+  const getStatusText = (status: HomeScreenAssessment['status']) => {
     switch (status) {
-      case "done":
-        return "Done";
-      case "in-progress":
-        return "In Progress";
+      case 'done':
+        return 'Done';
+      case 'in-progress':
+        return 'In Progress';
       default:
-        return "Draft";
+        return 'Draft';
     }
   };
 
   const formatTimestamp = (timestamp: Date) => {
     const now = new Date();
-    const diffHours = Math.floor(
-      (now.getTime() - timestamp.getTime()) / (1000 * 60 * 60),
-    );
+    const diffHours = Math.floor((now.getTime() - timestamp.getTime()) / (1000 * 60 * 60));
 
     if (diffHours < 24) {
       return `${diffHours} hours ago`;
     }
-    return "Yesterday";
+    return 'Yesterday';
   };
 
   return (
@@ -49,8 +45,7 @@ export const AssessmentCard: React.FC<AssessmentCardProps> = ({
         style={[
           styles.iconContainer,
           {
-            backgroundColor:
-              assessment.status === "done" ? "#8B5CF6" : "#F59E0B",
+            backgroundColor: assessment.status === 'done' ? '#8B5CF6' : '#F59E0B',
           },
         ]}
       >
@@ -61,23 +56,12 @@ export const AssessmentCard: React.FC<AssessmentCardProps> = ({
         <Text style={styles.vehicleTitle}>
           {assessment.vehicleMake} {assessment.vehicleModel}
         </Text>
-        <Text style={styles.vin}>
-          VIN: {assessment.vin.substring(0, 11)}...
-        </Text>
-        <Text style={styles.timestamp}>
-          {formatTimestamp(assessment.timestamp)}
-        </Text>
+        <Text style={styles.vin}>VIN: {assessment.vin.substring(0, 11)}...</Text>
+        <Text style={styles.timestamp}>{formatTimestamp(assessment.timestamp)}</Text>
       </View>
 
-      <View
-        style={[
-          styles.statusBadge,
-          { backgroundColor: getStatusColor(assessment.status) },
-        ]}
-      >
-        <Text style={styles.statusText}>
-          {getStatusText(assessment.status)}
-        </Text>
+      <View style={[styles.statusBadge, { backgroundColor: getStatusColor(assessment.status) }]}>
+        <Text style={styles.statusText}>{getStatusText(assessment.status)}</Text>
       </View>
     </View>
   );
@@ -85,13 +69,13 @@ export const AssessmentCard: React.FC<AssessmentCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
     borderRadius: 16,
     padding: 20,
     marginBottom: 20,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -102,8 +86,8 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     opacity: 0.1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 15,
   },
   vehicleEmoji: {
@@ -115,18 +99,18 @@ const styles = StyleSheet.create({
   },
   vehicleTitle: {
     fontSize: 16,
-    fontWeight: "500",
-    color: "#1F1F1F",
+    fontWeight: '500',
+    color: '#1F1F1F',
     marginBottom: 4,
   },
   vin: {
     fontSize: 14,
-    color: "#666",
+    color: '#666',
     marginBottom: 4,
   },
   timestamp: {
     fontSize: 12,
-    color: "#999",
+    color: '#999',
   },
   statusBadge: {
     paddingHorizontal: 12,
@@ -135,7 +119,7 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 12,
-    color: "white",
-    fontWeight: "500",
+    color: 'white',
+    fontWeight: '500',
   },
 });
