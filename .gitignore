@@ -66,3 +66,5 @@ yarn-error.*
 *.tsbuildinfo.claude/settings.local.json
 
 .claude/*.local.*
+packages/e2e/test-results/
+packages/e2e/playwright-report/
