@@ -1,117 +1,103 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { AssessmentCard } from '../components/AssessmentCard';
+import { FloatingActionButton } from '../components/FloatingActionButton';
+import { mockAssessments } from '../types/Assessment';
+import { Colors } from '../constants/Colors';
 
 interface HomeScreenProps {
   // Navigation props will be added when we implement navigation
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = () => {
-  const handleNewAssessment = () => {
-    // TODO: Navigate to VIN scanner or manual entry
-    // console.log("Start new assessment");
-  };
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
-  const handleViewAssessments = () => {
-    // TODO: Navigate to assessments list
-    // console.log("View assessments");
+  const theme = {
+    background: isDark ? Colors.dark.background : Colors.light.background,
+    text: {
+      primary: isDark ? Colors.dark.text.primary : Colors.light.text.primary,
+      secondary: isDark ? Colors.dark.text.secondary : Colors.light.text.secondary,
+    },
+    gradient: isDark ? Colors.gradients.header.dark : Colors.gradients.header.light,
   };
 
   return (
-    <View style={styles.container}>
-      {/* eslint-disable-next-line react/style-prop-object */}
-      <StatusBar style="auto" />
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['top']}>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
 
-      <View style={styles.header}>
-        <Text style={styles.title}>SnapScope</Text>
-        <Text style={styles.subtitle}>Vehicle Assessment Tool</Text>
-      </View>
+      {/* Header with gradient */}
+      <LinearGradient
+        colors={theme.gradient}
+        style={styles.header}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <Text style={styles.headerTitle}>SnapScope</Text>
+        <Text style={styles.headerSubtitle}>Vehicle Damage Assessment</Text>
+      </LinearGradient>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.primaryButton} onPress={handleNewAssessment}>
-          <Text style={styles.primaryButtonText}>New Assessment</Text>
-        </TouchableOpacity>
+      {/* Main content */}
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={[styles.sectionTitle, { color: theme.text.primary }]}>Recent Assessments</Text>
 
-        <TouchableOpacity style={styles.secondaryButton} onPress={handleViewAssessments}>
-          <Text style={styles.secondaryButtonText}>View Assessments</Text>
-        </TouchableOpacity>
-      </View>
+        {/* Assessment Cards */}
+        <View style={styles.cardsContainer}>
+          {mockAssessments.map((assessment) => (
+            <AssessmentCard key={assessment.id} assessment={assessment} />
+          ))}
+        </View>
+      </ScrollView>
 
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Ready for field work</Text>
-      </View>
-    </View>
+      {/* Floating Action Button */}
+      <FloatingActionButton />
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 60,
   },
   header: {
+    height: 120,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 40,
+    paddingBottom: 10,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: Colors.white,
+    marginBottom: 4,
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
+  headerSubtitle: {
+    fontSize: 14,
+    color: Colors.white,
+    opacity: 0.8,
   },
-  buttonContainer: {
-    gap: 16,
+  content: {
+    flex: 1,
   },
-  primaryButton: {
-    backgroundColor: '#8B5CF6',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+  contentContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 30,
+    paddingBottom: 100, // Space for FAB
   },
-  primaryButtonText: {
-    color: 'white',
+  sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-  },
-  secondaryButton: {
-    backgroundColor: 'white',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#8B5CF6',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  secondaryButtonText: {
-    color: '#8B5CF6',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  footer: {
-    alignItems: 'center',
     marginBottom: 20,
   },
-  footerText: {
-    fontSize: 14,
-    color: '#999',
+  cardsContainer: {
+    gap: 16,
   },
 });
 

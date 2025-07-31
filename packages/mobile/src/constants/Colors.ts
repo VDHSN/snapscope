@@ -11,6 +11,18 @@ export const Colors = {
     gradient: ['#8B5CF6', '#6366F1'], // For linear gradients
   },
 
+  // Gradients for design mockup
+  gradients: {
+    header: {
+      light: ['#8B5CF6', '#6366F1'],
+      dark: ['#7C3AED', '#4F46E5'],
+    },
+    fab: {
+      light: ['#8B5CF6', '#6366F1'],
+      dark: ['#7C3AED', '#4F46E5'],
+    },
+  },
+
   // Status colors
   success: '#10B981',
   warning: '#F59E0B',

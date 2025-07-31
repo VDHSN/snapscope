@@ -33,6 +33,7 @@ jest.mock('react-native', () => {
       OS: 'ios',
       select: jest.fn((options) => options.ios || options.default),
     },
+    useColorScheme: jest.fn(() => 'light'),
   };
 });
 
