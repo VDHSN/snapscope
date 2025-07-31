@@ -27,7 +27,9 @@
       "sonnet",
       "--permission-mode",
       "acceptEdits",
-      "--dangerously-skip-permissions"
+      "--dangerously-skip-permissions",
+      "--mcp-config=.mcp.json",
+      "--strict-mcp-config"
     ],
     "cwd": "${ZED_WORKTREE_ROOT}",
     "env": {},

@@ -57,6 +57,15 @@ importers:
         specifier: ^5.3.3
         version: 5.8.3
 
+  packages/e2e:
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.54.1
+        version: 1.54.1
+      typescript:
+        specifier: ^5.3.3
+        version: 5.8.3
+
   packages/mobile:
     dependencies:
       '@expo/metro-runtime':
@@ -82,7 +91,7 @@ importers:
         version: 17.1.7(expo@53.0.20(@babel/core@7.27.7)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.27.7)(@react-native-community/cli@13.6.9)(@types/react@19.0.10)(react@19.0.0)))(graphql@15.8.0)(react-native@0.79.5(@babel/core@7.27.7)(@react-native-community/cli@13.6.9)(@types/react@19.0.10)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.27.7)(@react-native-community/cli@13.6.9)(@types/react@19.0.10)(react@19.0.0))
       expo-router:
         specifier: ^5.1.4
-        version: 5.1.4(142a94b650ed7e9392d1352fbfb49312)
+        version: 5.1.4(tmtvfnjql7hu2ysvh5lzt5gy6y)
       expo-sharing:
         specifier: ~13.1.5
         version: 13.1.5(expo@53.0.20(@babel/core@7.27.7)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.27.7)(@react-native-community/cli@13.6.9)(@types/react@19.0.10)(react@19.0.0)))(graphql@15.8.0)(react-native@0.79.5(@babel/core@7.27.7)(@react-native-community/cli@13.6.9)(@types/react@19.0.10)(react@19.0.0))(react@19.0.0))
@@ -1226,6 +1235,11 @@ packages:
   '@pkgr/core@0.2.7':
     resolution: {integrity: sha512-YLT9Zo3oNPJoBjBc4q8G2mjU4tqIbf5CEOORbUUr48dCD9q3umJ3IPlVqOqDakPfd2HuwccBaqlGhN4Gmr5OWg==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
+
+  '@playwright/test@1.54.1':
+    resolution: {integrity: sha512-FS8hQ12acieG2dYSksmLOF7BNxnVf2afRJdCuM1eMSxj6QTSE6G4InGF7oApGgDb65MX7AwMVlIkpru0yZA4Xw==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@radix-ui/react-compose-refs@1.1.2':
     resolution: {integrity: sha512-z4eqJvfiNnFMHIIvXP3CY57y2WJs5g2v3X0zm9mEJkrkNv4rDxu+sg9Jh8EkXyeqBkB7SOcboo9dMVqhyrACIg==}
@@ -3070,6 +3084,11 @@ packages:
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
+  fsevents@2.3.2:
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
+
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -4477,6 +4496,16 @@ packages:
   pkg-up@3.1.0:
     resolution: {integrity: sha512-nDywThFk1i4BQK4twPQ6TA4RT8bDY96yeuCVBWL3ePARCiEKDRSrNGbFIgUJpLp+XeIR65v8ra7WuJOFUBtkMA==}
     engines: {node: '>=8'}
+
+  playwright-core@1.54.1:
+    resolution: {integrity: sha512-Nbjs2zjj0htNhzgiy5wu+3w09YetDx5pkrpI/kZotDlDUaYk0HVA5xrBVPdow4SAUIlhgKcJeJg4GRKW6xHusA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.54.1:
+    resolution: {integrity: sha512-peWpSwIBmSLi6aW2auvrUtf2DqY16YYcCMO8rTVx486jKmDTJg7UAhyrraP98GB8BoPURZP8+nxO7TSd4cPr5g==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   plist@3.1.0:
     resolution: {integrity: sha512-uysumyrvkUX0rX/dEVqt8gC3sTBzd4zoWfLeS29nb53imdaXVvLINYXTI2GNqzaMuvacNx4uJQ8+b3zXR0pkgQ==}
@@ -7237,6 +7266,10 @@ snapshots:
 
   '@pkgr/core@0.2.7': {}
 
+  '@playwright/test@1.54.1':
+    dependencies:
+      playwright: 1.54.1
+
   '@radix-ui/react-compose-refs@1.1.2(@types/react@19.0.10)(react@19.0.0)':
     dependencies:
       react: 19.0.0
@@ -9420,7 +9453,7 @@ snapshots:
     dependencies:
       invariant: 2.2.4
 
-  expo-router@5.1.4(142a94b650ed7e9392d1352fbfb49312):
+  expo-router@5.1.4(tmtvfnjql7hu2ysvh5lzt5gy6y):
     dependencies:
       '@expo/metro-runtime': 5.0.4(react-native@0.79.5(@babel/core@7.27.7)(@react-native-community/cli@13.6.9)(@types/react@19.0.10)(react@19.0.0))
       '@expo/server': 0.6.3
@@ -9624,6 +9657,9 @@ snapshots:
     optional: true
 
   fs.realpath@1.0.0: {}
+
+  fsevents@2.3.2:
+    optional: true
 
   fsevents@2.3.3:
     optional: true
@@ -11408,6 +11444,14 @@ snapshots:
   pkg-up@3.1.0:
     dependencies:
       find-up: 3.0.0
+
+  playwright-core@1.54.1: {}
+
+  playwright@1.54.1:
+    dependencies:
+      playwright-core: 1.54.1
+    optionalDependencies:
+      fsevents: 2.3.2
 
   plist@3.1.0:
     dependencies:
