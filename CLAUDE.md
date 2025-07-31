@@ -155,3 +155,7 @@ The app uses `expo-camera` (not react-native-vision-camera as originally planned
 - **Offline-First**: All features work without internet connectivity
 - **No Analytics**: Privacy-focused, no tracking or telemetry
 - **Local Storage**: Photos and metadata stored locally, optional cloud export
+
+## Development Assumptions
+
+- If I ask you to interact with expo, assume it is already running on localhost:8080

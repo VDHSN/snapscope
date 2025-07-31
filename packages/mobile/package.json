@@ -1,7 +1,7 @@
 {
   "name": "@snapscope/mobile",
   "version": "1.0.0",
-  "main": "expo-router/entry",
+  "main": "index.ts",
   "exports": {
     "@screens": "./src/screens/*"
   },
@@ -28,7 +28,6 @@
     "expo-image-manipulator": "~13.1.7",
     "expo-location": "~18.1.6",
     "expo-media-library": "~17.1.7",
-    "expo-router": "^5.1.4",
     "expo-sharing": "~13.1.5",
     "expo-status-bar": "~2.2.3",
     "jszip": "^3.10.0",
