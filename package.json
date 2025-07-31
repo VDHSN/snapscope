@@ -24,6 +24,7 @@
     "lint:fix": "pnpm -r lint:fix",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
+    "checks": "pnpm -r test && pnpm -r lint:fix && pnpm -r typecheck",
     "clean": "pnpm -r clean && rm -rf node_modules",
     "prepare": "husky install"
   },
