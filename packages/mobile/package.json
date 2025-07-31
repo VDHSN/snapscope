@@ -23,7 +23,7 @@
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
     "expo": "~53.0.20",
-    "expo-router": "~3.5.20",
+    "expo-router": "~5.1.4",
     "expo-camera": "~16.1.11",
     "expo-file-system": "~18.1.11",
     "expo-image-manipulator": "~13.1.7",
