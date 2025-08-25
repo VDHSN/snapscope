@@ -9,9 +9,9 @@ declare module 'next-pwa' {
     reloadOnOnline?: boolean;
     workboxOptions?: {
       disableDevLogs?: boolean;
-      [key: string]: any;
+      [key: string]: unknown;
     };
-    [key: string]: any;
+    [key: string]: unknown;
   }
 
   function withPWA(config: PWAConfig): (nextConfig: NextConfig) => NextConfig;
