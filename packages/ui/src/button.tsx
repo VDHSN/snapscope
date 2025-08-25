@@ -6,33 +6,106 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   children: React.ReactNode;
 }
 
+const baseStyle: React.CSSProperties = {
+  padding: '12px 16px',
+  borderRadius: 'var(--border-radius-md)',
+  fontWeight: 'var(--font-weight-semibold)',
+  cursor: 'pointer',
+  transition: 'var(--transition-default)',
+  border: 'none',
+  fontSize: 'var(--font-size-body)',
+  fontFamily: 'inherit',
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: 'var(--space-xs)',
+  textDecoration: 'none',
+};
+
+const variants = {
+  primary: {
+    background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
+    color: 'white',
+  },
+  secondary: {
+    background: 'var(--bg-surface)',
+    color: 'var(--text-primary)',
+    border: '1px solid var(--border-color)',
+  },
+  destructive: {
+    background: 'var(--error)',
+    color: 'white',
+  },
+};
+
+const sizes = {
+  sm: {
+    padding: '8px 12px',
+    fontSize: 'var(--font-size-small)',
+  },
+  md: {
+    padding: '12px 16px',
+    fontSize: 'var(--font-size-body)',
+  },
+  lg: {
+    padding: '16px 24px',
+    fontSize: 'var(--font-size-body)',
+  },
+};
+
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
-    
-    const variants = {
-      primary: 'bg-slate-900 text-slate-50 hover:bg-slate-800',
-      secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-200',
-      destructive: 'bg-red-500 text-slate-50 hover:bg-red-600',
+  ({ variant = 'primary', size = 'md', style, onMouseEnter, onMouseLeave, ...props }, ref) => {
+    const [isHovered, setIsHovered] = React.useState(false);
+
+    const variantStyle = variants[variant];
+    const sizeStyle = sizes[size];
+
+    const hoverStyle: React.CSSProperties = React.useMemo(() => {
+      switch (variant) {
+        case 'primary':
+          return {
+            filter: 'brightness(1.1)',
+            transform: 'scale(0.98)',
+          };
+        case 'secondary':
+          return {
+            background: 'var(--text-secondary)',
+            color: 'white',
+          };
+        case 'destructive':
+          return {
+            filter: 'brightness(1.1)',
+            transform: 'scale(0.98)',
+          };
+        default:
+          return {};
+      }
+    }, [variant]);
+
+    const combinedStyle: React.CSSProperties = {
+      ...baseStyle,
+      ...variantStyle,
+      ...sizeStyle,
+      ...(isHovered ? hoverStyle : {}),
+      ...style,
     };
 
-    const sizes = {
-      sm: 'h-9 px-3 text-sm',
-      md: 'h-10 px-4 py-2',
-      lg: 'h-11 px-8',
+    const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+      setIsHovered(true);
+      onMouseEnter?.(e);
     };
 
-    const combinedClassName = [
-      baseStyles,
-      variants[variant],
-      sizes[size],
-      className
-    ].filter(Boolean).join(' ');
+    const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+      setIsHovered(false);
+      onMouseLeave?.(e);
+    };
 
     return (
       <button
-        className={combinedClassName}
         ref={ref}
+        style={combinedStyle}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         {...props}
       />
     );
