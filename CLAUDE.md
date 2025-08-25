@@ -32,7 +32,7 @@ pnpm install
 # Development server with Turbopack
 cd packages/client && pnpm dev
 # Production build
-cd packages/client && pnpm build  
+cd packages/client && pnpm build
 # Linting
 cd packages/client && pnpm lint
 # Start production server
@@ -87,3 +87,4 @@ The application is deployed on Vercel (per README). The client package is config
 - **ALWAYS** include --no-gpg-sign when doing `git commit`
 - **ALWAYS** prefer `pnpx` over `npx` for running npm packages
 - **ALWAYS** prefer using the vercel MCP server when interacting with vercel, fetching project or build status
+- Prefer using Context7 MCP to research API libraries over searching the web
