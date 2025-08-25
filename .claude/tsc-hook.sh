@@ -5,6 +5,6 @@
 
 if [[ "$FILE_PATH" =~ \.(ts|tsx)$ ]] && [[ "$FILE_PATH" =~ packages/client/src ]]; then
     echo "Running TypeScript compilation check on project..."
-    cd "$PWD/packages/client"
+    cd "$CLAUDE_PROJECT_DIR/packages/client"
     pnpm exec tsc --noEmit
 fi

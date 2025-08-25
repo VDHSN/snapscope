@@ -5,7 +5,7 @@
 
 if [[ "$FILE_PATH" =~ \.(ts|tsx)$ ]] && [[ "$FILE_PATH" =~ packages/client/src ]]; then
     echo "Running ESLint auto-fix on $FILE_PATH"
-    cd "$PWD/packages/client"
+    cd "$CLAUDE_PROJECT_DIR/packages/client"
     RELATIVE_FILE=$(echo "$FILE_PATH" | sed 's|.*/packages/client/||')
-    pnpm run lint --fix "$RELATIVE_FILE"
+    pnpm run lint-fix "$RELATIVE_FILE"
 fi
