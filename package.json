@@ -1,6 +1,10 @@
 {
   "version": "0.0.1",
+  "packageManager": "pnpm@9.15.9",
   "scripts": {
+    "build": "pnpm turbo build",
+    "dev": "pnpm turbo dev",
+    "lint-fix": "pnpm turbo lint-fix",
     "c": "claude --model sonnet --strict-mcp-config --mcp-config ./.mcp.json --ide"
   },
   "workspaces": [
