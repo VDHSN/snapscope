@@ -5,9 +5,29 @@
       "Bash(gh:*)",
       "Bash(git:*)",
       "Bash(pnpm:*)",
-      "Bash(npx storybook@latest init:*)"
+      "Bash(npx storybook@latest init:*)",
+      "mcp__context7"
     ],
     "deny": []
   },
-  "enabledMcpjsonServers": ["notion", "context7", "vercel-snapscope"]
+  "enabledMcpjsonServers": ["notion", "context7", "vercel-snapscope"],
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/eslint-hook.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": ".claude/tsc-hook.sh",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
 }
