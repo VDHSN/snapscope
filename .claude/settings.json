@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(gh:*)",
+      "Bash(git:*)",
+      "Bash(pnpm:*)",
+      "Bash(npx storybook@latest init:*)"
+    ],
+    "deny": []
+  },
+  "enabledMcpjsonServers": ["notion", "context7", "vercel-snapscope"]
+}

@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "scripts": {
+    "c": "claude --model sonnet --strict-mcp-config --mcp-config ./.mcp.json --ide"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@anthropic-ai/claude-code": "^1.0.89",
+    "next": "15.5.0",
+    "turbo": "^2.5.6"
+  }
+}
