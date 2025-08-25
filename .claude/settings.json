@@ -10,7 +10,9 @@
       "Bash(git diff:*)",
       "Bash(pnpm:*)",
       "Bash(pnpx storybook@latest init:*)",
-      "mcp__vercel-snapscope",
+      "mcp__vercel-snapscope__list_projects",
+      "mcp__vercel-snapscope__list_deployments",
+      "mcp__vercel-snapscope__get_deployment",
       "mcp__context7"
     ],
     "deny": []
