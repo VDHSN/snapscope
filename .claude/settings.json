@@ -3,7 +3,11 @@
     "allow": [
       "Bash(mkdir:*)",
       "Bash(gh:*)",
-      "Bash(git:*)",
+      "Bash(git commit:*)",
+      "Bash(git fetch:*)",
+      "Bash(git status:*)",
+      "Bash(git grep:*)",
+      "Bash(git diff:*)",
       "Bash(pnpm:*)",
       "Bash(pnpx storybook@latest init:*)",
       "mcp__vercel-snapscope",

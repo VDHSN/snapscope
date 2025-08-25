@@ -85,3 +85,5 @@ When working with the UI library from the client:
 The application is deployed on Vercel (per README). The client package is configured for Vercel deployment with Next.js.
 - **ALWAYS** use the github CLI tool to access repository links.
 - **ALWAYS** include --no-gpg-sign when doing `git commit`
+- **ALWAYS** prefer `pnpx` over `npx` for running npm packages
+- **ALWAYS** prefer using the vercel MCP server when interacting with vercel, fetching project or build status
