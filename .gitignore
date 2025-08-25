@@ -1,5 +1,12 @@
 node_modules
 dist
+.next
 .turbo
 .eslintcache
 .claude/settings.local.json
+tsconfig.tsbuildinfo
+
+# PWA generated files
+**/public/workbox-*.js
+**/public/sw.js
+**/public/worker-*.js

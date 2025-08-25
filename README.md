@@ -14,4 +14,14 @@ Snapscope is a Progressive Web Application built with
 - Targets mobile devices, desktops and tablets
 - Offline first design. Uses local storage.
 
+```sh
+# install nodejs and pnpm
+asdf install
+
+# install dependencies
+pnpm install
+
+# open claude
+pnpm run c
+```
 
