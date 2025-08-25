@@ -5,7 +5,7 @@
       "Bash(gh:*)",
       "Bash(git:*)",
       "Bash(pnpm:*)",
-      "Bash(npx storybook@latest init:*)",
+      "Bash(pnpx storybook@latest init:*)",
       "mcp__vercel-snapscope__list_projects",
       "mcp__vercel-snapscope__get_project",
       "mcp__vercel-snapscope__search_vercel_documentation",
