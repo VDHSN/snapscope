@@ -3,6 +3,7 @@
  * Handles claim data, user preferences, and sync management
  */
 
+import { z } from 'zod';
 import type {
   Claim,
   UserPreferences,
@@ -10,6 +11,7 @@ import type {
   StorageMetadata,
   PhotoReference
 } from '@/types/claim';
+import { schemas, storageKeySchema } from './schemas';
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -22,6 +24,62 @@ const STORAGE_KEYS = {
 
 // Storage version for migration handling
 const CURRENT_VERSION = '1.0.0';
+
+// In-memory cache for performance optimization
+const storageCache = new Map<string, { data: unknown; timestamp: number }>();
+const CACHE_TTL = 5000; // 5 seconds cache TTL
+
+/**
+ * Clear expired cache entries
+ */
+function clearExpiredCache(): void {
+  const now = Date.now();
+  for (const [key, value] of storageCache.entries()) {
+    if (now - value.timestamp > CACHE_TTL) {
+      storageCache.delete(key);
+    }
+  }
+}
+
+/**
+ * Get data from cache if valid, otherwise from storage
+ */
+function getCachedData<T>(key: string, fallback: T, schema?: z.ZodType<T>): T {
+  clearExpiredCache();
+  
+  const cached = storageCache.get(key);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.data as T;
+  }
+  
+  const data = localStorage.getItem(key);
+  const parsed = safeParse(data, fallback, schema);
+  
+  // Cache the parsed data
+  storageCache.set(key, { data: parsed, timestamp: Date.now() });
+  return parsed;
+}
+
+/**
+ * Set data in both cache and storage
+ */
+function setCachedData(key: string, data: unknown): void {
+  try {
+    localStorage.setItem(key, safeStringify(data));
+    storageCache.set(key, { data, timestamp: Date.now() });
+  } catch (error) {
+    // Clear cache on storage error
+    storageCache.delete(key);
+    throw error;
+  }
+}
+
+/**
+ * Invalidate cache for a specific key
+ */
+function invalidateCache(key: string): void {
+  storageCache.delete(key);
+}
 
 /**
  * Generic storage error class
@@ -48,15 +106,27 @@ function isLocalStorageAvailable(): boolean {
 }
 
 /**
- * Safe JSON parse with error handling
+ * Safe JSON parse with error handling and schema validation
  */
-function safeParse<T>(data: string | null, fallback: T): T {
+function safeParse<T>(data: string | null, fallback: T, schema?: z.ZodType<T>): T {
   if (!data) return fallback;
   
   try {
     const parsed = JSON.parse(data);
     // Restore Date objects
-    return reviveDates(parsed) as T;
+    const withDates = reviveDates(parsed);
+    
+    // Validate against schema if provided
+    if (schema) {
+      const result = schema.safeParse(withDates);
+      if (!result.success) {
+        console.warn('Storage data validation failed:', result.error.issues);
+        return fallback;
+      }
+      return result.data;
+    }
+    
+    return withDates as T;
   } catch (error) {
     console.warn('Failed to parse storage data:', error);
     return fallback;
@@ -75,8 +145,10 @@ function reviveDates(obj: unknown): unknown {
   
   const result: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(obj)) {
-    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/.test(value)) {
-      result[key] = new Date(value);
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)) {
+      const date = new Date(value);
+      // Validate that the date is actually valid
+      result[key] = isNaN(date.getTime()) ? value : date;
     } else if (typeof value === 'object') {
       result[key] = reviveDates(value);
     } else {
@@ -84,6 +156,14 @@ function reviveDates(obj: unknown): unknown {
     }
   }
   return result;
+}
+
+/**
+ * Validates that a storage key is one of the allowed keys to prevent XSS attacks
+ */
+function isValidStorageKey(key: string): boolean {
+  const result = storageKeySchema.safeParse(key);
+  return result.success;
 }
 
 /**
@@ -153,8 +233,7 @@ export const claimsStorage = {
   getAll(): Claim[] {
     if (!isLocalStorageAvailable()) return [];
     
-    const data = localStorage.getItem(STORAGE_KEYS.CLAIMS);
-    return safeParse(data, []);
+    return getCachedData(STORAGE_KEYS.CLAIMS, [], schemas.claims);
   },
 
   /**
@@ -197,10 +276,58 @@ export const claimsStorage = {
     }
 
     try {
-      localStorage.setItem(STORAGE_KEYS.CLAIMS, safeStringify(claims));
+      setCachedData(STORAGE_KEYS.CLAIMS, claims);
       this.updateMetadata();
     } catch (error) {
+      // Invalidate cache on error
+      invalidateCache(STORAGE_KEYS.CLAIMS);
       throw new StorageError('Failed to save claim to storage', error as Error);
+    }
+  },
+
+  /**
+   * Batch save multiple claims for better performance
+   */
+  saveBatch(claims: Claim[]): void {
+    if (!isLocalStorageAvailable()) {
+      throw new StorageError('localStorage is not available');
+    }
+
+    const { canStore, warning } = checkStorageQuota();
+    if (!canStore) {
+      throw new StorageError('Storage quota exceeded. Cannot save claims.');
+    }
+
+    if (warning) {
+      console.warn(warning);
+    }
+
+    const existingClaims = this.getAll();
+    const now = new Date();
+    
+    // Create a map for efficient lookup
+    const existingClaimsMap = new Map(existingClaims.map(claim => [claim.id, claim]));
+    
+    // Update or add each claim
+    claims.forEach(claim => {
+      const updatedClaim = {
+        ...claim,
+        updatedAt: now,
+        createdAt: existingClaimsMap.has(claim.id) ? 
+          existingClaimsMap.get(claim.id)!.createdAt : 
+          (claim.createdAt || now)
+      };
+      existingClaimsMap.set(claim.id, updatedClaim);
+    });
+
+    const finalClaims = Array.from(existingClaimsMap.values());
+
+    try {
+      setCachedData(STORAGE_KEYS.CLAIMS, finalClaims);
+      this.updateMetadata();
+    } catch (error) {
+      invalidateCache(STORAGE_KEYS.CLAIMS);
+      throw new StorageError('Failed to batch save claims to storage', error as Error);
     }
   },
 
@@ -271,8 +398,7 @@ export const photosStorage = {
   getAll(): PhotoReference[] {
     if (!isLocalStorageAvailable()) return [];
     
-    const data = localStorage.getItem(STORAGE_KEYS.PHOTOS);
-    return safeParse(data, []);
+    return getCachedData(STORAGE_KEYS.PHOTOS, [], z.array(schemas.photoReference));
   },
 
   /**
@@ -339,8 +465,7 @@ export const preferencesStorage = {
   get(): UserPreferences {
     if (!isLocalStorageAvailable()) return getDefaultPreferences();
     
-    const data = localStorage.getItem(STORAGE_KEYS.PREFERENCES);
-    return safeParse(data, getDefaultPreferences());
+    return getCachedData(STORAGE_KEYS.PREFERENCES, getDefaultPreferences(), schemas.userPreferences);
   },
 
   /**
@@ -381,8 +506,7 @@ export const syncQueueStorage = {
   getAll(): SyncQueueItem[] {
     if (!isLocalStorageAvailable()) return [];
     
-    const data = localStorage.getItem(STORAGE_KEYS.SYNC_QUEUE);
-    return safeParse(data, []);
+    return getCachedData(STORAGE_KEYS.SYNC_QUEUE, [], schemas.syncQueue);
   },
 
   /**
@@ -459,7 +583,8 @@ function getDefaultPreferences(): UserPreferences {
 export function addStorageEventListener(callback: (key: string, newValue: unknown) => void): () => void {
   const storageValues = Object.values(STORAGE_KEYS) as string[];
   const handler = (event: StorageEvent) => {
-    if (event.key && storageValues.includes(event.key)) {
+    // Validate storage key to prevent XSS attacks
+    if (event.key && storageValues.includes(event.key) && isValidStorageKey(event.key)) {
       const newValue = safeParse(event.newValue, null);
       callback(event.key, newValue);
     }

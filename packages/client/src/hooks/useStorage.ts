@@ -37,15 +37,16 @@ export function useClaims() {
   }, []);
 
   // Listen for cross-tab changes
-  useEffect(() => {
-    const cleanup = addStorageEventListener((key, newValue) => {
-      if (key === 'snapscope_claims' && newValue && Array.isArray(newValue)) {
-        setClaims(newValue as Claim[]);
-      }
-    });
-
-    return cleanup;
+  const handleStorageChange = useCallback((key: string, newValue: unknown) => {
+    if (key === 'snapscope_claims' && newValue && Array.isArray(newValue)) {
+      setClaims(newValue as Claim[]);
+    }
   }, []);
+
+  useEffect(() => {
+    const cleanup = addStorageEventListener(handleStorageChange);
+    return cleanup;
+  }, [handleStorageChange]);
 
   const saveClaim = useCallback(async (claim: Claim) => {
     try {
@@ -130,15 +131,16 @@ export function usePreferences() {
   }, []);
 
   // Listen for cross-tab changes
-  useEffect(() => {
-    const cleanup = addStorageEventListener((key, newValue) => {
-      if (key === 'snapscope_preferences' && newValue && typeof newValue === 'object') {
-        setPreferences(newValue as UserPreferences);
-      }
-    });
-
-    return cleanup;
+  const handlePreferencesChange = useCallback((key: string, newValue: unknown) => {
+    if (key === 'snapscope_preferences' && newValue && typeof newValue === 'object') {
+      setPreferences(newValue as UserPreferences);
+    }
   }, []);
+
+  useEffect(() => {
+    const cleanup = addStorageEventListener(handlePreferencesChange);
+    return cleanup;
+  }, [handlePreferencesChange]);
 
   const updatePreferences = useCallback(async (updates: Partial<UserPreferences>) => {
     try {
@@ -197,15 +199,16 @@ export function useSyncQueue() {
   }, []);
 
   // Listen for cross-tab changes
-  useEffect(() => {
-    const cleanup = addStorageEventListener((key, newValue) => {
-      if (key === 'snapscope_sync_queue' && newValue && Array.isArray(newValue)) {
-        setQueue(newValue as SyncQueueItem[]);
-      }
-    });
-
-    return cleanup;
+  const handleQueueChange = useCallback((key: string, newValue: unknown) => {
+    if (key === 'snapscope_sync_queue' && newValue && Array.isArray(newValue)) {
+      setQueue(newValue as SyncQueueItem[]);
+    }
   }, []);
+
+  useEffect(() => {
+    const cleanup = addStorageEventListener(handleQueueChange);
+    return cleanup;
+  }, [handleQueueChange]);
 
   const addToQueue = useCallback(async (item: SyncQueueItem) => {
     try {
@@ -293,16 +296,17 @@ export function useStorageQuota() {
     setCanStore(quotaInfo.canStore);
   }, []);
 
+  const handleUsageChange = useCallback(() => {
+    updateUsage();
+  }, [updateUsage]);
+
   useEffect(() => {
     updateUsage();
     
     // Update usage when storage changes
-    const cleanup = addStorageEventListener(() => {
-      updateUsage();
-    });
-
+    const cleanup = addStorageEventListener(handleUsageChange);
     return cleanup;
-  }, [updateUsage]);
+  }, [updateUsage, handleUsageChange]);
 
   return {
     usage,
@@ -319,18 +323,19 @@ export function useStorageSync() {
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
   const [syncEvents, setSyncEvents] = useState<Array<{ key: string; timestamp: Date }>>([]);
 
-  useEffect(() => {
-    const cleanup = addStorageEventListener((key) => {
-      const now = new Date();
-      setLastSyncTime(now);
-      setSyncEvents(prev => [
-        { key, timestamp: now },
-        ...prev.slice(0, 9) // Keep last 10 events
-      ]);
-    });
-
-    return cleanup;
+  const handleSyncChange = useCallback((key: string) => {
+    const now = new Date();
+    setLastSyncTime(now);
+    setSyncEvents(prev => [
+      { key, timestamp: now },
+      ...prev.slice(0, 9) // Keep last 10 events
+    ]);
   }, []);
+
+  useEffect(() => {
+    const cleanup = addStorageEventListener(handleSyncChange);
+    return cleanup;
+  }, [handleSyncChange]);
 
   const triggerManualSync = useCallback(() => {
     // This would trigger a manual sync process
