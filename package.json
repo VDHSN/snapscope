@@ -6,7 +6,8 @@
     "dev": "pnpm turbo dev",
     "lint-fix": "pnpm turbo lint-fix",
     "design-system": "cd packages/ui && pnpm storybook",
-    "c": "claude --model sonnet --strict-mcp-config --mcp-config ./.mcp.json --ide"
+    "claude": "claude --model sonnet --strict-mcp-config --mcp-config ./.mcp.json --ide",
+    "checks": "pnpm turbo run build lint-fix type-check"
   },
   "workspaces": [
     "packages/*"

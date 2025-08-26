@@ -110,43 +110,6 @@ export const AssessmentList = memo<AssessmentListProps>(({
           ))}
         </div>
       )}
-
-      {/* Floating Add Button */}
-      <div style={{ 
-        position: 'sticky',
-        bottom: `calc(var(--space-xl) + env(safe-area-inset-bottom))`,
-        marginTop: 'var(--space-lg)',
-        display: 'flex',
-        justifyContent: 'flex-end',
-        paddingRight: 'var(--space-xl)',
-        zIndex: 1000,
-        pointerEvents: 'none', // Allow clicks to pass through container
-      }}>
-        <Button 
-          variant="primary"
-          onClick={() => {
-            onAddAssessment?.();
-          }}
-          aria-label="Create new assessment"
-          style={{
-            borderRadius: '50%',
-            width: '56px',
-            height: '56px',
-            padding: '0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '24px',
-            fontWeight: 'normal',
-            boxShadow: 'var(--shadow-3)',
-            background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-            border: 'none',
-            pointerEvents: 'all', // Re-enable clicks on button
-          }}
-        >
-          +
-        </Button>
-      </div>
     </div>
   );
 });
