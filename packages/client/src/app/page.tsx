@@ -6,8 +6,10 @@ import { Card } from '@snapscope/ui/card';
 import { ThemeToggle } from '@snapscope/ui/theme-toggle';
 import { Logo } from '@snapscope/ui/logo';
 import { VideoPlayer } from '@snapscope/ui/video-player';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   return (
     <div style={{ 
       minHeight: '100vh', 
@@ -143,7 +145,7 @@ export default function Home() {
               variant="primary" 
               size="lg"
               onClick={() => {
-                // Placeholder - does nothing as specified in acceptance criteria
+                router.push('/assessments');
               }}
               style={{
                 borderRadius: '50px',
