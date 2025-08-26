@@ -32,6 +32,10 @@ git add .
 - If there are no changes, do not create a commit. Say "No changes to commit."
 - If there was an issue with GPG signing, immediately try to commit without GPG signing.
 
+## Extra steps
+
+If you are on a branch that has an open PR, go ahead and push it and update the PR description to include the changes.
+
 ## Begin task
 
 Below are additional instructions. Follow them carefully, but **always** use the conventional commit format.
