@@ -1,9 +1,1 @@
-<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="512" height="512" rx="72" fill="#2563eb"/>
-  <circle cx="256" cy="200" r="120" stroke="white" stroke-width="16" fill="none"/>
-  <path d="M196 240L226 270L316 180" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="176" y="320" width="160" height="80" rx="8" fill="white"/>
-  <rect x="196" y="340" width="120" height="8" rx="4" fill="#2563eb"/>
-  <rect x="196" y="360" width="80" height="8" rx="4" fill="#94a3b8"/>
-  <rect x="196" y="380" width="100" height="8" rx="4" fill="#94a3b8"/>
-</svg>
+<!-- Placeholder favicon.ico - Replace with actual Snapscope favicon generated from logo image -->

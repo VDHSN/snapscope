@@ -93,3 +93,6 @@ The application is deployed on Vercel (per README). The client package is config
 - when doing large coding tasks, prefer to use the frontend engineer agent
 - **ALWAYS** use `pnpm turbo run --filter="<PACKAGE>"`  when running pnpm scripts.
 - **ALWAYS** use `lint-fix` command when linting
+- *ALWAYS* use existing components from @packages/ui/
+- **ALWAYS** create storybook stories for new components you create in @packages/ui/
+- **ALWAYS** put components in @packages/ui/ if you create new ones

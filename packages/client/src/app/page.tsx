@@ -4,6 +4,8 @@ import { Typography } from '@snapscope/ui/typography';
 import { Button } from '@snapscope/ui/button';
 import { Card } from '@snapscope/ui/card';
 import { ThemeToggle } from '@snapscope/ui/theme-toggle';
+import { Logo } from '@snapscope/ui/logo';
+import { VideoPlayer } from '@snapscope/ui/video-player';
 
 export default function Home() {
   return (
@@ -44,43 +46,9 @@ export default function Home() {
             alignItems: 'center',
             gap: 'var(--space-lg)',
           }}>
-            <div style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: 'var(--shadow-2)',
-              color: 'white',
-            }}>
-              <svg
-                width="40"
-                height="40"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
+            <Logo size="xl" variant="full" showText={true} />
             <Typography variant="h1" style={{ textAlign: 'center' }}>
-              Welcome to{" "}
-              <span style={{
-                background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}>
-                SnapScope
-              </span>
+              Welcome to SnapScope
             </Typography>
           </div>
 
@@ -104,6 +72,61 @@ export default function Home() {
             }}>
               Streamline your vehicle assessment workflow with our powerful, mobile-first Progressive Web App designed specifically for independent adjusters.
             </Typography>
+          </div>
+
+          {/* Marketing Video */}
+          <div style={{ 
+            display: 'flex',
+            justifyContent: 'center',
+            maxWidth: '700px',
+            margin: '0 auto',
+          }}>
+            <VideoPlayer
+              src="/marketing-video.mp4"
+              poster="/video-poster.jpg"
+              showControls={true}
+              aspectRatio="video"
+              style={{
+                boxShadow: 'var(--shadow-2)',
+                borderRadius: 'var(--border-radius-lg)',
+              }}
+              placeholder={
+                <div
+                  style={{
+                    aspectRatio: '16 / 9',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'var(--bg-surface)',
+                    borderRadius: 'var(--border-radius-lg)',
+                    boxShadow: 'var(--shadow-1)',
+                    color: 'var(--text-secondary)',
+                    fontSize: 'var(--font-size-body)',
+                    fontWeight: 'var(--font-weight-medium)',
+                    border: '2px dashed var(--border-color)',
+                  }}
+                >
+                  <div style={{ textAlign: 'center' }}>
+                    <svg
+                      width="64"
+                      height="64"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style={{ marginBottom: 'var(--space-sm)', color: 'var(--primary-start)' }}
+                    >
+                      <path
+                        d="M8 5v14l11-7L8 5z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                    <p style={{ margin: 0 }}>
+                      🎬 Marketing Video Coming Soon
+                    </p>
+                  </div>
+                </div>
+              }
+            />
           </div>
 
           {/* CTA Button */}
