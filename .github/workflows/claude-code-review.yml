@@ -4,8 +4,8 @@ on:
   pull_request:
     types: [opened, synchronize]
     paths:
-      - "src/**/*.ts"
-      - "src/**/*.tsx"
+      - "**/*.ts"
+      - "**/*.tsx"
 
 jobs:
   claude-review:

@@ -29,7 +29,7 @@ import { Card } from '@snapscope/ui/card'
 
 ## Design System
 
-# SnapScope Design System
+SnapScope Design System
 
 ## 🎨 Color System
 
@@ -144,17 +144,17 @@ import { Card } from '@snapscope/ui/card'
 ## ⚡ Quick Reference
 
 ### Do's
-✅ Use primary gradient sparingly (CTAs, headers)  
-✅ Test colors in bright sunlight  
-✅ Maintain 16px minimum margins  
-✅ Animate with purpose  
-✅ Group related elements with closer spacing  
+✅ Use primary gradient sparingly (CTAs, headers)
+✅ Test colors in bright sunlight
+✅ Maintain 16px minimum margins
+✅ Animate with purpose
+✅ Group related elements with closer spacing
 
 ### Don'ts
-❌ Use more than 2 font weights per screen  
-❌ Apply semantic colors incorrectly  
-❌ Create custom spacing values  
-❌ Animate without user benefit  
+❌ Use more than 2 font weights per screen
+❌ Apply semantic colors incorrectly
+❌ Create custom spacing values
+❌ Animate without user benefit
 ❌ Ignore platform conventions
 
 ## Components
