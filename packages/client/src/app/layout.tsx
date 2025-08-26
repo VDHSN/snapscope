@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { ThemeInitializer } from '../components/theme-initializer';
 import "./globals.css";
 
 const inter = Inter({
@@ -155,6 +156,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} antialiased`}
       >
+        <ThemeInitializer />
         {children}
         <Analytics />
         <SpeedInsights />

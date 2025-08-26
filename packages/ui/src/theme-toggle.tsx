@@ -13,7 +13,41 @@ export const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>
     const [currentTheme, setCurrentTheme] = React.useState<Theme>('light');
 
     React.useEffect(() => {
+      // Set initial theme from DOM
       setCurrentTheme(getCurrentTheme());
+
+      // Listen for theme changes (including system theme changes handled by initializeTheme)
+      const handleThemeChange = () => {
+        setCurrentTheme(getCurrentTheme());
+      };
+
+      // Listen for storage changes (theme changes from other tabs/windows)
+      const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === 'snapscope-theme') {
+          handleThemeChange();
+        }
+      };
+
+      // Listen for DOM attribute changes (theme changes from any source)
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+            handleThemeChange();
+          }
+        });
+      });
+
+      if (typeof window !== 'undefined') {
+        window.addEventListener('storage', handleStorageChange);
+        observer.observe(document.body, { attributes: true });
+      }
+
+      return () => {
+        if (typeof window !== 'undefined') {
+          window.removeEventListener('storage', handleStorageChange);
+          observer.disconnect();
+        }
+      };
     }, []);
 
     const handleToggle = () => {
