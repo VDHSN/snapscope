@@ -1,0 +1,85 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "packages/**/*.ts"
+      - "packages/**/*.tsx"
+      - "packages/**/*.js"
+      - "packages/**/*.jsx"
+      - "packages/**/package.json"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "turbo.json"
+      - "**/tsconfig.json"
+      - "**/eslint.config.*"
+
+jobs:
+  checks:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '9.15.9'
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Setup Turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint check
+        run: |
+          echo "🔍 Running lint checks..."
+          pnpm turbo lint-fix --dry-run --continue
+
+      - name: Type check
+        run: |
+          echo "🔍 Running type checks..."
+          pnpm turbo type-check --continue
+
+      - name: Build check
+        run: |
+          echo "🔍 Running build checks..."
+          pnpm turbo build --continue
+
+      - name: Success summary
+        if: success()
+        run: |
+          echo "✅ All checks passed!"
+          echo "- Linting: PASSED"
+          echo "- Type checking: PASSED" 
+          echo "- Build: PASSED"

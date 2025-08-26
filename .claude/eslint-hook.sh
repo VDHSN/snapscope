@@ -1,11 +1,21 @@
 #!/bin/bash
 
 # ESLint auto-fix hook for Claude Code
-# This script runs ESLint with --fix on TypeScript files in the client package
+# This script runs ESLint with --fix using pnpm turbo with package filtering
 
-if [[ "$FILE_PATH" =~ \.(ts|tsx)$ ]] && [[ "$FILE_PATH" =~ packages/client/src ]]; then
-    echo "Running ESLint auto-fix on $FILE_PATH"
-    cd "$CLAUDE_PROJECT_DIR/packages/client"
-    RELATIVE_FILE=$(echo "$FILE_PATH" | sed 's|.*/packages/client/||')
-    pnpm run lint-fix "$RELATIVE_FILE"
+if [[ "$FILE_PATH" =~ \.(ts|tsx)$ ]]; then
+    PACKAGE=""
+    
+    if [[ "$FILE_PATH" =~ packages/client/ ]]; then
+        PACKAGE="@snapscope/client"
+    elif [[ "$FILE_PATH" =~ packages/ui/ ]]; then
+        PACKAGE="@snapscope/ui"
+    else
+        # File is not in a package directory, skip
+        exit 0
+    fi
+    
+    echo "Running lint-fix on $PACKAGE for $FILE_PATH"
+    cd "$CLAUDE_PROJECT_DIR"
+    pnpm turbo run lint-fix --filter="$PACKAGE"
 fi

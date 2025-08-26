@@ -28,6 +28,8 @@ When working with code:
 - Consider PWA requirements: offline functionality, caching, performance, and accessibility
 - Use modern React patterns (hooks, context, suspense) appropriately
 - Ensure components are testable and follow separation of concerns
+- *ALWAYS* use components from the UI library in @packages/ui
+- *ALWAYS* follow the design system exactly.
 
 For PWA development specifically:
 - Implement service worker strategies for offline functionality
