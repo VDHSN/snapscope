@@ -58,7 +58,7 @@ export default function Home() {
             width: '100%',
           }}>
             <div id="video-description" style={{ display: 'none' }}>
-              Marketing video demonstrating SnapScope's vehicle assessment tools for insurance adjusters, 
+              Marketing video demonstrating SnapScope&apos;s vehicle assessment tools for insurance adjusters, 
               showcasing features that help assess vehicles faster, more accurately, and with improved user experience.
             </div>
             <VideoPlayer
