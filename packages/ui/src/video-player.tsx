@@ -14,6 +14,7 @@ export interface VideoPlayerProps extends React.VideoHTMLAttributes<HTMLVideoEle
   observerOptions?: IntersectionObserverInit;
   showControls?: boolean;
   aspectRatio?: 'video' | 'square' | 'widescreen' | 'ultrawide';
+  lazyLoad?: boolean;
 }
 
 const aspectRatios = {
@@ -39,6 +40,7 @@ export const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>(
     observerOptions,
     showControls = true,
     aspectRatio = 'video',
+    lazyLoad = true,
     className = '',
     style,
     onLoadStart,
@@ -52,8 +54,15 @@ export const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>(
     const videoRef = React.useRef<HTMLVideoElement>(null);
     const containerRef = React.useRef<HTMLDivElement>(null);
 
-    // Intersection observer for lazy loading
+    // Intersection observer for lazy loading (when enabled)
     React.useEffect(() => {
+      if (!lazyLoad) {
+        // If lazy loading is disabled, immediately set video source
+        setIsIntersecting(true);
+        setVideoSrc(src);
+        return;
+      }
+
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
@@ -74,7 +83,7 @@ export const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>(
       }
 
       return () => observer.disconnect();
-    }, [src, observerOptions]);
+    }, [src, observerOptions, lazyLoad]);
 
     // Handle video load events
     const handleLoadStart = React.useCallback((e: React.SyntheticEvent<HTMLVideoElement>) => {
@@ -123,7 +132,7 @@ export const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>(
             />
           </svg>
           <p style={{ margin: 0, fontSize: 'var(--font-size-small)' }}>
-            Video will load when visible
+            {lazyLoad ? 'Video will load when visible' : 'Loading video...'}
           </p>
         </div>
       </div>

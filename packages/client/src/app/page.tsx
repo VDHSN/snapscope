@@ -46,10 +46,7 @@ export default function Home() {
             alignItems: 'center',
             gap: 'var(--space-lg)',
           }}>
-            <Logo size="xl" variant="full" showText={true} />
-            <Typography variant="h1" style={{ textAlign: 'center' }}>
-              Welcome to SnapScope
-            </Typography>
+            <Logo size="xl" variant="icon" showText={false} />
           </div>
 
           {/* Description */}
@@ -78,14 +75,18 @@ export default function Home() {
           <div style={{ 
             display: 'flex',
             justifyContent: 'center',
-            maxWidth: '700px',
+            maxWidth: '900px',
             margin: '0 auto',
+            width: '100%',
           }}>
             <VideoPlayer
               src="/marketing-video.mp4"
               poster="/video-poster.jpg"
               showControls={true}
               aspectRatio="video"
+              lazyLoad={false}
+              autoPlay={false}
+              muted={false}
               style={{
                 boxShadow: 'var(--shadow-2)',
                 borderRadius: 'var(--border-radius-lg)',

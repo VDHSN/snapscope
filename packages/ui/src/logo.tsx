@@ -27,8 +27,8 @@ const sizeStyles = {
     fontSize: 'var(--font-size-h4)',
   },
   xl: {
-    width: '96px',
-    height: '96px',
+    width: '120px',
+    height: '120px',
     fontSize: 'var(--font-size-h3)',
   },
 };
@@ -40,39 +40,30 @@ const baseStyle: React.CSSProperties = {
   color: 'var(--text-primary)',
 };
 
-// Placeholder SVG logo - replace with actual Snapscope logo
-const LogoIcon: React.FC<{ size: string; className?: string }> = ({ size, className }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 100 100"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    className={className}
-  >
-    <circle
-      cx="50"
-      cy="50"
-      r="45"
-      fill="url(#gradient)"
-      stroke="currentColor"
-      strokeWidth="2"
+// Snapscope logo using actual image asset
+const LogoIcon: React.FC<{ size: string; className?: string }> = ({ size, className }) => {
+  // Simplified approach - just show the image directly
+  return (
+    <img
+      src="/app-logo.png"
+      alt="SnapScope Logo"
+      width={size}
+      height={size}
+      style={{
+        width: size,
+        height: size,
+        objectFit: 'contain',
+      }}
+      className={className}
+      onError={(e) => {
+        console.error('Logo failed to load:', e);
+        // Fallback to a simple div if image fails
+        const target = e.target as HTMLImageElement;
+        target.style.display = 'none';
+      }}
     />
-    <path
-      d="M35 50L45 60L70 35"
-      stroke="white"
-      strokeWidth="4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <defs>
-      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="var(--primary-start)" />
-        <stop offset="100%" stopColor="var(--primary-end)" />
-      </linearGradient>
-    </defs>
-  </svg>
-);
+  );
+};
 
 export const Logo = React.forwardRef<HTMLDivElement, LogoProps>(
   ({ size = 'md', variant = 'full', showText = true, className = '', style, ...props }, ref) => {

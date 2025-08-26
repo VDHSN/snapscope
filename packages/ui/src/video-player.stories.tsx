@@ -43,6 +43,10 @@ const meta: Meta<typeof VideoPlayer> = {
       control: 'boolean',
       description: 'Loop video playback',
     },
+    lazyLoad: {
+      control: 'boolean',
+      description: 'Enable lazy loading of video (default: true)',
+    },
   },
 };
 
@@ -85,6 +89,23 @@ export const AutoPlay: Story = {
     docs: {
       description: {
         story: 'Auto-playing video (muted by default for browser compatibility)',
+      },
+    },
+  },
+};
+
+export const NoLazyLoading: Story = {
+  args: {
+    src: SAMPLE_VIDEO,
+    poster: SAMPLE_POSTER,
+    showControls: true,
+    aspectRatio: 'video',
+    lazyLoad: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Video loads immediately without lazy loading (useful for above-the-fold content)',
       },
     },
   },
