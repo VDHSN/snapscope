@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { ThemeInitializer } from '../components/theme-initializer';
 import "./globals.css";
 
 const inter = Inter({
@@ -88,16 +89,17 @@ export default function RootLayout({
         <meta name="msapplication-tap-highlight" content="no" />
         <meta name="theme-color" content="#2563eb" />
         
-        <link rel="apple-touch-icon" href="/icons/icon-152x152.png" />
+        {/* Favicon and Icons */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
         <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-192x192.png" />
         
-        <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-72x72.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-72x72.png" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="mask-icon" href="/icons/icon.svg" color="#2563eb" />
-        <link rel="shortcut icon" href="/favicon.ico" />
         
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:url" content="https://snapscope.app" />
@@ -116,6 +118,7 @@ export default function RootLayout({
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
         />
+        
         
         {/* Structured Data */}
         <Script id="structured-data" type="application/ld+json">
@@ -154,6 +157,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} antialiased`}
       >
+        <ThemeInitializer />
         {children}
         <Analytics />
         <SpeedInsights />
