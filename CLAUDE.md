@@ -88,3 +88,8 @@ The application is deployed on Vercel (per README). The client package is config
 - **ALWAYS** prefer `pnpx` over `npx` for running npm packages
 - **ALWAYS** prefer using the vercel MCP server when interacting with vercel, fetching project or build status
 - Prefer using Context7 MCP to research API libraries over searching the web
+
+- **Always** create git branches using `(feature/fix/chore)/<gh-issue-number>-<summary-slug>` format
+- when doing large coding tasks, prefer to use the frontend engineer agent
+- **ALWAYS** use `pnpm turbo run --filter="<PACKAGE>"`  when running pnpm scripts.
+- **ALWAYS** use `lint-fix` command when linting
