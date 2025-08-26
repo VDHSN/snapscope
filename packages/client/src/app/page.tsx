@@ -64,7 +64,7 @@ export default function Home() {
               aspectRatio="video"
               lazyLoad={false}
               autoPlay={true}
-              muted={false}
+              muted={true}
               style={{
                 boxShadow: 'var(--shadow-2)',
                 borderRadius: 'var(--border-radius-lg)',
