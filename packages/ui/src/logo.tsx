@@ -40,12 +40,66 @@ const baseStyle: React.CSSProperties = {
   color: 'var(--text-primary)',
 };
 
-// Snapscope logo using actual image asset
+// Get the appropriate logo asset based on size
+const getLogoSrc = (targetSize: string): string => {
+  const sizeNum = parseInt(targetSize);
+  
+  if (sizeNum <= 32) return '/logo-32.png';
+  if (sizeNum <= 48) return '/logo-48.png';
+  if (sizeNum <= 64) return '/logo-64.png';
+  if (sizeNum <= 120) return '/logo-120.png';
+  return '/app-logo.png'; // Original for larger sizes
+};
+
+// Snapscope logo using appropriately sized assets with SVG fallback
 const LogoIcon: React.FC<{ size: string; className?: string }> = ({ size, className }) => {
-  // Simplified approach - just show the image directly
+  const [hasError, setHasError] = React.useState(false);
+  
+  if (hasError) {
+    // SVG fallback logo
+    return (
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+        aria-label="SnapScope Logo"
+        style={{
+          width: size,
+          height: size,
+        }}
+      >
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+          fill="url(#logo-gradient)"
+          stroke="currentColor"
+          strokeWidth="1"
+        />
+        <path
+          d="M8 12h8M12 8v8"
+          stroke="white"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <defs>
+          <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="var(--primary-start)" />
+            <stop offset="100%" stopColor="var(--primary-end)" />
+          </linearGradient>
+        </defs>
+      </svg>
+    );
+  }
+
+  const logoSrc = getLogoSrc(size);
+
   return (
     <img
-      src="/app-logo.png"
+      src={logoSrc}
       alt="SnapScope Logo"
       width={size}
       height={size}
@@ -56,11 +110,14 @@ const LogoIcon: React.FC<{ size: string; className?: string }> = ({ size, classN
       }}
       className={className}
       onError={(e) => {
-        console.error('Logo failed to load:', e);
-        // Fallback to a simple div if image fails
-        const target = e.target as HTMLImageElement;
-        target.style.display = 'none';
+        console.warn(`Logo image failed to load (${logoSrc}), switching to SVG fallback`);
+        setHasError(true);
       }}
+      onLoad={() => {
+        setHasError(false);
+      }}
+      loading="eager"
+      decoding="async"
     />
   );
 };

@@ -93,6 +93,14 @@ export const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>(
     }, [onLoadStart]);
 
     const handleError = React.useCallback((e: React.SyntheticEvent<HTMLVideoElement>) => {
+      const target = e.target as HTMLVideoElement;
+      console.warn('Video loading error:', {
+        src: target.src,
+        error: target.error,
+        networkState: target.networkState,
+        readyState: target.readyState
+      });
+      
       setIsError(true);
       setIsLoaded(false);
       onError?.(e);
@@ -216,12 +224,14 @@ export const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>(
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: 'var(--error-bg)',
+              backgroundColor: 'var(--bg-surface)',
               borderRadius: 'var(--border-radius-lg)',
-              border: '2px solid var(--error)',
+              border: '2px dashed var(--border-color)',
             }}
+            role="img"
+            aria-label="Video failed to load"
           >
-            <div style={{ textAlign: 'center', color: 'var(--error)' }}>
+            <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
               <svg
                 width="48"
                 height="48"
@@ -229,13 +239,22 @@ export const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>(
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 style={{ marginBottom: 'var(--space-sm)' }}
+                aria-hidden="true"
               >
-                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                <path
+                  d="M8 5v14l11-7L8 5z"
+                  fill="currentColor"
+                  opacity="0.3"
+                />
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/>
                 <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" strokeWidth="2"/>
                 <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" strokeWidth="2"/>
               </svg>
-              <p style={{ margin: 0, fontSize: 'var(--font-size-small)' }}>
-                Error loading video
+              <p style={{ margin: 0, fontSize: 'var(--font-size-small)', fontWeight: 'var(--font-weight-medium)' }}>
+                Video unavailable
+              </p>
+              <p style={{ margin: '4px 0 0 0', fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                The video content could not be loaded
               </p>
             </div>
           </div>
@@ -315,7 +334,15 @@ export const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>(
             opacity: isLoaded ? 1 : 0,
             transition: 'opacity 0.3s ease-in-out',
           }}
+          aria-label={props['aria-label'] || 'Video player'}
+          aria-describedby={props['aria-describedby']}
+          role="region"
+          tabIndex={0}
+          preload="metadata"
+          // Ensure autoplay is always muted for accessibility compliance
           {...props}
+          autoPlay={props.autoPlay}
+          muted={props.autoPlay ? true : props.muted}
         />
       </div>
     );

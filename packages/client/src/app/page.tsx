@@ -57,6 +57,10 @@ export default function Home() {
             margin: '0 auto',
             width: '100%',
           }}>
+            <div id="video-description" style={{ display: 'none' }}>
+              Marketing video demonstrating SnapScope's vehicle assessment tools for insurance adjusters, 
+              showcasing features that help assess vehicles faster, more accurately, and with improved user experience.
+            </div>
             <VideoPlayer
               src="/marketing-video.mp4"
               poster="/video-poster.jpg"
@@ -65,6 +69,8 @@ export default function Home() {
               lazyLoad={false}
               autoPlay={true}
               muted={true}
+              aria-label="SnapScope marketing video showcasing vehicle assessment features"
+              aria-describedby="video-description"
               style={{
                 boxShadow: 'var(--shadow-2)',
                 borderRadius: 'var(--border-radius-lg)',
@@ -93,6 +99,7 @@ export default function Home() {
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                       style={{ marginBottom: 'var(--space-sm)', color: 'var(--primary-start)' }}
+                      aria-hidden="true"
                     >
                       <path
                         d="M8 5v14l11-7L8 5z"
