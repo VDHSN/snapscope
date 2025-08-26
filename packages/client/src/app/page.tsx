@@ -49,28 +49,6 @@ export default function Home() {
             <Logo size="xl" variant="icon" showText={false} />
           </div>
 
-          {/* Description */}
-          <div style={{ 
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--space-md)',
-            alignItems: 'center',
-            textAlign: 'center',
-          }}>
-            <Typography variant="body" style={{ 
-              maxWidth: '600px',
-              color: 'var(--text-secondary)',
-            }}>
-              Helping Insurance Adjusters assess vehicles faster, more accurately, and have fun while doing it.
-            </Typography>
-            <Typography variant="small" style={{ 
-              maxWidth: '500px',
-              color: 'var(--text-tertiary)',
-            }}>
-              Streamline your vehicle assessment workflow with our powerful, mobile-first Progressive Web App designed specifically for independent adjusters.
-            </Typography>
-          </div>
-
           {/* Marketing Video */}
           <div style={{ 
             display: 'flex',
@@ -85,7 +63,7 @@ export default function Home() {
               showControls={true}
               aspectRatio="video"
               lazyLoad={false}
-              autoPlay={false}
+              autoPlay={true}
               muted={false}
               style={{
                 boxShadow: 'var(--shadow-2)',
@@ -128,6 +106,28 @@ export default function Home() {
                 </div>
               }
             />
+          </div>
+
+          {/* Description */}
+          <div style={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--space-md)',
+            alignItems: 'center',
+            textAlign: 'center',
+          }}>
+            <Typography variant="body" style={{ 
+              maxWidth: '600px',
+              color: 'var(--text-secondary)',
+            }}>
+              Helping Insurance Adjusters assess vehicles faster, more accurately, and have fun while doing it.
+            </Typography>
+            <Typography variant="small" style={{ 
+              maxWidth: '500px',
+              color: 'var(--text-tertiary)',
+            }}>
+              Streamline your vehicle assessment workflow with our powerful, mobile-first Progressive Web App designed specifically for independent adjusters.
+            </Typography>
           </div>
 
           {/* CTA Button */}
