@@ -8,6 +8,7 @@
       "Bash(git status:*)",
       "Bash(git grep:*)",
       "Bash(git diff:*)",
+      "Bash(git add:*)",
       "Bash(sips:*)",
       "Bash(pnpm:*)",
       "Bash(pnpx storybook@latest init:*)",
