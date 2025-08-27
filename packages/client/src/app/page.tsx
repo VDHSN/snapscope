@@ -2,7 +2,8 @@
 
 import { Typography } from '@snapscope/ui/typography';
 import { Button } from '@snapscope/ui/button';
-import { Card } from '@snapscope/ui/card';
+import { FeatureCard } from '@snapscope/ui/feature-card';
+import { Icon } from '@snapscope/ui/icon';
 import { ThemeToggle } from '@snapscope/ui/theme-toggle';
 import { Logo } from '@snapscope/ui/logo';
 import { VideoPlayer } from '@snapscope/ui/video-player';
@@ -179,216 +180,40 @@ export default function Home() {
             marginTop: 'var(--space-2xl)',
             width: '100%',
           }}>
-            <Card elevation={1} padding="lg" style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 'var(--space-md)',
-              }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: 'var(--border-radius-md)',
-                  backgroundColor: 'var(--success)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  opacity: 0.9,
-                }}>
-                  <svg
-                    width="24"
-                    height="24"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <Typography variant="h2">FASTER TURNAROUND. HAPPIER CLIENTS.</Typography>
-                <Typography variant="small" style={{ color: 'var(--text-secondary)' }}>
-                  Deliver inspection files in record time with auto-labeling, built-in QA, and one-click exports—keeping your partners impressed and your pipeline moving.
-                </Typography>
-              </div>
-            </Card>
+            <FeatureCard
+              icon={<Icon name="clock" />}
+              title="FASTER TURNAROUND. HAPPIER CLIENTS."
+              description="Deliver inspection files in record time with auto-labeling, built-in QA, and one-click exports—keeping your partners impressed and your pipeline moving."
+              iconBgColor="var(--success)"
+            />
 
-            <Card elevation={1} padding="lg" style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 'var(--space-md)',
-              }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: 'var(--border-radius-md)',
-                  backgroundColor: 'var(--info)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  opacity: 0.9,
-                }}>
-                  <svg
-                    width="24"
-                    height="24"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                    />
-                  </svg>
-                </div>
-                <Typography variant="h2">CONSISTENTLY ACCURATE. ZERO GUESSWORK.</Typography>
-                <Typography variant="small" style={{ color: 'var(--text-secondary)' }}>
-                  With VIN verification, blur detection, and automated quality checks, every file meets carrier and firm standards—reducing costly reinspections and protecting your reputation.
-                </Typography>
-              </div>
-            </Card>
+            <FeatureCard
+              icon={<Icon name="shield" />}
+              title="CONSISTENTLY ACCURATE. ZERO GUESSWORK."
+              description="With VIN verification, blur detection, and automated quality checks, every file meets carrier and firm standards—reducing costly reinspections and protecting your reputation."
+              iconBgColor="var(--info)"
+            />
 
-            <Card elevation={1} padding="lg" style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 'var(--space-md)',
-              }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: 'var(--border-radius-md)',
-                  background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  opacity: 0.9,
-                }}>
-                  <svg
-                    width="24"
-                    height="24"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"
-                    />
-                  </svg>
-                </div>
-                <Typography variant="h2">TAILORED TO YOUR BUSINESS.</Typography>
-                <Typography variant="small" style={{ color: 'var(--text-secondary)' }}>
-                  Create custom workflows for every carrier or partner. SnapScope adapts to your process, not the other way around.
-                </Typography>
-              </div>
-            </Card>
+            <FeatureCard
+              icon={<Icon name="settings" />}
+              title="TAILORED TO YOUR BUSINESS."
+              description="Create custom workflows for every carrier or partner. SnapScope adapts to your process, not the other way around."
+              iconBgColor="linear-gradient(135deg, var(--primary-start), var(--primary-end))"
+            />
 
-            <Card elevation={1} padding="lg" style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 'var(--space-md)',
-              }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: 'var(--border-radius-md)',
-                  backgroundColor: 'var(--warning)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  opacity: 0.9,
-                }}>
-                  <svg
-                    width="24"
-                    height="24"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v0"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"
-                    />
-                  </svg>
-                </div>
-                <Typography variant="h2">ORGANIZED FROM DAY ONE.</Typography>
-                <Typography variant="small" style={{ color: 'var(--text-secondary)' }}>
-                  Never lose track of a job again. Files are stored locally until you&apos;re ready to upload, making it easy to pause, resume, or export anytime.
-                </Typography>
-              </div>
-            </Card>
+            <FeatureCard
+              icon={<Icon name="briefcase" />}
+              title="ORGANIZED FROM DAY ONE."
+              description="Never lose track of a job again. Files are stored locally until you're ready to upload, making it easy to pause, resume, or export anytime."
+              iconBgColor="var(--warning)"
+            />
 
-            <Card elevation={1} padding="lg" style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 'var(--space-md)',
-              }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: 'var(--border-radius-md)',
-                  backgroundColor: 'var(--error)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  opacity: 0.9,
-                }}>
-                  <svg
-                    width="24"
-                    height="24"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                    />
-                  </svg>
-                </div>
-                <Typography variant="h2">BUILT FOR TEAMS, TRUSTED BY PROS.</Typography>
-                <Typography variant="small" style={{ color: 'var(--text-secondary)' }}>
-                  From new adjusters to industry veterans, SnapScope&apos;s intuitive design makes adoption painless—and efficiency gains immediate.
-                </Typography>
-              </div>
-            </Card>
+            <FeatureCard
+              icon={<Icon name="users" />}
+              title="BUILT FOR TEAMS, TRUSTED BY PROS."
+              description="From new adjusters to industry veterans, SnapScope's intuitive design makes adoption painless—and efficiency gains immediate."
+              iconBgColor="var(--error)"
+            />
           </div>
         </main>
       </div>
