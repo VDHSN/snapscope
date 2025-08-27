@@ -15,8 +15,8 @@ const vehicleSchema = z.object({
       message: 'VIN must contain only alphanumeric characters (no I, O, Q)' 
     })
     .transform((vin) => vin.toUpperCase()),
-  make: z.string().min(1),
-  model: z.string().min(1),
+  make: z.string().min(1).optional(),
+  model: z.string().min(1).optional(),
   year: z.number().int().min(1900).max(new Date().getFullYear() + 2),
   color: z.string().optional(),
   licensePlate: z.string().optional(),

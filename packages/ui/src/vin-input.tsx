@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { Input, InputProps } from './input';
 
 export interface VINInputProps extends Omit<InputProps, 'value' | 'onChange' | 'maxLength'> {
@@ -97,7 +97,7 @@ export const VINInput = React.forwardRef<HTMLInputElement, VINInputProps>(
     };
 
     // Construct aria-describedby with validation message ID if present
-    const validationId = `vin-validation-${Math.random().toString(36).substr(2, 9)}`;
+    const validationId = useId();
     const fullAriaDescribedBy = [
       ariaDescribedBy,
       showValidation && validation.message ? validationId : null
