@@ -12,7 +12,7 @@
     "dev:start": "devpod up --open-ide=false .",
     "dev:connect": "ssh snapscope.devpod",
     "dev:clean": "devpod delete .",
-    "dev:omnara": "uv run omnara"
+    "dev:omnara": "caffeinate -i -s uv run omnara"
   },
   "workspaces": [
     "packages/*"
