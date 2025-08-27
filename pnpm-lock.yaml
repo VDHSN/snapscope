@@ -113,7 +113,7 @@ importers:
         specifier: ^8.6.14
         version: 8.6.14(storybook@8.6.14)
       '@types/react':
-        specifier: ^19
+        specifier: ^19.1.11
         version: 19.1.11
       '@types/react-dom':
         specifier: ^19
