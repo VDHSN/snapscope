@@ -4,13 +4,14 @@
   "sideEffects": false,
   "license": "MIT",
   "scripts": {
-    "build": "tsup src/button.tsx src/typography.tsx src/input.tsx src/vin-input.tsx src/badge.tsx src/card.tsx src/progress.tsx src/theme-toggle.tsx src/logo.tsx src/video-player.tsx src/assessment-card.tsx src/assessment-list.tsx src/feature-card.tsx src/icon.tsx src/types.ts --format esm,cjs --dts",
+    "build": "pnpm run build:components && pnpm run build:storybook",
+    "build:components": "tsup src/button.tsx src/typography.tsx src/input.tsx src/vin-input.tsx src/badge.tsx src/card.tsx src/progress.tsx src/theme-toggle.tsx src/logo.tsx src/video-player.tsx src/assessment-card.tsx src/assessment-list.tsx src/feature-card.tsx src/icon.tsx src/types.ts --format esm,cjs --dts",
     "dev": "storybook dev -p 6006",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint-fix": "eslint src/**/*.{ts,tsx} --fix",
     "type-check": "tsc --noEmit",
     "storybook": "pnpm dev",
-    "build-storybook": "storybook build"
+    "build:storybook": "storybook build"
   },
   "exports": {
     "./button": {
