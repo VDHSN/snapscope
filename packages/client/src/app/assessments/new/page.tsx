@@ -8,6 +8,7 @@ import { Card } from '@snapscope/ui/card';
 import { Badge } from '@snapscope/ui/badge';
 import { Progress } from '@snapscope/ui/progress';
 import { VINInput } from '@snapscope/ui/vin-input';
+import { ThemeToggle } from '@snapscope/ui/theme-toggle';
 import { ArrowLeftIcon, CameraIcon, EditIcon } from '@snapscope/ui/icon';
 import { isValidVIN } from '@/lib/vin-utils';
 import { useClaims } from '@/hooks/useStorage';
@@ -83,10 +84,21 @@ export default function VINEntryPage() {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      background: '#F5E6D3', // Cream background
+      background: 'var(--bg-primary)',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      position: 'relative'
     }}>
+      {/* Theme Toggle */}
+      <div style={{ 
+        position: 'absolute', 
+        top: 'var(--space-md)', 
+        right: 'var(--space-md)',
+        zIndex: 10
+      }}>
+        <ThemeToggle />
+      </div>
+
       {/* Header with purple gradient */}
       <div style={{ 
         background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
