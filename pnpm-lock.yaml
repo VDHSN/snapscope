@@ -73,7 +73,7 @@ importers:
         specifier: 15.5.0
         version: 15.5.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       typescript:
-        specifier: ^5
+        specifier: ^5.9.2
         version: 5.9.2
 
   packages/ui:
