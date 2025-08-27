@@ -1,2 +1,4 @@
 nodejs 22.18.0
 pnpm 9.15.9
+github-cli 2.78.0
+devpod-cli 0.6.15
