@@ -9,6 +9,7 @@
     "design-system": "cd packages/ui && pnpm storybook",
     "claude": "claude --model sonnet --strict-mcp-config --mcp-config ./.mcp.json --ide",
     "checks": "pnpm turbo run build lint-fix type-check",
+    "test": "pnpm turbo test",
     "dev:start": "devpod up --open-ide=false .",
     "dev:connect": "ssh snapscope.devpod",
     "dev:clean": "devpod delete .",

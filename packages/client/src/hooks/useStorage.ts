@@ -115,8 +115,8 @@ export function useClaims() {
         vehicle: {
           id: vehicleId,
           vin: vin.toUpperCase(),
-          make: '', // To be filled in next steps
-          model: '', // To be filled in next steps  
+          make: undefined, // To be filled in next steps
+          model: undefined, // To be filled in next steps  
           year: new Date().getFullYear(), // Default to current year, to be updated
         },
         contacts: [],

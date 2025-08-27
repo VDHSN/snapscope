@@ -4,7 +4,7 @@
  */
 
 /**
- * VIN character mapping for checksum calculation
+ * VIN character mapping for checksum calculation per ISO 3779
  * Letters I, O, Q are excluded from VINs
  */
 const VIN_CHAR_MAP: Record<string, number> = {
@@ -104,22 +104,40 @@ export function decodeVIN(vin: string): {
   const vds = vin.slice(3, 9);
   const vis = vin.slice(9, 17);
 
-  // Basic year decode (position 10) - simplified mapping
+  // VIN year decode (position 10) - supports 1980 onwards, repeats every 30 years
   const yearChar = vin[9];
-  const yearMap: Record<string, number> = {
-    'A': 2010, 'B': 2011, 'C': 2012, 'D': 2013, 'E': 2014, 'F': 2015,
-    'G': 2016, 'H': 2017, 'J': 2018, 'K': 2019, 'L': 2020, 'M': 2021,
-    'N': 2022, 'P': 2023, 'R': 2024, 'S': 2025, 'T': 2026, 'V': 2027,
-    'W': 2028, 'X': 2029, 'Y': 2030, 'Z': 2031,
-    '1': 2001, '2': 2002, '3': 2003, '4': 2004, '5': 2005,
-    '6': 2006, '7': 2007, '8': 2008, '9': 2009,
+  
+  // Year mapping per ISO 3779 (excludes I, O, Q, U, Z, 0)
+  const yearMap: Record<string, number[]> = {
+    'A': [1980, 2010], 'B': [1981, 2011], 'C': [1982, 2012], 'D': [1983, 2013],
+    'E': [1984, 2014], 'F': [1985, 2015], 'G': [1986, 2016], 'H': [1987, 2017],
+    'J': [1988, 2018], 'K': [1989, 2019], 'L': [1990, 2020], 'M': [1991, 2021],
+    'N': [1992, 2022], 'P': [1993, 2023], 'R': [1994, 2024], 'S': [1995, 2025],
+    'T': [1996, 2026], 'V': [1997, 2027], 'W': [1998, 2028], 'X': [1999, 2029],
+    'Y': [2000, 2030], '1': [2001, 2031], '2': [2002, 2032], '3': [2003, 2033],
+    '4': [2004, 2034], '5': [2005, 2035], '6': [2006, 2036], '7': [2007, 2037],
+    '8': [2008, 2038], '9': [2009, 2039]
   };
+
+  let decodedYear: number | undefined = undefined;
+  const possibleYears = yearMap[yearChar];
+  if (possibleYears) {
+    const currentYear = new Date().getFullYear();
+    // Select the most likely year based on current date
+    // Prefer the year that's closest to current year but not too far in the future
+    decodedYear = possibleYears[0];
+    for (const year of possibleYears) {
+      if (year <= currentYear + 1 && year > decodedYear) {
+        decodedYear = year;
+      }
+    }
+  }
 
   return {
     wmi,
     vds,
     vis,
-    year: yearMap[yearChar],
+    year: decodedYear,
     isValid: isValidVIN(vin),
   };
 }
@@ -137,11 +155,11 @@ export function getVINValidationError(vin: string): string | null {
   }
   
   if (vin.length > 17) {
-    return 'VIN cannot exceed 17 characters';
+    return 'VIN too long (maximum 17 characters)';
   }
   
   if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(vin)) {
-    return 'VIN contains invalid characters (no I, O, Q allowed)';
+    return 'Invalid characters (letters I, O, Q are not allowed)';
   }
   
   if (!isValidVIN(vin)) {
