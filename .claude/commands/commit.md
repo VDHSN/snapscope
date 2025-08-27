@@ -5,6 +5,9 @@ description: Creates a new commit using conventional commit guidelines.
 Review the git changes in the working directory and stage them for commit.
 
 ```bash
+# run pr checks first in the root of the project
+pnpm run checks
+
 # to review staged changes
 git diff --cached
 

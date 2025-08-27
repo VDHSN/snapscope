@@ -4,7 +4,7 @@
   "sideEffects": false,
   "license": "MIT",
   "scripts": {
-    "build": "tsup src/button.tsx src/typography.tsx src/input.tsx src/badge.tsx src/card.tsx src/progress.tsx src/theme-toggle.tsx src/logo.tsx src/video-player.tsx --format esm,cjs --dts",
+    "build": "tsup src/button.tsx src/typography.tsx src/input.tsx src/badge.tsx src/card.tsx src/progress.tsx src/theme-toggle.tsx src/logo.tsx src/video-player.tsx src/assessment-card.tsx src/assessment-list.tsx src/types.ts --format esm,cjs --dts",
     "dev": "storybook dev -p 6006",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint-fix": "eslint src/**/*.{ts,tsx} --fix",
@@ -58,6 +58,18 @@
     "./video-player": {
       "types": "./src/video-player.tsx",
       "import": "./src/video-player.tsx"
+    },
+    "./assessment-card": {
+      "types": "./src/assessment-card.tsx",
+      "import": "./src/assessment-card.tsx"
+    },
+    "./assessment-list": {
+      "types": "./src/assessment-list.tsx",
+      "import": "./src/assessment-list.tsx"
+    },
+    "./types": {
+      "types": "./src/types.ts",
+      "import": "./src/types.ts"
     }
   },
   "devDependencies": {

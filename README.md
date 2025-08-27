@@ -6,6 +6,10 @@ See for yourself @ https://snapscope.app
 
 - [Notion Landing Page](https://www.notion.so/adamveld12/Project-SnapScope-24ed38a0f7a88011901adcf36ada4ec7?v=259d38a0f7a8804391a4000c21d849a6&source=copy_link)
 
+Built with Claude
+
+- Omnara: https://omnara.com
+
 ## Development
 
 Snapscope is a Progressive Web Application built with

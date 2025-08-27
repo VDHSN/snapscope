@@ -14,6 +14,12 @@ const baseStyle: React.CSSProperties = {
   fontFamily: 'inherit',
 };
 
+// Focus style for accessibility
+const focusStyle: React.CSSProperties = {
+  outline: '2px solid var(--primary-start)',
+  outlineOffset: '2px',
+};
+
 const elevations = {
   1: {
     boxShadow: 'var(--shadow-1)',
@@ -46,8 +52,9 @@ const hoverStyle: React.CSSProperties = {
 };
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ elevation = 1, padding = 'lg', style, onMouseEnter, onMouseLeave, ...props }, ref) => {
+  ({ elevation = 1, padding = 'lg', style, onMouseEnter, onMouseLeave, onFocus, onBlur, ...props }, ref) => {
     const [isHovered, setIsHovered] = React.useState(false);
+    const [isFocused, setIsFocused] = React.useState(false);
 
     const elevationStyle = elevations[elevation];
     const paddingStyle = paddings[padding];
@@ -57,6 +64,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       ...elevationStyle,
       ...paddingStyle,
       ...(isHovered ? hoverStyle : {}),
+      ...(isFocused ? focusStyle : {}),
       ...style,
     };
 
@@ -70,12 +78,24 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       onMouseLeave?.(e);
     };
 
+    const handleFocus = (e: React.FocusEvent<HTMLDivElement>) => {
+      setIsFocused(true);
+      onFocus?.(e);
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+      setIsFocused(false);
+      onBlur?.(e);
+    };
+
     return (
       <div
         ref={ref}
         style={combinedStyle}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         {...props}
       />
     );

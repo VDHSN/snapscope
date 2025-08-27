@@ -3,10 +3,16 @@
   "packageManager": "pnpm@9.15.9",
   "scripts": {
     "build": "pnpm turbo build",
+    "clean": "pnpm dev:clean",
     "dev": "pnpm turbo dev",
     "lint-fix": "pnpm turbo lint-fix",
     "design-system": "cd packages/ui && pnpm storybook",
-    "c": "claude --model sonnet --strict-mcp-config --mcp-config ./.mcp.json --ide"
+    "claude": "claude --model sonnet --strict-mcp-config --mcp-config ./.mcp.json --ide",
+    "checks": "pnpm turbo run build lint-fix type-check",
+    "dev:start": "devpod up --open-ide=false .",
+    "dev:connect": "ssh snapscope.devpod",
+    "dev:clean": "devpod delete .",
+    "dev:omnara": "uv run omnara headless"
   },
   "workspaces": [
     "packages/*"

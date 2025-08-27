@@ -69,7 +69,7 @@
       "label": "SnapScope Desktop Home Screen"
     },
     {
-      "src": "/screenshots/mobile-home.png", 
+      "src": "/screenshots/mobile-home.png",
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
@@ -77,6 +77,19 @@
     }
   ],
   "shortcuts": [
+    {
+      "name": "Assessments",
+      "short_name": "See Assessments",
+      "description": "See your in progress assessments",
+      "url": "/new-claim",
+      "icons": [
+        {
+          "src": "/icons/shortcut-new-claim.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
     {
       "name": "New Claim",
       "short_name": "New Claim",

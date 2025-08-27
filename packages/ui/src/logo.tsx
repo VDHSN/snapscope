@@ -43,7 +43,7 @@ const baseStyle: React.CSSProperties = {
 // Get the appropriate logo asset based on size
 const getLogoSrc = (targetSize: string): string => {
   const sizeNum = parseInt(targetSize);
-  
+
   if (sizeNum <= 32) return '/logo-32.png';
   if (sizeNum <= 48) return '/logo-48.png';
   if (sizeNum <= 64) return '/logo-64.png';
@@ -54,7 +54,7 @@ const getLogoSrc = (targetSize: string): string => {
 // Snapscope logo using appropriately sized assets with SVG fallback
 const LogoIcon: React.FC<{ size: string; className?: string }> = ({ size, className }) => {
   const [hasError, setHasError] = React.useState(false);
-  
+
   if (hasError) {
     // SVG fallback logo
     return (
@@ -109,7 +109,7 @@ const LogoIcon: React.FC<{ size: string; className?: string }> = ({ size, classN
         objectFit: 'contain',
       }}
       className={className}
-      onError={(e) => {
+      onError={() => {
         console.warn(`Logo image failed to load (${logoSrc}), switching to SVG fallback`);
         setHasError(true);
       }}
@@ -125,7 +125,7 @@ const LogoIcon: React.FC<{ size: string; className?: string }> = ({ size, classN
 export const Logo = React.forwardRef<HTMLDivElement, LogoProps>(
   ({ size = 'md', variant = 'full', showText = true, className = '', style, ...props }, ref) => {
     const sizeStyle = sizeStyles[size];
-    
+
     const combinedStyle: React.CSSProperties = {
       ...baseStyle,
       ...style,
