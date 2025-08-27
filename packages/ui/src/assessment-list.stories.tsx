@@ -121,7 +121,7 @@ export const ManyAssessments: Story = {
 export const Interactive: Story = {
   args: {
     assessments: sampleAssessments.slice(0, 2),
-    onAssessmentSelect: (assessment) => {
+    onAssessmentSelect: (assessment: Assessment) => {
       console.log('Selected assessment:', assessment.vehicleName);
     },
     onAddAssessment: () => {
