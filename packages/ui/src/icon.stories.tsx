@@ -86,38 +86,6 @@ export const LandingPageIcons: Story = {
   },
 };
 
-// VIN Entry Icons
-export const VINEntryIcons: Story = {
-  render: () => {
-    const iconNames: IconName[] = [
-      'arrow-left', 'camera', 'edit', 'chevron-left', 'chevron-right',
-      'scan-barcode', 'check', 'x', 'info', 'warning', 'error'
-    ];
-    
-    return (
-      <div>
-        <Typography variant="h2" style={{ marginBottom: 'var(--space-md)' }}>VIN Entry Icons</Typography>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 'var(--space-lg)' }}>
-          {iconNames.map((name) => (
-            <div key={name} style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              gap: 'var(--space-sm)',
-              padding: 'var(--space-md)',
-              border: '1px solid var(--border-color)',
-              borderRadius: 'var(--border-radius-md)',
-            }}>
-              <Icon name={name} size="lg" />
-              <Typography variant="caption" style={{ fontFamily: 'monospace' }}>{name}</Typography>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  },
-};
-
 // All Icons
 export const AllIcons: Story = {
   render: () => {

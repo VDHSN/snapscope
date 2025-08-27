@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { VINInput } from './vin-input';
 
 const meta: Meta<typeof VINInput> = {
-  title: 'Components/VINInput',
+  title: 'VIN Entry/VINInput',
   component: VINInput,
   parameters: {
     layout: 'padded',
