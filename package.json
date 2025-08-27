@@ -11,7 +11,8 @@
     "checks": "pnpm turbo run build lint-fix type-check",
     "dev:start": "devpod up --open-ide=false .",
     "dev:connect": "ssh snapscope.devpod",
-    "dev:clean": "devpod delete ."
+    "dev:clean": "devpod delete .",
+    "dev:omnara": "uv run omnara"
   },
   "workspaces": [
     "packages/*"

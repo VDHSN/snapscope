@@ -17,7 +17,7 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-memory"],
       "env": {
-        "MEMORY_FILE_PATH": "${HOME}/.config/ai/memory.snapscope.json"
+        "MEMORY_FILE_PATH": "./memory.snapscope.json"
       }
     }
   }
