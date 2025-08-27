@@ -8,7 +8,13 @@ import { z } from 'zod';
 // Base schemas for validation
 const vehicleSchema = z.object({
   id: z.string().min(1),
-  vin: z.string().optional(),
+  vin: z
+    .string()
+    .length(17, { message: 'VIN must be exactly 17 characters' })
+    .regex(/^[A-HJ-NPR-Z0-9]{17}$/, { 
+      message: 'VIN must contain only alphanumeric characters (no I, O, Q)' 
+    })
+    .transform((vin) => vin.toUpperCase()),
   make: z.string().min(1),
   model: z.string().min(1),
   year: z.number().int().min(1900).max(new Date().getFullYear() + 2),

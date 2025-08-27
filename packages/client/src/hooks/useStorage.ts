@@ -97,6 +97,51 @@ export function useClaims() {
     return claims.filter(claim => claim.status === status);
   }, [claims]);
 
+  const createClaimWithVIN = useCallback(async (vin: string): Promise<Claim> => {
+    try {
+      const now = new Date();
+      const claimId = `claim_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+      const vehicleId = `vehicle_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+
+      const newClaim: Claim = {
+        id: claimId,
+        claimNumber: undefined,
+        policyNumber: undefined,
+        dateOfLoss: now,
+        location: {
+          address: undefined,
+          coordinates: undefined,
+        },
+        vehicle: {
+          id: vehicleId,
+          vin: vin.toUpperCase(),
+          make: '', // To be filled in next steps
+          model: '', // To be filled in next steps  
+          year: new Date().getFullYear(), // Default to current year, to be updated
+        },
+        contacts: [],
+        damages: [],
+        photos: [],
+        status: 'draft',
+        priority: 'normal',
+        createdAt: now,
+        updatedAt: now,
+        createdBy: undefined, // Could be set from user context
+        syncStatus: 'local_only',
+        notes: undefined,
+        weatherConditions: undefined,
+        accidentDescription: undefined,
+      };
+
+      await saveClaim(newClaim);
+      return newClaim;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create claim with VIN';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, [saveClaim]);
+
   return {
     claims,
     loading,
@@ -106,6 +151,7 @@ export function useClaims() {
     clearAllClaims,
     getClaim,
     getClaimsByStatus,
+    createClaimWithVIN,
   };
 }
 
