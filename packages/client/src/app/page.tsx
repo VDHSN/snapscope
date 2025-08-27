@@ -135,7 +135,7 @@ export default function Home() {
               maxWidth: '500px',
               color: 'var(--text-secondary)',
             }}>
-              We want to revolutionize the way claims are done. whether it&apos;s a quick photo and scope or a full file, Snapscope aims to reduce turnaround times, simplify uploads and eliminate the need for reinspections.
+              We want to revolutionize the way claims are done. Whether it&apos;s a quick photo and scope or a full file, Snapscope aims to reduce turnaround times, simplify uploads and eliminate the need for reinspections.
             </Typography>
           </div>
 
