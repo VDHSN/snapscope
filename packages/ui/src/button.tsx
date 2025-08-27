@@ -53,9 +53,16 @@ const sizes = {
   },
 };
 
+// Focus style for accessibility
+const focusVisibleStyle: React.CSSProperties = {
+  outline: '2px solid var(--primary-start)',
+  outlineOffset: '2px',
+};
+
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', size = 'md', style, onMouseEnter, onMouseLeave, ...props }, ref) => {
+  ({ variant = 'primary', size = 'md', style, onMouseEnter, onMouseLeave, onFocus, onBlur, ...props }, ref) => {
     const [isHovered, setIsHovered] = React.useState(false);
+    const [isFocused, setIsFocused] = React.useState(false);
 
     const variantStyle = variants[variant];
     const sizeStyle = sizes[size];
@@ -87,6 +94,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ...variantStyle,
       ...sizeStyle,
       ...(isHovered ? hoverStyle : {}),
+      ...(isFocused ? focusVisibleStyle : {}),
       ...style,
     };
 
@@ -100,12 +108,24 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       onMouseLeave?.(e);
     };
 
+    const handleFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
+      setIsFocused(true);
+      onFocus?.(e);
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLButtonElement>) => {
+      setIsFocused(false);
+      onBlur?.(e);
+    };
+
     return (
       <button
         ref={ref}
         style={combinedStyle}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         {...props}
       />
     );

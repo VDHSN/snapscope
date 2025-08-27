@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     default: "SnapScope - Vehicle Assessment Tool for Insurance Adjusters",
     template: "%s | SnapScope"
   },
-  description: "Helping Insurance Adjusters assess vehicles faster, more accurately, and have fun while doing it. Streamline your vehicle assessment workflow with our powerful, mobile-first Progressive Web App.",
+  description: "Created for appraisers, by appraisers. We want to revolutionize the way claims are done, reducing turnaround times, simplifying uploads and eliminating the need for reinspections.",
   keywords: ["vehicle assessment", "insurance adjuster", "claim processing", "auto insurance", "vehicle inspection", "damage assessment", "PWA", "mobile app"],
   authors: [{ name: "SnapScope Team" }],
   creator: "SnapScope",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "SnapScope - Vehicle Assessment Tool for Insurance Adjusters",
-    description: "Helping Insurance Adjusters assess vehicles faster, more accurately, and have fun while doing it.",
+    description: "Created for appraisers, by appraisers. We want to revolutionize the way claims are done, reducing turnaround times, simplifying uploads and eliminating the need for reinspections.",
     url: "https://snapscope.app",
     siteName: "SnapScope",
     images: [
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "SnapScope - Vehicle Assessment Tool",
-    description: "Helping Insurance Adjusters assess vehicles faster, more accurately, and have fun while doing it.",
+    description: "Created for appraisers, by appraisers. We want to revolutionize the way claims are done, reducing turnaround times, simplifying uploads and eliminating the need for reinspections.",
     images: ["/icons/icon-512x512.png"],
     creator: "@snapscope",
   },
@@ -81,7 +81,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="SnapScope" />
-        <meta name="description" content="Helping Insurance Adjusters assess vehicles faster, more accurately, and have fun while doing it" />
+        <meta name="description" content="Created for appraisers, by appraisers. We want to revolutionize the way claims are done, reducing turnaround times, simplifying uploads and eliminating the need for reinspections" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-config" content="/icons/browserconfig.xml" />
@@ -104,12 +104,12 @@ export default function RootLayout({
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:url" content="https://snapscope.app" />
         <meta name="twitter:title" content="SnapScope" />
-        <meta name="twitter:description" content="Helping Insurance Adjusters assess vehicles faster, more accurately, and have fun while doing it" />
+        <meta name="twitter:description" content="Created for appraisers, by appraisers. We want to revolutionize the way claims are done, reducing turnaround times, simplifying uploads and eliminating the need for reinspections" />
         <meta name="twitter:image" content="https://snapscope.app/icons/icon-192x192.png" />
         <meta name="twitter:creator" content="@snapscope" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="SnapScope - Vehicle Assessment Tool" />
-        <meta property="og:description" content="Helping Insurance Adjusters assess vehicles faster, more accurately, and have fun while doing it" />
+        <meta property="og:description" content="Created for appraisers, by appraisers. We want to revolutionize the way claims are done, reducing turnaround times, simplifying uploads and eliminating the need for reinspections" />
         <meta property="og:site_name" content="SnapScope" />
         <meta property="og:url" content="https://snapscope.app" />
         <meta property="og:image" content="https://snapscope.app/icons/icon-512x512.png" />
@@ -128,7 +128,7 @@ export default function RootLayout({
               "@type": "WebApplication",
               "name": "SnapScope",
               "alternateName": "SnapScope - Vehicle Assessment Tool",
-              "description": "Helping Insurance Adjusters assess vehicles faster, more accurately, and have fun while doing it",
+              "description": "Created for appraisers, by appraisers. We want to revolutionize the way claims are done, reducing turnaround times, simplifying uploads and eliminating the need for reinspections",
               "url": "https://snapscope.app",
               "logo": "https://snapscope.app/icons/icon-512x512.png",
               "category": "BusinessApplication",

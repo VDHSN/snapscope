@@ -2,7 +2,8 @@
 
 import { Typography } from '@snapscope/ui/typography';
 import { Button } from '@snapscope/ui/button';
-import { Card } from '@snapscope/ui/card';
+import { FeatureCard } from '@snapscope/ui/feature-card';
+import { Icon } from '@snapscope/ui/icon';
 import { ThemeToggle } from '@snapscope/ui/theme-toggle';
 import { Logo } from '@snapscope/ui/logo';
 import { VideoPlayer } from '@snapscope/ui/video-player';
@@ -125,17 +126,17 @@ export default function Home() {
             alignItems: 'center',
             textAlign: 'center',
           }}>
-            <Typography variant="body" style={{ 
+            <Typography variant="h1" style={{ 
               maxWidth: '600px',
+              color: 'var(--text-primary)',
+            }}>
+              Created for appraisers, by appraisers.
+            </Typography>
+            <Typography variant="body" style={{ 
+              maxWidth: '500px',
               color: 'var(--text-secondary)',
             }}>
-              Helping Insurance Adjusters assess vehicles faster, more accurately, and have fun while doing it.
-            </Typography>
-            <Typography variant="small" style={{ 
-              maxWidth: '500px',
-              color: 'var(--text-tertiary)',
-            }}>
-              Streamline your vehicle assessment workflow with our powerful, mobile-first Progressive Web App designed specifically for independent adjusters.
+              We want to revolutionize the way claims are done. Whether it&apos;s a quick photo and scope or a full file, Snapscope aims to reduce turnaround times, simplify uploads and eliminate the need for reinspections.
             </Typography>
           </div>
 
@@ -152,156 +153,74 @@ export default function Home() {
                 padding: '16px 32px',
               }}
             >
-              <svg
-                width="20"
-                height="20"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
+              <Icon name="plus" size={20} />
               Start New Claim
             </Button>
           </div>
 
           {/* Feature highlights */}
-          <div style={{ 
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: 'var(--space-lg)',
-            marginTop: 'var(--space-2xl)',
-            width: '100%',
-          }}>
-            <Card elevation={1} padding="lg" style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 'var(--space-md)',
-              }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: 'var(--border-radius-md)',
-                  backgroundColor: 'var(--success)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  opacity: 0.9,
-                }}>
-                  <svg
-                    width="24"
-                    height="24"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                </div>
-                <Typography variant="h3">Faster</Typography>
-                <Typography variant="small" style={{ color: 'var(--text-secondary)' }}>
-                  Streamlined workflows reduce assessment time by up to 40%
-                </Typography>
-              </div>
-            </Card>
+          <div style={{ width: '100%' }}>
+            {/* Visually hidden h2 for screen readers */}
+            <Typography 
+              variant="h2" 
+              style={{
+                position: 'absolute',
+                width: '1px',
+                height: '1px',
+                padding: 0,
+                margin: '-1px',
+                overflow: 'hidden',
+                clip: 'rect(0, 0, 0, 0)',
+                whiteSpace: 'nowrap',
+                borderWidth: 0,
+              }}
+            >
+              Key Features
+            </Typography>
+            
+            <div style={{ 
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: 'var(--space-lg)',
+              marginTop: 'var(--space-2xl)',
+              width: '100%',
+            }}>
+            <FeatureCard
+              icon={<Icon name="clock" />}
+              title="FASTER TURNAROUND. HAPPIER CLIENTS."
+              description="Deliver inspection files in record time with auto-labeling, built-in QA, and one-click exports—keeping your partners impressed and your pipeline moving."
+              iconBgColor="var(--success)"
+            />
 
-            <Card elevation={1} padding="lg" style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 'var(--space-md)',
-              }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: 'var(--border-radius-md)',
-                  backgroundColor: 'var(--info)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  opacity: 0.9,
-                }}>
-                  <svg
-                    width="24"
-                    height="24"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <Typography variant="h3">More Accurate</Typography>
-                <Typography variant="small" style={{ color: 'var(--text-secondary)' }}>
-                  Smart tools and guided processes ensure consistent, thorough assessments
-                </Typography>
-              </div>
-            </Card>
+            <FeatureCard
+              icon={<Icon name="shield" />}
+              title="CONSISTENTLY ACCURATE. ZERO GUESSWORK."
+              description="With VIN verification, blur detection, and automated quality checks, every file meets carrier and firm standards—reducing costly reinspections and protecting your reputation."
+              iconBgColor="var(--info)"
+            />
 
-            <Card elevation={1} padding="lg" style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 'var(--space-md)',
-              }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: 'var(--border-radius-md)',
-                  background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  opacity: 0.9,
-                }}>
-                  <svg
-                    width="24"
-                    height="24"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <Typography variant="h3">More Fun</Typography>
-                <Typography variant="small" style={{ color: 'var(--text-secondary)' }}>
-                  Intuitive interface and modern tools make your work more enjoyable
-                </Typography>
-              </div>
-            </Card>
+            <FeatureCard
+              icon={<Icon name="settings" />}
+              title="TAILORED TO YOUR BUSINESS."
+              description="Create custom workflows for every carrier or partner. SnapScope adapts to your process, not the other way around."
+              iconBgColor="var(--primary-start)"
+            />
+
+            <FeatureCard
+              icon={<Icon name="briefcase" />}
+              title="ORGANIZED FROM DAY ONE."
+              description="Never lose track of a job again. Files are stored locally until you're ready to upload, making it easy to pause, resume, or export anytime."
+              iconBgColor="var(--warning)"
+            />
+
+            <FeatureCard
+              icon={<Icon name="users" />}
+              title="BUILT FOR TEAMS, TRUSTED BY PROS."
+              description="From new adjusters to industry veterans, SnapScope's intuitive design makes adoption painless—and efficiency gains immediate."
+              iconBgColor="var(--error)"
+            />
           </div>
+        </div>
         </main>
       </div>
     </div>
