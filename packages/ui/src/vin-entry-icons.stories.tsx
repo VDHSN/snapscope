@@ -169,22 +169,22 @@ export const StatusIndicators: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
         <Icon name="check" size="md" color="var(--success)" />
-        <Typography>VIN is valid and verified</Typography>
+        <Typography variant="body">VIN is valid and verified</Typography>
       </div>
       
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
         <Icon name="warning" size="md" color="var(--warning)" />
-        <Typography>VIN format appears incorrect</Typography>
+        <Typography variant="body">VIN format appears incorrect</Typography>
       </div>
       
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
         <Icon name="error" size="md" color="var(--error)" />
-        <Typography>Invalid VIN checksum</Typography>
+        <Typography variant="body">Invalid VIN checksum</Typography>
       </div>
       
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
         <Icon name="info" size="md" color="var(--info)" />
-        <Typography>VIN must be 17 characters</Typography>
+        <Typography variant="body">VIN must be 17 characters</Typography>
       </div>
     </div>
   ),
