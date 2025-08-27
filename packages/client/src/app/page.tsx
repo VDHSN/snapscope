@@ -173,13 +173,32 @@ export default function Home() {
           </div>
 
           {/* Feature highlights */}
-          <div style={{ 
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: 'var(--space-lg)',
-            marginTop: 'var(--space-2xl)',
-            width: '100%',
-          }}>
+          <div style={{ width: '100%' }}>
+            {/* Visually hidden h2 for screen readers */}
+            <Typography 
+              variant="h2" 
+              style={{
+                position: 'absolute',
+                width: '1px',
+                height: '1px',
+                padding: 0,
+                margin: '-1px',
+                overflow: 'hidden',
+                clip: 'rect(0, 0, 0, 0)',
+                whiteSpace: 'nowrap',
+                borderWidth: 0,
+              }}
+            >
+              Key Features
+            </Typography>
+            
+            <div style={{ 
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: 'var(--space-lg)',
+              marginTop: 'var(--space-2xl)',
+              width: '100%',
+            }}>
             <FeatureCard
               icon={<Icon name="clock" />}
               title="FASTER TURNAROUND. HAPPIER CLIENTS."
@@ -215,6 +234,7 @@ export default function Home() {
               iconBgColor="var(--error)"
             />
           </div>
+        </div>
         </main>
       </div>
     </div>

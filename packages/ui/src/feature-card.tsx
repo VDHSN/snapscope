@@ -49,7 +49,7 @@ export const FeatureCard = React.forwardRef<HTMLDivElement, FeatureCardProps>(
           <div style={iconStyle}>
             {icon}
           </div>
-          <Typography variant="h2">{title}</Typography>
+          <Typography variant="h3">{title}</Typography>
           <Typography variant="small" style={{ color: 'var(--text-secondary)' }}>
             {description}
           </Typography>
