@@ -71,6 +71,10 @@
       "types": "./src/assessment-list.tsx",
       "import": "./src/assessment-list.tsx"
     },
+    "./icon": {
+      "types": "./src/icon.tsx",
+      "import": "./src/icon.tsx"
+    },
     "./types": {
       "types": "./src/types.ts",
       "import": "./src/types.ts"
@@ -78,10 +82,6 @@
     "./feature-card": {
       "types": "./src/feature-card.tsx",
       "import": "./src/feature-card.tsx"
-    },
-    "./icon": {
-      "types": "./src/icon.tsx",
-      "import": "./src/icon.tsx"
     }
   },
   "devDependencies": {

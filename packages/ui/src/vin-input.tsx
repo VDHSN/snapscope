@@ -6,6 +6,7 @@ export interface VINInputProps extends Omit<InputProps, 'value' | 'onChange' | '
   onChange: (value: string) => void;
   showCharacterCount?: boolean;
   showValidation?: boolean;
+  'aria-describedby'?: string;
 }
 
 /**
@@ -56,6 +57,7 @@ export const VINInput = React.forwardRef<HTMLInputElement, VINInputProps>(
     showCharacterCount = true, 
     showValidation = true, 
     style,
+    'aria-describedby': ariaDescribedBy,
     ...props 
   }, ref) => {
     const validation = getValidationState(value);
@@ -94,6 +96,13 @@ export const VINInput = React.forwardRef<HTMLInputElement, VINInputProps>(
       color: validation.variant === 'error' ? 'var(--error)' : 'var(--text-secondary)',
     };
 
+    // Construct aria-describedby with validation message ID if present
+    const validationId = `vin-validation-${Math.random().toString(36).substr(2, 9)}`;
+    const fullAriaDescribedBy = [
+      ariaDescribedBy,
+      showValidation && validation.message ? validationId : null
+    ].filter(Boolean).join(' ') || undefined;
+
     return (
       <div style={containerStyle}>
         <Input
@@ -104,17 +113,29 @@ export const VINInput = React.forwardRef<HTMLInputElement, VINInputProps>(
           placeholder="Enter 17-character VIN"
           maxLength={17}
           style={inputStyle}
+          aria-describedby={fullAriaDescribedBy}
+          aria-invalid={validation.variant === 'error'}
+          role="textbox"
           {...props}
         />
         
         {showCharacterCount && (
-          <div style={counterStyle}>
+          <div 
+            style={counterStyle}
+            aria-live="polite"
+            aria-label={`Character count: ${value.length} of 17`}
+          >
             {value.length}/17
           </div>
         )}
         
         {showValidation && validation.message && (
-          <div style={messageStyle}>
+          <div 
+            id={validationId}
+            style={messageStyle}
+            role={validation.variant === 'error' ? 'alert' : 'status'}
+            aria-live="polite"
+          >
             {validation.message}
           </div>
         )}
