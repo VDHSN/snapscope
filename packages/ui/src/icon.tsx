@@ -21,7 +21,10 @@ export type IconName =
   | 'x'
   | 'info'
   | 'warning'
-  | 'error';
+  | 'error'
+  // Theme toggle icons
+  | 'sun'
+  | 'moon';
 
 export type IconSize = 'sm' | 'md' | 'lg';
 
@@ -159,6 +162,15 @@ const iconPaths: Record<IconName, React.ReactNode> = {
       <path d="M15 9L9 15M9 9L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </>
   ),
+  'sun': (
+    <>
+      <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M12 1V3M12 21V23M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </>
+  ),
+  'moon': (
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  ),
 };
 
 /**
@@ -258,4 +270,12 @@ export const WarningIcon = (props: Omit<IconProps, 'name'>) => (
 
 export const ErrorIcon = (props: Omit<IconProps, 'name'>) => (
   <Icon name="error" {...props} />
+);
+
+export const SunIcon = (props: Omit<IconProps, 'name'>) => (
+  <Icon name="sun" {...props} />
+);
+
+export const MoonIcon = (props: Omit<IconProps, 'name'>) => (
+  <Icon name="moon" {...props} />
 );

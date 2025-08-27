@@ -8,7 +8,7 @@ const meta: Meta<typeof ThemeToggle> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A toggle button for switching between light and dark themes. Uses the design system theme utilities.',
+        component: 'A circular toggle button for switching between light and dark themes. Shows sun icon when dark theme is active (to switch to light) and moon icon when light theme is active (to switch to dark). Features a 40x40px touch-friendly design with 24px icons.',
       },
     },
   },
@@ -23,13 +23,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const CustomText: Story = {
+export const CustomIcon: Story = {
   args: {
-    children: (
-      <>
-        🎨 <span>Switch Theme</span>
-      </>
-    ),
+    children: '🎨',
   },
 };
 

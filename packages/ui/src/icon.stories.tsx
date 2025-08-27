@@ -22,7 +22,9 @@ const meta: Meta<typeof Icon> = {
         'clock', 'shield', 'settings', 'briefcase', 'users', 'plus', 'play',
         // VIN entry icons
         'arrow-left', 'camera', 'edit', 'chevron-left', 'chevron-right',
-        'scan-barcode', 'check', 'x', 'info', 'warning', 'error'
+        'scan-barcode', 'check', 'x', 'info', 'warning', 'error',
+        // Theme toggle icons
+        'sun', 'moon'
       ] as IconName[],
       description: 'The icon to display',
     },
@@ -86,6 +88,50 @@ export const LandingPageIcons: Story = {
   },
 };
 
+// Theme Icons
+export const ThemeIcons: Story = {
+  render: () => {
+    const themeIcons: IconName[] = ['sun', 'moon'];
+    
+    return (
+      <div>
+        <Typography variant="h2" style={{ marginBottom: 'var(--space-md)' }}>Theme Toggle Icons</Typography>
+        <div style={{ display: 'flex', gap: 'var(--space-lg)', justifyContent: 'center' }}>
+          {themeIcons.map((name) => (
+            <div key={name} style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              gap: 'var(--space-sm)',
+              padding: 'var(--space-md)',
+              border: '1px solid var(--border-color)',
+              borderRadius: 'var(--border-radius-md)',
+            }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.15)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backdropFilter: 'blur(8px)',
+              }}>
+                <Icon name={name} size={24} />
+              </div>
+              <Typography variant="caption">{name}</Typography>
+              <Typography variant="small" style={{ color: 'var(--text-secondary)', textAlign: 'center' }}>
+                {name === 'sun' ? 'Switch to Light' : 'Switch to Dark'}
+              </Typography>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  },
+};
+
 // All Icons
 export const AllIcons: Story = {
   render: () => {
@@ -94,7 +140,9 @@ export const AllIcons: Story = {
       'clock', 'shield', 'settings', 'briefcase', 'users', 'plus', 'play',
       // VIN entry icons
       'arrow-left', 'camera', 'edit', 'chevron-left', 'chevron-right',
-      'scan-barcode', 'check', 'x', 'info', 'warning', 'error'
+      'scan-barcode', 'check', 'x', 'info', 'warning', 'error',
+      // Theme toggle icons
+      'sun', 'moon'
     ];
     
     return (

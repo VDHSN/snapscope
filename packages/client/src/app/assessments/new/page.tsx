@@ -103,6 +103,7 @@ export default function VINEntryPage() {
       <div style={{ 
         background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
         padding: 'var(--space-md)',
+        paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))', // Space for theme toggle
         color: 'white'
       }}>
         {/* Back button and progress */}
@@ -129,7 +130,8 @@ export default function VINEntryPage() {
 
           <Typography variant="caption" style={{ 
             color: 'rgba(255, 255, 255, 0.9)',
-            fontWeight: 'var(--font-weight-semibold)'
+            fontWeight: 'var(--font-weight-semibold)',
+            marginRight: 'var(--space-sm)' // Extra margin to prevent overlap
           }}>
             Step 1 of 9
           </Typography>

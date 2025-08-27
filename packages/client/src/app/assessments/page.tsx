@@ -25,6 +25,7 @@ export default function AssessmentsPage() {
       <div style={{ 
         background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
         padding: 'var(--space-xl) var(--space-md) var(--space-2xl)',
+        paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))', // Space for theme toggle
         color: 'white',
         textAlign: 'center'
       }}>
