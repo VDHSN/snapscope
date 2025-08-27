@@ -203,7 +203,7 @@ export default function Home() {
               icon={<Icon name="settings" />}
               title="TAILORED TO YOUR BUSINESS."
               description="Create custom workflows for every carrier or partner. SnapScope adapts to your process, not the other way around."
-              iconBgColor="linear-gradient(135deg, var(--primary-start), var(--primary-end))"
+              iconBgColor="var(--primary-start)"
             />
 
             <FeatureCard
