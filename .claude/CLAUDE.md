@@ -77,6 +77,9 @@ cd packages/ui && pnpm build-storybook
 ```bash
 # Claude Code CLI (configured)
 pnpm c
+
+# Run PR & pre-commit checks
+pnpm run checks
 ```
 
 ## Package Structure
