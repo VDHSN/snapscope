@@ -27,6 +27,14 @@ const meta: Meta<typeof PhotoProgressGrid> = {
     onPositionSelect: {
       description: 'Callback when a position is selected in the grid',
     },
+    isLoading: {
+      control: 'boolean',
+      description: 'Loading state for the grid',
+    },
+    onPhotoError: {
+      description: 'Callback when a photo fails to render',
+      action: 'photo error',
+    },
   },
 };
 
@@ -118,6 +126,129 @@ export const Interactive: Story = {
         
         <div style={{ marginTop: 'var(--space-md)', padding: 'var(--space-sm)', background: 'var(--bg-secondary)', borderRadius: 'var(--border-radius-sm)' }}>
           <strong>Current Selection:</strong> {MOCK_POSITIONS.find(p => p.id === currentPositionId)?.name}
+        </div>
+      </div>
+    );
+  },
+};
+
+// Story: Loading State
+export const Loading: Story = {
+  render: () => {
+    const [currentPositionId, setCurrentPositionId] = useState('front_overall');
+    
+    return (
+      <div style={{ maxWidth: '480px', margin: '0 auto', padding: 'var(--space-lg)' }}>
+        <PhotoProgressGrid
+          positions={MOCK_POSITIONS}
+          photos={MOCK_PHOTOS}
+          currentPositionId={currentPositionId}
+          onPositionSelect={setCurrentPositionId}
+          isLoading={true}
+        />
+        
+        <div style={{ marginTop: 'var(--space-md)', fontSize: 'var(--font-size-small)', color: 'var(--text-secondary)' }}>
+          Loading state shows disabled buttons with reduced opacity.
+        </div>
+      </div>
+    );
+  },
+};
+
+// Story: Invalid Photo Data
+export const WithInvalidPhotos: Story = {
+  render: () => {
+    const [currentPositionId, setCurrentPositionId] = useState('rear_overall');
+    
+    const photosWithErrors = [
+      ...MOCK_PHOTOS.slice(0, 1), // Keep one valid photo
+      {
+        positionId: 'rear_overall',
+        dataUrl: 'invalid-data-url', // Invalid format
+        timestamp: new Date(),
+      },
+      {
+        positionId: 'driver_side_overall',
+        dataUrl: 'data:image/jpeg;base64,corrupted-base64', // Corrupted base64
+        timestamp: new Date(),
+      },
+    ];
+    
+    return (
+      <div style={{ maxWidth: '480px', margin: '0 auto', padding: 'var(--space-lg)' }}>
+        <PhotoProgressGrid
+          positions={MOCK_POSITIONS}
+          photos={photosWithErrors}
+          currentPositionId={currentPositionId}
+          onPositionSelect={setCurrentPositionId}
+          onPhotoError={(positionId, error) => console.error('Photo error for position:', positionId, error)}
+        />
+        
+        <div style={{ marginTop: 'var(--space-md)', fontSize: 'var(--font-size-small)', color: 'var(--text-secondary)' }}>
+          This demonstrates error handling for corrupted or invalid photo data. Check the console for error logs.
+        </div>
+      </div>
+    );
+  },
+};
+
+// Story: Mixed Photo States
+export const MixedPhotoStates: Story = {
+  render: () => {
+    const [currentPositionId, setCurrentPositionId] = useState('interior_front_seats');
+    
+    const mixedPhotos = [
+      MOCK_PHOTOS[0], // Valid photo
+      {
+        positionId: 'rear_overall',
+        dataUrl: 'data:image/svg+xml;base64,aW52YWxpZA==', // Invalid content but valid format
+        timestamp: new Date(),
+      },
+      {
+        positionId: 'driver_side_overall',
+        dataUrl: 'not-a-data-url', // Completely invalid
+        timestamp: new Date(),
+      },
+    ];
+    
+    return (
+      <div style={{ maxWidth: '480px', margin: '0 auto', padding: 'var(--space-lg)' }}>
+        <PhotoProgressGrid
+          positions={MOCK_POSITIONS}
+          photos={mixedPhotos}
+          currentPositionId={currentPositionId}
+          onPositionSelect={setCurrentPositionId}
+          onPhotoError={(positionId, error) => console.error('Photo error:', positionId, error.message)}
+        />
+        
+        <div style={{ marginTop: 'var(--space-md)', fontSize: 'var(--font-size-small)', color: 'var(--text-secondary)' }}>
+          Grid showing a mix of valid photos (✓), corrupted photos (⚠️), and empty positions.
+        </div>
+      </div>
+    );
+  },
+};
+
+// Story: Error Boundary Test
+export const WithErrorBoundary: Story = {
+  render: () => {
+    const [currentPositionId, setCurrentPositionId] = useState('front_overall');
+    // Import ErrorBoundary dynamically
+    const { ErrorBoundary } = eval('require("./error-boundary")') as { ErrorBoundary: React.ComponentType<any> };
+    
+    return (
+      <div style={{ maxWidth: '480px', margin: '0 auto', padding: 'var(--space-lg)' }}>
+        <ErrorBoundary onError={(error: Error) => console.error('Caught error:', error)}>
+          <PhotoProgressGrid
+            positions={MOCK_POSITIONS}
+            photos={MOCK_PHOTOS}
+            currentPositionId={currentPositionId}
+            onPositionSelect={setCurrentPositionId}
+          />
+        </ErrorBoundary>
+        
+        <div style={{ marginTop: 'var(--space-md)', fontSize: 'var(--font-size-small)', color: 'var(--text-secondary)' }}>
+          Grid wrapped with ErrorBoundary component for graceful error handling.
         </div>
       </div>
     );
