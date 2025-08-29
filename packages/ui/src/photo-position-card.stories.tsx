@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import React, { useState } from 'react';
 import { PhotoPositionCard } from './photo-position-card';
 import { CameraCapture } from './camera-capture';
+import { Card } from './card';
+import { Typography } from './typography';
 import { MOCK_POSITIONS, MOCK_PHOTOS } from './photo-guide-types';
 
 const meta: Meta<typeof PhotoPositionCard> = {
@@ -109,15 +111,18 @@ export const Saving: Story = {
   },
 };
 
-// Story: Null Position (Defensive)
+// Story: Null Position (Loading State)
 export const NullPosition: Story = {
   render: (args) => (
     <div style={{ maxWidth: '480px', padding: 'var(--space-lg)' }}>
-      <PhotoPositionCard
-        {...args}
-        position={null}
-        onTakePhoto={() => console.log('Take photo')}
-      />
+      {/* Show a loading placeholder when position is null instead of passing null to component */}
+      <Card elevation={2} padding="lg">
+        <div style={{ textAlign: 'center' }}>
+          <Typography variant="body" style={{ color: 'var(--text-secondary)' }}>
+            Loading position...
+          </Typography>
+        </div>
+      </Card>
     </div>
   ),
   args: {

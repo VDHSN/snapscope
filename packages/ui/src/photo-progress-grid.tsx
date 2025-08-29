@@ -32,8 +32,8 @@ export const PhotoProgressGrid: React.FC<PhotoProgressGridProps> = ({
         gridTemplateColumns: 'repeat(4, 1fr)',
         gap: 'var(--space-sm)'
       }}>
-        {(positions ?? []).slice(0, 8).map((position) => {
-          const photo = (photos ?? []).find(p => p.positionId === position.id);
+        {positions.slice(0, 8).map((position) => {
+          const photo = photos.find(p => p.positionId === position.id);
           
           return (
             <button

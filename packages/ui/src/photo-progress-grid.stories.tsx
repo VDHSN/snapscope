@@ -124,23 +124,23 @@ export const Interactive: Story = {
   },
 };
 
-// Story: Defensive Coding - Test with null/undefined values
-export const DefensiveCoding: Story = {
+// Story: Edge Cases - Test with empty arrays
+export const EdgeCases: Story = {
   render: () => {
     const [currentPositionId, setCurrentPositionId] = useState('front_overall');
     
     return (
       <div style={{ maxWidth: '480px', margin: '0 auto', padding: 'var(--space-lg)' }}>
-        {/* Test with undefined positions and photos */}
+        {/* Test with empty positions and photos arrays */}
         <PhotoProgressGrid
-          positions={undefined as any}
-          photos={undefined as any}
+          positions={[]}
+          photos={[]}
           currentPositionId={currentPositionId}
           onPositionSelect={setCurrentPositionId}
         />
         
         <div style={{ marginTop: 'var(--space-md)', fontSize: 'var(--font-size-small)', color: 'var(--text-secondary)' }}>
-          This demonstrates the defensive coding with null/undefined positions and photos arrays.
+          This demonstrates the component behavior with empty positions and photos arrays.
         </div>
       </div>
     );
