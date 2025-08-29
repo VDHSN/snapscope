@@ -87,6 +87,12 @@ export const PhotoGuideHeader: React.FC<PhotoGuideHeaderProps> = ({
       {/* Logo */}
       <div 
         onClick={onLogoClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onLogoClick();
+          }
+        }}
         style={{ 
           cursor: 'pointer',
           display: 'flex',
@@ -95,6 +101,7 @@ export const PhotoGuideHeader: React.FC<PhotoGuideHeaderProps> = ({
         }}
         role="button"
         tabIndex={0}
+        aria-label="Return to home"
       >
         <Logo 
           size="md" 

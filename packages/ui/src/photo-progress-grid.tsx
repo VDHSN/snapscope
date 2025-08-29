@@ -62,6 +62,7 @@ export const PhotoProgressGrid: React.FC<PhotoProgressGridProps> = ({
                 transform: currentPositionId === position.id ? 'scale(1.05)' : 'scale(1)',
               }}
               title={`${position.name ?? 'Position ' + position.order}${position.required ? ' (Required)' : ' (Optional)'}`}
+              aria-label={`${position.name ?? 'Position ' + position.order}, step ${position.order}, ${position.required ? 'required' : 'optional'}${photo ? ', completed' : ', not completed'}${currentPositionId === position.id ? ', currently selected' : ''}`}
             >
               {photo ? (
                 // Success indicator for completed photos

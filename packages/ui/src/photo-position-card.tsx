@@ -71,7 +71,7 @@ export const PhotoPositionCard: React.FC<PhotoPositionCardProps> = ({
             <>
               <img
                 src={photo.dataUrl}
-                alt={position.name ?? 'Photo'}
+                alt={position.name ?? 'Vehicle photo'}
                 style={{
                   width: '100%',
                   height: '100%',
@@ -113,7 +113,7 @@ export const PhotoPositionCard: React.FC<PhotoPositionCardProps> = ({
           display: 'block',
           marginBottom: 'var(--space-lg)'
         }}>
-          💡 {position.guidance ?? 'Take a clear photo of this area'}
+          <span aria-hidden="true">💡 </span>{position.guidance ?? 'Take a clear photo of this area'}
         </Typography>
 
         {/* Action Buttons */}
