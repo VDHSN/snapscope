@@ -7,7 +7,7 @@
     "dev": "pnpm turbo dev",
     "lint-fix": "pnpm turbo lint-fix",
     "design-system": "cd packages/ui && pnpm storybook",
-    "claude": "claude --model sonnet --strict-mcp-config --mcp-config ./.mcp.json --ide",
+    "claude": "claude --model sonnet --ide",
     "checks": "pnpm turbo run build lint-fix type-check",
     "test": "pnpm turbo test",
     "dev:start": "devpod up --open-ide=false .",

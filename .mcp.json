@@ -12,13 +12,10 @@
       "type": "http",
       "url": "https://mcp.vercel.com/vdhsn/snapscope"
     },
-    "memory": {
+    "puppeteer": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"],
-      "env": {
-        "MEMORY_FILE_PATH": "./memory.snapscope.json"
-      }
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
     }
   }
 }
