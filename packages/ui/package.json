@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "pnpm run build:components && pnpm run build:storybook",
-    "build:components": "tsup src/button.tsx src/typography.tsx src/input.tsx src/vin-input.tsx src/badge.tsx src/card.tsx src/progress.tsx src/theme-toggle.tsx src/logo.tsx src/video-player.tsx src/assessment-card.tsx src/assessment-list.tsx src/feature-card.tsx src/icon.tsx src/camera-capture.tsx src/photo-preview-grid.tsx src/types.ts --format esm,cjs --dts",
+    "build:components": "tsup src/button.tsx src/typography.tsx src/input.tsx src/vin-input.tsx src/badge.tsx src/card.tsx src/progress.tsx src/theme-toggle.tsx src/logo.tsx src/video-player.tsx src/assessment-card.tsx src/assessment-list.tsx src/feature-card.tsx src/icon.tsx src/camera-capture.tsx src/photo-preview-grid.tsx src/photo-position-card.tsx src/photo-progress-grid.tsx src/photo-guide-header.tsx src/photo-guide-types.ts src/types.ts --format esm,cjs --dts",
     "dev": "storybook dev -p 6006",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint-fix": "eslint src/**/*.{ts,tsx} --fix",
@@ -91,6 +91,22 @@
     "./photo-preview-grid": {
       "types": "./src/photo-preview-grid.tsx",
       "import": "./src/photo-preview-grid.tsx"
+    },
+    "./photo-position-card": {
+      "types": "./src/photo-position-card.tsx",
+      "import": "./src/photo-position-card.tsx"
+    },
+    "./photo-progress-grid": {
+      "types": "./src/photo-progress-grid.tsx",
+      "import": "./src/photo-progress-grid.tsx"
+    },
+    "./photo-guide-header": {
+      "types": "./src/photo-guide-header.tsx",
+      "import": "./src/photo-guide-header.tsx"
+    },
+    "./photo-guide-types": {
+      "types": "./src/photo-guide-types.ts",
+      "import": "./src/photo-guide-types.ts"
     }
   },
   "devDependencies": {
