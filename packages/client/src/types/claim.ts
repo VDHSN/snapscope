@@ -5,9 +5,9 @@
 
 export interface Vehicle {
   id: string;
-  vin?: string;
-  make: string;
-  model: string;
+  vin: string; // VIN is now required (17 characters, no I/O/Q)
+  make?: string; // Optional during initial creation
+  model?: string; // Optional during initial creation  
   year: number;
   color?: string;
   licensePlate?: string;

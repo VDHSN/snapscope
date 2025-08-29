@@ -3,7 +3,7 @@ import React from 'react';
 export type TypographyVariant = 'h1' | 'h2' | 'h3' | 'body' | 'small' | 'caption';
 export type TypographyElement = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'div';
 
-export interface TypographyProps {
+export interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
   variant: TypographyVariant;
   as?: TypographyElement;
   className?: string;

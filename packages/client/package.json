@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "lint-fix": "eslint --fix",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@serwist/next": "^9.1.1",
@@ -28,8 +31,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/ui": "^3.2.2",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
-    "typescript": "^5.9.2"
+    "jsdom": "^26.1.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   }
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { toggleTheme, getCurrentTheme, type Theme } from './tokens/theme';
+import { Icon } from './icon';
 
 export interface ThemeToggleProps {
   className?: string;
@@ -57,24 +58,26 @@ export const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>
     };
 
     const defaultStyle: React.CSSProperties = {
-      background: 'rgba(255, 255, 255, 0.2)',
-      border: '1px solid rgba(255, 255, 255, 0.3)',
-      borderRadius: 'var(--border-radius-md)',
-      padding: 'var(--space-sm) var(--space-md)',
+      width: '40px',
+      height: '40px',
+      background: 'rgba(255, 255, 255, 0.15)',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      borderRadius: '50%',
       color: 'var(--text-primary)',
       cursor: 'pointer',
-      transition: 'var(--transition-default)',
-      fontSize: 'var(--font-size-small)',
-      fontWeight: 'var(--font-weight-normal)',
-      fontFamily: 'inherit',
+      transition: 'all 0.2s ease',
       display: 'inline-flex',
       alignItems: 'center',
-      gap: 'var(--space-xs)',
+      justifyContent: 'center',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)',
+      padding: 0,
       ...style,
     };
 
     const hoverStyle: React.CSSProperties = {
-      background: 'rgba(255, 255, 255, 0.3)',
+      background: 'rgba(255, 255, 255, 0.25)',
+      transform: 'scale(1.05)',
     };
 
     const [isHovered, setIsHovered] = React.useState(false);
@@ -88,12 +91,14 @@ export const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         aria-label={`Switch to ${currentTheme === 'dark' ? 'light' : 'dark'} theme`}
+        title={`Switch to ${currentTheme === 'dark' ? 'light' : 'dark'} theme`}
       >
         {children || (
-          <>
-            {currentTheme === 'dark' ? '☀️' : '🌙'}
-            <span>Toggle Theme</span>
-          </>
+          <Icon 
+            name={currentTheme === 'dark' ? 'sun' : 'moon'} 
+            size={24}
+            aria-hidden
+          />
         )}
       </button>
     );

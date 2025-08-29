@@ -87,7 +87,7 @@ const ClaimItem = memo<{
       </div>
       
       <div className="text-sm text-gray-600 space-y-1">
-        <p><strong>Vehicle:</strong> {claim.vehicle.year} {claim.vehicle.make} {claim.vehicle.model}</p>
+        <p><strong>Vehicle:</strong> {claim.vehicle.year} {claim.vehicle.make || 'TBD'} {claim.vehicle.model || 'TBD'}</p>
         <p><strong>Date of Loss:</strong> {new Date(claim.dateOfLoss).toLocaleDateString()}</p>
         {claim.location.address && (
           <p><strong>Location:</strong> {claim.location.address}</p>
@@ -126,8 +126,8 @@ export const ClaimList = memo<ClaimListProps>(({ claims, onClaimSelect, onClaimE
     if (debouncedSearchTerm) {
       filtered = filtered.filter(claim => 
         claim.claimNumber?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-        claim.vehicle.make.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-        claim.vehicle.model.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        claim.vehicle.make?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        claim.vehicle.model?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
         claim.location.address?.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
       );
     }
