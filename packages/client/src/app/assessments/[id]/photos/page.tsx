@@ -43,6 +43,17 @@ export default function PhotoGuidePage() {
     if (loadedClaim) {
       setClaim(loadedClaim);
       
+      // Update status to in_progress if it's still in draft
+      if (loadedClaim.status === 'draft') {
+        const updatedClaim = {
+          ...loadedClaim,
+          status: 'in_progress' as const,
+          updatedAt: new Date()
+        };
+        saveClaim(updatedClaim);
+        setClaim(updatedClaim);
+      }
+      
       // Initialize completed positions from existing photos
       const existingPhotos = loadedClaim.photos || [];
       const completed = existingPhotos
@@ -61,7 +72,10 @@ export default function PhotoGuidePage() {
       }
     }
     setLoading(false);
-  }, [claimId, getClaim]);
+  }, [claimId, getClaim, saveClaim]);
+
+  const currentPosition = getPositionById(currentPositionId);
+  const allRequiredComplete = areAllRequiredPhotosCompleted(completedPositions);
 
   // Get current position photo for display
   const getCurrentPositionPhoto = () => {
@@ -76,9 +90,6 @@ export default function PhotoGuidePage() {
   };
 
   const currentPositionPhoto = getCurrentPositionPhoto();
-
-  const currentPosition = getPositionById(currentPositionId);
-  const allRequiredComplete = areAllRequiredPhotosCompleted(completedPositions);
 
   // Check storage capacity on load
   useEffect(() => {
@@ -134,19 +145,23 @@ export default function PhotoGuidePage() {
         cloudUrl: undefined,
       });
 
-      // Update claim with new photo
+      // Update completed positions
+      const newCompleted = [...completedPositions, currentPosition.id];
+      setCompletedPositions(newCompleted);
+      
+      // Check if all required photos are completed
+      const allRequired = areAllRequiredPhotosCompleted(newCompleted);
+      
+      // Update claim with new photo and potentially new status
       const updatedClaim: Claim = {
         ...claim,
         photos: [...(claim.photos || []), photoReference],
+        status: allRequired ? 'completed' : claim.status,
         updatedAt: timestamp,
       };
 
       await saveClaim(updatedClaim);
       setClaim(updatedClaim);
-      
-      // Update completed positions
-      const newCompleted = [...completedPositions, currentPosition.id];
-      setCompletedPositions(newCompleted);
       
       // Move to next position if available
       const nextPosition = getNextPosition(currentPosition.id);

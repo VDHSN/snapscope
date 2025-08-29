@@ -34,6 +34,18 @@ export default function VehicleInfoPage() {
     const loadedClaim = getClaim(claimId);
     if (loadedClaim) {
       setClaim(loadedClaim);
+      
+      // Update status to in_progress if it's still in draft
+      if (loadedClaim.status === 'draft') {
+        const updatedClaim = {
+          ...loadedClaim,
+          status: 'in_progress' as const,
+          updatedAt: new Date()
+        };
+        saveClaim(updatedClaim);
+        setClaim(updatedClaim);
+      }
+      
       // Pre-populate form if data exists
       setMake(loadedClaim.vehicle.make || '');
       setModel(loadedClaim.vehicle.model || '');
@@ -41,7 +53,7 @@ export default function VehicleInfoPage() {
       setColor(loadedClaim.vehicle.color || '');
     }
     setLoading(false);
-  }, [claimId, getClaim]);
+  }, [claimId, getClaim, saveClaim]);
 
   const handleBack = () => {
     router.back();
