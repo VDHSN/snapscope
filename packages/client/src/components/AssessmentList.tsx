@@ -16,13 +16,20 @@ export const AssessmentList = memo<AssessmentListProps>(({ onAssessmentSelect })
     router.push('/assessments/new');
   };
 
+  const handleAssessmentSelect = (assessment: Assessment) => {
+    console.log('Navigating to assessment:', assessment.id);
+    // Navigate directly to photos page for now
+    // TODO: Navigate to detail page once issue #62 is implemented
+    router.push(`/assessments/${assessment.id}/photos`);
+  };
+
   return (
     <UIAssessmentList
       assessments={assessments}
       loading={loading}
       error={error || undefined}
       readOnly={false}
-      onAssessmentSelect={onAssessmentSelect}
+      onAssessmentSelect={onAssessmentSelect || handleAssessmentSelect}
       onAddAssessment={handleAddAssessment}
     />
   );
