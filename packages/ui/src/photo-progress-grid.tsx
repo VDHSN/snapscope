@@ -4,6 +4,49 @@ import { Card } from './card';
 import { CameraIcon, CheckIcon } from './icon';
 import type { PhotoPosition, CapturedPhoto } from './photo-guide-types';
 
+// Static styles that don't change based on props
+const GRID_STYLES = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(4, 1fr)',
+  gap: 'var(--space-sm)'
+} as const;
+
+const SUCCESS_INDICATOR_STYLES = {
+  position: 'absolute' as const,
+  top: '2px',
+  right: '2px',
+  width: '16px',
+  height: '16px',
+  borderRadius: '50%',
+  background: 'var(--color-success)',
+  display: 'flex',
+  alignItems: 'center' as const,
+  justifyContent: 'center' as const,
+  boxShadow: '0 1px 4px rgba(0, 0, 0, 0.3)'
+} as const;
+
+const REQUIRED_INDICATOR_STYLES = {
+  position: 'absolute' as const,
+  top: '2px',
+  left: '2px',
+  width: '6px',
+  height: '6px',
+  borderRadius: '50%',
+  background: 'var(--color-warning)',
+} as const;
+
+const BASE_BUTTON_STYLES = {
+  aspectRatio: '1',
+  borderRadius: 'var(--border-radius-sm)',
+  display: 'flex',
+  alignItems: 'center' as const,
+  justifyContent: 'center' as const,
+  cursor: 'pointer' as const,
+  transition: 'all 0.2s ease',
+  overflow: 'hidden' as const,
+  position: 'relative' as const,
+} as const;
+
 export interface PhotoProgressGridProps {
   positions: PhotoPosition[];
   photos: CapturedPhoto[];
@@ -11,7 +54,7 @@ export interface PhotoProgressGridProps {
   onPositionSelect: (positionId: string) => void;
 }
 
-export const PhotoProgressGrid: React.FC<PhotoProgressGridProps> = ({ 
+export const PhotoProgressGrid = React.memo<PhotoProgressGridProps>(({ 
   positions, 
   photos, 
   currentPositionId, 
@@ -27,11 +70,7 @@ export const PhotoProgressGrid: React.FC<PhotoProgressGridProps> = ({
         Photo Progress
       </Typography>
       
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: 'var(--space-sm)'
-      }}>
+      <div style={GRID_STYLES}>
         {positions.slice(0, 8).map((position) => {
           const photo = photos.find(p => p.positionId === position.id);
           
@@ -40,25 +79,17 @@ export const PhotoProgressGrid: React.FC<PhotoProgressGridProps> = ({
               key={position.id}
               onClick={() => onPositionSelect(position.id)}
               style={{
-                aspectRatio: '1',
+                ...BASE_BUTTON_STYLES,
                 border: currentPositionId === position.id 
                   ? '2px solid var(--primary-end)' 
                   : photo
                   ? '2px solid var(--color-success)'
                   : '1px solid var(--border-color)',
-                borderRadius: 'var(--border-radius-sm)',
                 background: photo?.dataUrl 
                   ? `url(${photo.dataUrl}) center/cover`
                   : currentPositionId === position.id
                   ? 'var(--primary-start)'
                   : 'var(--bg-secondary)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                overflow: 'hidden',
-                position: 'relative',
                 transform: currentPositionId === position.id ? 'scale(1.05)' : 'scale(1)',
               }}
               title={`${position.name ?? 'Position ' + position.order}${position.required ? ' (Required)' : ' (Optional)'}`}
@@ -66,19 +97,7 @@ export const PhotoProgressGrid: React.FC<PhotoProgressGridProps> = ({
             >
               {photo ? (
                 // Success indicator for completed photos
-                <div style={{
-                  position: 'absolute',
-                  top: '2px',
-                  right: '2px',
-                  width: '16px',
-                  height: '16px',
-                  borderRadius: '50%',
-                  background: 'var(--color-success)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 1px 4px rgba(0, 0, 0, 0.3)'
-                }}>
+                <div style={SUCCESS_INDICATOR_STYLES}>
                   <CheckIcon size="sm" style={{ color: 'white', fontSize: '10px' }} />
                 </div>
               ) : currentPositionId === position.id ? (
@@ -95,15 +114,7 @@ export const PhotoProgressGrid: React.FC<PhotoProgressGridProps> = ({
 
               {/* Required indicator */}
               {!photo && position.required && (
-                <div style={{
-                  position: 'absolute',
-                  top: '2px',
-                  left: '2px',
-                  width: '6px',
-                  height: '6px',
-                  borderRadius: '50%',
-                  background: 'var(--color-warning)',
-                }} />
+                <div style={REQUIRED_INDICATOR_STYLES} />
               )}
             </button>
           );
@@ -111,4 +122,4 @@ export const PhotoProgressGrid: React.FC<PhotoProgressGridProps> = ({
       </div>
     </Card>
   );
-};
+});

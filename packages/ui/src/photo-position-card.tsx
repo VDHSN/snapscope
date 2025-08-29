@@ -14,7 +14,7 @@ export interface PhotoPositionCardProps {
   onSkip?: () => void;
 }
 
-export const PhotoPositionCard: React.FC<PhotoPositionCardProps> = ({ 
+export const PhotoPositionCard = React.memo<PhotoPositionCardProps>(({ 
   position, 
   photo, 
   isSaving = false, 
@@ -142,4 +142,4 @@ export const PhotoPositionCard: React.FC<PhotoPositionCardProps> = ({
       </div>
     </Card>
   );
-};
+});

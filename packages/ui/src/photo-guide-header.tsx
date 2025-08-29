@@ -15,7 +15,7 @@ export interface PhotoGuideHeaderProps {
   onLogoClick: () => void;
 }
 
-export const PhotoGuideHeader: React.FC<PhotoGuideHeaderProps> = ({ 
+export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({ 
   currentStep, 
   totalSteps, 
   completedCount, 
@@ -127,4 +127,4 @@ export const PhotoGuideHeader: React.FC<PhotoGuideHeaderProps> = ({
       </Typography>
     </div>
   );
-};
+});

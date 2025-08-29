@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { PhotoGuideHeader } from './photo-guide-header';
 import { PhotoPositionCard } from './photo-position-card';
 import { PhotoProgressGrid } from './photo-progress-grid';
@@ -33,13 +33,28 @@ export const CompleteWorkflow: Story = {
     const [photos, setPhotos] = useState<CapturedPhoto[]>([]);
     const [showCamera, setShowCamera] = useState(false);
     
-    const currentPosition = MOCK_POSITIONS.find(p => p.id === currentPositionId);
-    const currentPhoto = photos.find(p => p.positionId === currentPositionId);
-    const requiredPositions = MOCK_POSITIONS.filter(p => p.required) ?? [];
-    const completedRequired = photos.filter(p => 
-      requiredPositions.some(pos => pos.id === p.positionId)
-    ).length;
-    const currentIndex = MOCK_POSITIONS.findIndex(p => p.id === currentPositionId);
+    const currentPosition = useMemo(
+      () => MOCK_POSITIONS.find(p => p.id === currentPositionId),
+      [currentPositionId]
+    );
+    const currentPhoto = useMemo(
+      () => photos.find(p => p.positionId === currentPositionId),
+      [photos, currentPositionId]
+    );
+    const requiredPositions = useMemo(
+      () => MOCK_POSITIONS.filter(p => p.required) ?? [],
+      []
+    );
+    const completedRequired = useMemo(
+      () => photos.filter(p => 
+        requiredPositions.some(pos => pos.id === p.positionId)
+      ).length,
+      [photos, requiredPositions]
+    );
+    const currentIndex = useMemo(
+      () => MOCK_POSITIONS.findIndex(p => p.id === currentPositionId),
+      [currentPositionId]
+    );
     
     const handleTakePhoto = () => {
       setShowCamera(true);
@@ -166,13 +181,28 @@ export const MobileView: Story = {
     ]);
     const [showCamera, setShowCamera] = useState(false);
     
-    const currentPosition = MOCK_POSITIONS.find(p => p.id === currentPositionId);
-    const currentPhoto = photos.find(p => p.positionId === currentPositionId);
-    const requiredPositions = MOCK_POSITIONS.filter(p => p.required) ?? [];
-    const completedRequired = photos.filter(p => 
-      requiredPositions.some(pos => pos.id === p.positionId)
-    ).length;
-    const currentIndex = MOCK_POSITIONS.findIndex(p => p.id === currentPositionId);
+    const currentPosition = useMemo(
+      () => MOCK_POSITIONS.find(p => p.id === currentPositionId),
+      [currentPositionId]
+    );
+    const currentPhoto = useMemo(
+      () => photos.find(p => p.positionId === currentPositionId),
+      [photos, currentPositionId]
+    );
+    const requiredPositions = useMemo(
+      () => MOCK_POSITIONS.filter(p => p.required) ?? [],
+      []
+    );
+    const completedRequired = useMemo(
+      () => photos.filter(p => 
+        requiredPositions.some(pos => pos.id === p.positionId)
+      ).length,
+      [photos, requiredPositions]
+    );
+    const currentIndex = useMemo(
+      () => MOCK_POSITIONS.findIndex(p => p.id === currentPositionId),
+      [currentPositionId]
+    );
     
     const handleTakePhoto = () => setShowCamera(true);
     const handlePhotoCapture = (_blob: Blob) => {
@@ -279,13 +309,28 @@ export const DesktopView: Story = {
     ]);
     const [showCamera, setShowCamera] = useState(false);
     
-    const currentPosition = MOCK_POSITIONS.find(p => p.id === currentPositionId);
-    const currentPhoto = photos.find(p => p.positionId === currentPositionId);
-    const requiredPositions = MOCK_POSITIONS.filter(p => p.required) ?? [];
-    const completedRequired = photos.filter(p => 
-      requiredPositions.some(pos => pos.id === p.positionId)
-    ).length;
-    const currentIndex = MOCK_POSITIONS.findIndex(p => p.id === currentPositionId);
+    const currentPosition = useMemo(
+      () => MOCK_POSITIONS.find(p => p.id === currentPositionId),
+      [currentPositionId]
+    );
+    const currentPhoto = useMemo(
+      () => photos.find(p => p.positionId === currentPositionId),
+      [photos, currentPositionId]
+    );
+    const requiredPositions = useMemo(
+      () => MOCK_POSITIONS.filter(p => p.required) ?? [],
+      []
+    );
+    const completedRequired = useMemo(
+      () => photos.filter(p => 
+        requiredPositions.some(pos => pos.id === p.positionId)
+      ).length,
+      [photos, requiredPositions]
+    );
+    const currentIndex = useMemo(
+      () => MOCK_POSITIONS.findIndex(p => p.id === currentPositionId),
+      [currentPositionId]
+    );
     
     const handleTakePhoto = () => setShowCamera(true);
     const handlePhotoCapture = (_blob: Blob) => {
@@ -420,13 +465,28 @@ export const NearCompletion: Story = {
     ]);
     const [showCamera, setShowCamera] = useState(false);
     
-    const currentPosition = MOCK_POSITIONS.find(p => p.id === currentPositionId);
-    const currentPhoto = photos.find(p => p.positionId === currentPositionId);
-    const requiredPositions = MOCK_POSITIONS.filter(p => p.required) ?? [];
-    const completedRequired = photos.filter(p => 
-      requiredPositions.some(pos => pos.id === p.positionId)
-    ).length;
-    const currentIndex = MOCK_POSITIONS.findIndex(p => p.id === currentPositionId);
+    const currentPosition = useMemo(
+      () => MOCK_POSITIONS.find(p => p.id === currentPositionId),
+      [currentPositionId]
+    );
+    const currentPhoto = useMemo(
+      () => photos.find(p => p.positionId === currentPositionId),
+      [photos, currentPositionId]
+    );
+    const requiredPositions = useMemo(
+      () => MOCK_POSITIONS.filter(p => p.required) ?? [],
+      []
+    );
+    const completedRequired = useMemo(
+      () => photos.filter(p => 
+        requiredPositions.some(pos => pos.id === p.positionId)
+      ).length,
+      [photos, requiredPositions]
+    );
+    const currentIndex = useMemo(
+      () => MOCK_POSITIONS.findIndex(p => p.id === currentPositionId),
+      [currentPositionId]
+    );
     
     return (
       <div style={{ 
