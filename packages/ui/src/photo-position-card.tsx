@@ -5,6 +5,7 @@ import { Card } from './card';
 import { CameraIcon, CheckIcon } from './icon';
 import type { PhotoPosition, CapturedPhoto } from './photo-guide-types';
 import { isValidImageDataUrl } from './photo-utils';
+import { createResponsiveStyles, injectResponsiveStyles, RESPONSIVE_SPACING } from './responsive-utils';
 
 export interface PhotoPositionCardProps {
   position: PhotoPosition;
@@ -51,7 +52,7 @@ export const PhotoPositionCard = React.memo<PhotoPositionCardProps>(({
     }
   }, [safeDataUrl]);
 
-  // Add keyframes for loading animation inline
+  // Add keyframes for loading animation and responsive styles inline
   const loadingKeyframes = `
     @keyframes spin {
       0% { transform: rotate(0deg); }
@@ -59,18 +60,59 @@ export const PhotoPositionCard = React.memo<PhotoPositionCardProps>(({
     }
   `;
 
-  // Inject keyframes styles (only once)
+  // Responsive styles using utility functions
+  const responsiveStyles = [
+    createResponsiveStyles('.photo-preview-area', {
+      base: {
+        width: '100%',
+        background: 'var(--bg-secondary)',
+        borderRadius: 'var(--border-radius-md)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 'var(--space-md)',
+        overflow: 'hidden',
+        position: 'relative',
+        height: '200px', // Default mobile height
+      },
+      tablet: {
+        height: '240px', // Larger preview for tablet and desktop
+      },
+    }),
+    createResponsiveStyles('.photo-position-card-container', {
+      base: {
+        textAlign: 'center',
+      },
+      mobile: {
+        padding: RESPONSIVE_SPACING.padding.mobile,
+      },
+      tablet: {
+        padding: RESPONSIVE_SPACING.padding.tablet,
+      },
+    }),
+    createResponsiveStyles('.photo-action-buttons', {
+      base: {
+        display: 'flex',
+        gap: 'var(--space-md)',
+      },
+    }),
+    // Additional responsive styles for very small screens
+    `@media (max-width: 479px) {
+      .photo-action-buttons {
+        flex-direction: column;
+        gap: var(--space-sm);
+      }
+    }`,
+  ].join('\n\n');
+
+  // Inject keyframes and responsive styles (only once)
   React.useEffect(() => {
-    if (!document.head.querySelector('#spin-keyframes')) {
-      const style = document.createElement('style');
-      style.id = 'spin-keyframes';
-      style.textContent = loadingKeyframes;
-      document.head.appendChild(style);
-    }
+    injectResponsiveStyles('spin-keyframes', loadingKeyframes);
+    injectResponsiveStyles('photo-position-card-responsive', responsiveStyles);
   }, []);
   return (
     <Card elevation={2} padding="lg">
-      <div style={{ textAlign: 'center' }}>
+      <div className="photo-position-card-container">
         <Typography variant="h3" style={{ 
           color: 'var(--text-primary)',
           marginBottom: 'var(--space-sm)',
@@ -88,21 +130,14 @@ export const PhotoPositionCard = React.memo<PhotoPositionCardProps>(({
         </Typography>
         
         {/* Photo Preview Area */}
-        <div style={{
-          width: '100%',
-          height: '240px',
-          background: 'var(--bg-secondary)',
-          borderRadius: 'var(--border-radius-md)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: 'var(--space-md)',
-          border: safeDataUrl && !imageError ? '2px solid var(--color-success)' : 
-                 imageError || (!isValidPhoto && photo?.dataUrl) ? '2px solid var(--color-error)' :
-                 '2px dashed var(--border-color)',
-          overflow: 'hidden',
-          position: 'relative'
-        }}>
+        <div 
+          className="photo-preview-area"
+          style={{
+            border: safeDataUrl && !imageError ? '2px solid var(--color-success)' : 
+                   imageError || (!isValidPhoto && photo?.dataUrl) ? '2px solid var(--color-error)' :
+                   '2px dashed var(--border-color)'
+          }}
+        >
           {isLoading ? (
             <div style={{ textAlign: 'center' }}>
               <div style={{
@@ -189,7 +224,7 @@ export const PhotoPositionCard = React.memo<PhotoPositionCardProps>(({
         </Typography>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: 'var(--space-md)' }}>
+        <div className="photo-action-buttons">
           {safeDataUrl && !imageError ? (
             <Button
               variant="secondary"

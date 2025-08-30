@@ -10,7 +10,32 @@ const meta: Meta<typeof PhotoProgressGrid> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A 4x2 grid showing photo positions with progress indicators. Shows completion status, current position, and required vs optional indicators.',
+        component: 'A responsive grid showing photo positions with progress indicators. Adapts to different screen sizes: 3 columns on mobile (< 640px), 4 columns on tablet and desktop (≥ 640px). Shows completion status, current position, and required vs optional indicators.',
+      },
+    },
+    viewport: {
+      viewports: {
+        mobile: {
+          name: 'Mobile',
+          styles: {
+            width: '375px',
+            height: '667px',
+          },
+        },
+        tablet: {
+          name: 'Tablet',
+          styles: {
+            width: '768px',
+            height: '1024px',
+          },
+        },
+        desktop: {
+          name: 'Desktop',
+          styles: {
+            width: '1200px',
+            height: '800px',
+          },
+        },
       },
     },
   },
@@ -275,5 +300,101 @@ export const EdgeCases: Story = {
         </div>
       </div>
     );
+  },
+};
+
+// Story: Responsive Mobile View
+export const MobileView: Story = {
+  render: () => {
+    const [currentPositionId, setCurrentPositionId] = useState('front_overall');
+    
+    return (
+      <div style={{ width: '100%', padding: 'var(--space-sm)' }}>
+        <PhotoProgressGrid
+          positions={MOCK_POSITIONS}
+          photos={MOCK_PHOTOS}
+          currentPositionId={currentPositionId}
+          onPositionSelect={setCurrentPositionId}
+        />
+        
+        <div style={{ marginTop: 'var(--space-md)', fontSize: 'var(--font-size-small)', color: 'var(--text-secondary)' }}>
+          Mobile view (< 640px): 3-column grid with optimized spacing
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile',
+    },
+    docs: {
+      description: {
+        story: 'Shows the grid in mobile viewport (375px width) with 3 columns and mobile-optimized spacing.',
+      },
+    },
+  },
+};
+
+// Story: Responsive Tablet View
+export const TabletView: Story = {
+  render: () => {
+    const [currentPositionId, setCurrentPositionId] = useState('passenger_side_overall');
+    
+    return (
+      <div style={{ width: '100%', padding: 'var(--space-md)' }}>
+        <PhotoProgressGrid
+          positions={MOCK_POSITIONS}
+          photos={MOCK_PHOTOS}
+          currentPositionId={currentPositionId}
+          onPositionSelect={setCurrentPositionId}
+        />
+        
+        <div style={{ marginTop: 'var(--space-md)', fontSize: 'var(--font-size-small)', color: 'var(--text-secondary)' }}>
+          Tablet view (≥ 640px): 4-column grid with standard spacing
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    docs: {
+      description: {
+        story: 'Shows the grid in tablet viewport (768px width) with 4 columns and standard spacing.',
+      },
+    },
+  },
+};
+
+// Story: Responsive Desktop View
+export const DesktopView: Story = {
+  render: () => {
+    const [currentPositionId, setCurrentPositionId] = useState('rear_overall');
+    
+    return (
+      <div style={{ width: '100%', maxWidth: '600px', padding: 'var(--space-lg)' }}>
+        <PhotoProgressGrid
+          positions={MOCK_POSITIONS}
+          photos={MOCK_PHOTOS}
+          currentPositionId={currentPositionId}
+          onPositionSelect={setCurrentPositionId}
+        />
+        
+        <div style={{ marginTop: 'var(--space-md)', fontSize: 'var(--font-size-small)', color: 'var(--text-secondary)' }}>
+          Desktop view (≥ 640px): 4-column grid with generous spacing
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'desktop',
+    },
+    docs: {
+      description: {
+        story: 'Shows the grid in desktop viewport (1200px width) with 4 columns and generous spacing.',
+      },
+    },
   },
 };

@@ -4,13 +4,28 @@ import { Card } from './card';
 import { CameraIcon, CheckIcon } from './icon';
 import type { PhotoPosition, CapturedPhoto } from './photo-guide-types';
 import { createSafeBackgroundImage, isValidImageDataUrl } from './photo-utils';
+import { createResponsiveStyles, injectResponsiveStyles, RESPONSIVE_GRIDS, TOUCH_TARGET_SIZE } from './responsive-utils';
 
 // Static styles that don't change based on props
 const GRID_STYLES = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(4, 1fr)',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(min(80px, 100%), 1fr))',
   gap: 'var(--space-sm)'
 } as const;
+
+// Responsive grid styles using utility functions
+const RESPONSIVE_GRID_STYLES = createResponsiveStyles('.photo-progress-grid', {
+  base: {
+    display: 'grid',
+    gap: 'var(--space-sm)',
+  },
+  mobile: {
+    gridTemplateColumns: RESPONSIVE_GRIDS.photoProgress.mobile,
+  },
+  tablet: {
+    gridTemplateColumns: RESPONSIVE_GRIDS.photoProgress.tablet,
+  },
+});
 
 const SUCCESS_INDICATOR_STYLES = {
   position: 'absolute' as const,
@@ -46,6 +61,8 @@ const BASE_BUTTON_STYLES = {
   transition: 'all 0.2s ease',
   overflow: 'hidden' as const,
   position: 'relative' as const,
+  minHeight: TOUCH_TARGET_SIZE.minHeight, // Ensure touch targets meet accessibility standards
+  minWidth: TOUCH_TARGET_SIZE.minWidth,
 } as const;
 
 export interface PhotoProgressGridProps {
@@ -65,6 +82,11 @@ export const PhotoProgressGrid = React.memo<PhotoProgressGridProps>(({
   isLoading = false,
   onPhotoError
 }) => {
+  // Inject responsive styles (only once)
+  React.useEffect(() => {
+    injectResponsiveStyles('photo-progress-grid-styles', RESPONSIVE_GRID_STYLES);
+  }, []);
+
   return (
     <Card elevation={1} padding="md">
       <Typography variant="h3" style={{ 
@@ -75,7 +97,7 @@ export const PhotoProgressGrid = React.memo<PhotoProgressGridProps>(({
         Photo Progress
       </Typography>
       
-      <div style={GRID_STYLES}>
+      <div className="photo-progress-grid">
         {positions.slice(0, 8).map((position) => {
           const photo = photos.find(p => p.positionId === position.id);
           const isValidPhoto = photo?.dataUrl && isValidImageDataUrl(photo.dataUrl);

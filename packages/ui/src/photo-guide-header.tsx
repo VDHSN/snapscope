@@ -5,6 +5,7 @@ import { Typography } from './typography';
 import { Logo } from './logo';
 import { ThemeToggle } from './theme-toggle';
 import { ArrowLeftIcon } from './icon';
+import { createResponsiveStyles, injectResponsiveStyles, RESPONSIVE_SPACING } from './responsive-utils';
 
 export interface PhotoGuideHeaderProps {
   currentStep: number;
@@ -25,31 +26,95 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
 }) => {
   const progressValue = ((currentStep ?? 0) / (totalSteps ?? 1)) * 100;
   
+  // Inject responsive styles using utilities
+  React.useEffect(() => {
+    const responsiveStyles = [
+      createResponsiveStyles('.photo-guide-header', {
+        base: {
+          background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
+          color: 'white',
+          position: 'relative',
+        },
+        mobile: {
+          padding: RESPONSIVE_SPACING.padding.mobile,
+          paddingRight: `calc(${RESPONSIVE_SPACING.padding.mobile} + 40px + ${RESPONSIVE_SPACING.padding.mobile})`,
+        },
+        tablet: {
+          padding: RESPONSIVE_SPACING.padding.tablet,
+          paddingRight: `calc(${RESPONSIVE_SPACING.padding.tablet} + 40px + ${RESPONSIVE_SPACING.padding.tablet})`,
+        },
+      }),
+      createResponsiveStyles('.photo-guide-header-controls', {
+        base: {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: 'var(--space-sm)',
+        },
+      }),
+      createResponsiveStyles('.photo-guide-theme-toggle', {
+        base: {
+          position: 'absolute',
+          zIndex: '10',
+        },
+        mobile: {
+          top: RESPONSIVE_SPACING.padding.mobile,
+          right: RESPONSIVE_SPACING.padding.mobile,
+        },
+        tablet: {
+          top: RESPONSIVE_SPACING.padding.tablet,
+          right: RESPONSIVE_SPACING.padding.tablet,
+        },
+      }),
+      createResponsiveStyles('.photo-guide-logo', {
+        base: {
+          cursor: 'pointer',
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: 'var(--space-md)',
+        },
+      }),
+      createResponsiveStyles('.photo-guide-step-info', {
+        base: {
+          color: 'rgba(255, 255, 255, 0.9)',
+          fontWeight: 'var(--font-weight-semibold)',
+          marginRight: 'var(--space-sm)',
+        },
+      }),
+      // Additional styles for very small screens
+      `@media (max-width: 479px) {
+        .photo-guide-header-controls {
+          flex-direction: column;
+          gap: var(--space-xs);
+          align-items: flex-start;
+        }
+        .photo-guide-step-info {
+          margin-right: 0;
+          font-size: var(--font-size-xs);
+        }
+      }`,
+      `@media (max-width: 639px) {
+        .photo-guide-logo .logo-md {
+          font-size: 1.25rem;
+        }
+      }`,
+      `.photo-guide-logo .logo-md {
+        font-size: 1.5rem;
+      }`,
+    ].join('\n\n');
+    
+    injectResponsiveStyles('photo-guide-header-responsive', responsiveStyles);
+  }, []);
+  
   return (
-    <div style={{ 
-      background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-      padding: 'var(--space-md)',
-      paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))',
-      color: 'white',
-      position: 'relative'
-    }}>
+    <div className="photo-guide-header">
       {/* Theme Toggle */}
-      <div style={{ 
-        position: 'absolute', 
-        top: 'var(--space-md)', 
-        right: 'var(--space-md)',
-        zIndex: 10
-      }}>
+      <div className="photo-guide-theme-toggle">
         <ThemeToggle />
       </div>
 
       {/* Back button and progress */}
-      <div style={{ 
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 'var(--space-sm)'
-      }}>
+      <div className="photo-guide-header-controls">
         <Button
           variant="secondary"
           size="sm"
@@ -65,11 +130,7 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
           Back
         </Button>
 
-        <Typography variant="caption" style={{ 
-          color: 'rgba(255, 255, 255, 0.9)',
-          fontWeight: 'var(--font-weight-semibold)',
-          marginRight: 'var(--space-sm)'
-        }}>
+        <Typography variant="caption" className="photo-guide-step-info">
           Step {currentStep ?? 1} of {totalSteps ?? 1}
         </Typography>
       </div>
@@ -93,12 +154,7 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
             onLogoClick();
           }
         }}
-        style={{ 
-          cursor: 'pointer',
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: 'var(--space-md)'
-        }}
+        className="photo-guide-logo"
         role="button"
         tabIndex={0}
         aria-label="Return to home"
@@ -107,6 +163,7 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
           size="md" 
           variant="full" 
           style={{ color: 'white' }}
+          className="logo-md"
         />
       </div>
 
