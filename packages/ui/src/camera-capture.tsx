@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Button } from './button';
 import { Typography } from './typography';
+import { usePermissions, type PermissionRequestOptions } from './hooks/use-permissions';
 
 export interface CameraCaptureProps {
   isOpen: boolean;
@@ -11,6 +12,8 @@ export interface CameraCaptureProps {
   quality?: number; // 0-1, default 0.8
   maxWidth?: number; // max photo width, default 1920
   maxHeight?: number; // max photo height, default 1080
+  allowFallbackUpload?: boolean; // Allow file upload when camera fails
+  onFallbackUpload?: () => void; // Callback for fallback file upload
 }
 
 interface CameraError {
@@ -27,14 +30,20 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
   quality = 0.8,
   maxWidth = 1920,
   maxHeight = 1080,
+  allowFallbackUpload = true,
+  onFallbackUpload,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   
-  const [cameraState, setCameraState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
+  const [cameraState, setCameraState] = useState<'idle' | 'loading' | 'ready' | 'error' | 'permission_check'>('idle');
   const [error, setError] = useState<CameraError | null>(null);
   const [isCapturing, setIsCapturing] = useState(false);
+
+  // Use the permissions hook
+  const { permission, requestPermission, checkPermission } = usePermissions();
   
   // Check if camera is supported
   const isCameraSupported = useCallback(() => {
@@ -73,17 +82,39 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
     console.error('Camera error:', err);
   }, [onError]);
 
-  // Start camera stream
+  // Start camera with permission check
   const startCamera = useCallback(async () => {
     if (!isCameraSupported()) {
       handleCameraError({ name: 'NotSupportedError', message: 'Camera not supported' });
       return;
     }
 
-    setCameraState('loading');
+    setCameraState('permission_check');
     setError(null);
 
     try {
+      // First, request permission using our enhanced hook
+      const permissionGranted = await requestPermission({
+        facingMode,
+        showFallback: allowFallbackUpload,
+        onFallback: onFallbackUpload,
+      });
+
+      if (!permissionGranted) {
+        // Permission was denied - error details are already in the permission state
+        setCameraState('error');
+        const permissionError: CameraError = {
+          type: 'permission',
+          message: permission.error ?? 'Camera permission denied',
+        };
+        setError(permissionError);
+        onError?.(permissionError.message);
+        return;
+      }
+
+      // Permission granted, now start the camera
+      setCameraState('loading');
+
       const constraints: MediaStreamConstraints = {
         video: {
           facingMode,
@@ -105,7 +136,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
     } catch (err) {
       handleCameraError(err as Error);
     }
-  }, [facingMode, maxWidth, maxHeight, isCameraSupported, handleCameraError]);
+  }, [facingMode, maxWidth, maxHeight, isCameraSupported, handleCameraError, requestPermission, allowFallbackUpload, onFallbackUpload, permission.error, onError]);
 
   // Stop camera stream
   const stopCamera = useCallback(() => {
@@ -191,6 +222,25 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
     onClose();
   }, [stopCamera, onClose]);
 
+  // Handle file upload fallback
+  const handleFileUpload = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+
+  const handleFileChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      onCapture(file);
+      handleClose();
+    } else {
+      onError?.('Please select a valid image file');
+    }
+    // Reset file input
+    if (event.target) {
+      event.target.value = '';
+    }
+  }, [onCapture, handleClose, onError]);
+
   if (!isOpen) {
     return null;
   }
@@ -256,6 +306,34 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
 
       {/* Camera Content */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+        {/* Permission Check State */}
+        {cameraState === 'permission_check' && (
+          <div style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            gap: 'var(--space-md)',
+            color: 'white',
+            padding: 'var(--space-lg)',
+            textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '48px' }}>📷</div>
+            <Typography variant="h3" style={{ color: 'white' }}>
+              Camera Permission
+            </Typography>
+            <Typography variant="body" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+              Checking camera access...
+            </Typography>
+            {permission.browserInfo && (
+              <Typography variant="caption" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+                Detected: {permission.browserInfo.name}
+              </Typography>
+            )}
+          </div>
+        )}
+
         {/* Loading State */}
         {cameraState === 'loading' && (
           <div style={{
@@ -302,14 +380,46 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
               {error.message}
             </Typography>
             
-            {error.type === 'permission' && (
-              <Button
-                variant="primary"
-                onClick={startCamera}
-                style={{ marginTop: 'var(--space-md)' }}
-              >
-                Try Again
-              </Button>
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 'var(--space-sm)', 
+              marginTop: 'var(--space-md)',
+              width: '100%',
+              maxWidth: '300px',
+            }}>
+              {error.type === 'permission' && permission.canRequest && (
+                <Button
+                  variant="primary"
+                  onClick={startCamera}
+                >
+                  Try Again
+                </Button>
+              )}
+              
+              {allowFallbackUpload && (
+                <Button
+                  variant="secondary"
+                  onClick={handleFileUpload}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    color: 'white',
+                  }}
+                >
+                  📁 Upload Photo Instead
+                </Button>
+              )}
+            </div>
+
+            {permission.browserInfo && (
+              <Typography variant="caption" style={{ 
+                color: 'rgba(255, 255, 255, 0.6)',
+                marginTop: 'var(--space-sm)',
+              }}>
+                Browser: {permission.browserInfo.name}
+                {permission.browserInfo.requiresUserGesture && ' (requires user interaction)'}
+              </Typography>
             )}
           </div>
         )}
@@ -375,6 +485,16 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
       {/* Hidden canvas for photo capture */}
       <canvas
         ref={canvasRef}
+        style={{ display: 'none' }}
+      />
+
+      {/* Hidden file input for fallback upload */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={handleFileChange}
         style={{ display: 'none' }}
       />
       

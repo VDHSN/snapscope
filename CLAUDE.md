@@ -126,6 +126,10 @@ When working with the UI library from the client:
 ## Deployment
 
 The application is deployed on Vercel (per README). The client package is configured for Vercel deployment with Next.js.
+
+
+## YOUR BEHAVIOR
+
 - **ALWAYS** use the github CLI tool to access repository links.
 - **ALWAYS** include --no-gpg-sign when doing `git commit`
 - **ALWAYS** prefer `pnpx` over `npx` for running npm packages
@@ -138,7 +142,5 @@ The application is deployed on Vercel (per README). The client package is config
 - **ALWAYS** use `lint-fix` command when linting
 - *ALWAYS* use existing components from @packages/ui/
 - **ALWAYS** create storybook stories for new components you create in @packages/ui/
-- **ALWAYS** put components in @packages/ui/ if you create new ones
-- use `??` instead of `||` for null coalescing operations
 - **ALWAYS** use the @agent-frontend-pwa-engineer when making any code changes
-
+- **ALWAYS** put components in @packages/ui/ if you create new ones

@@ -37,6 +37,10 @@ const meta: Meta<typeof CameraCapture> = {
       control: { type: 'number', min: 480, max: 4096, step: 240 },
       description: 'Maximum height for captured photos',
     },
+    allowFallbackUpload: {
+      control: 'boolean',
+      description: 'Allow file upload when camera access fails',
+    },
   },
 };
 
@@ -49,7 +53,8 @@ const CameraStoryWrapper: React.FC<{
   quality?: number;
   maxWidth?: number;
   maxHeight?: number;
-}> = ({ facingMode = 'environment', quality = 0.8, maxWidth = 1920, maxHeight = 1080 }) => {
+  allowFallbackUpload?: boolean;
+}> = ({ facingMode = 'environment', quality = 0.8, maxWidth = 1920, maxHeight = 1080, allowFallbackUpload = true }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -151,6 +156,8 @@ const CameraStoryWrapper: React.FC<{
         quality={quality}
         maxWidth={maxWidth}
         maxHeight={maxHeight}
+        allowFallbackUpload={allowFallbackUpload}
+        onFallbackUpload={() => console.log('Fallback upload requested')}
       />
     </div>
   );
@@ -195,6 +202,28 @@ export const LowQuality: Story = {
     docs: {
       description: {
         story: 'Lower quality photo capture for faster processing and smaller file sizes.',
+      },
+    },
+  },
+};
+
+export const WithFallbackUpload: Story = {
+  render: () => <CameraStoryWrapper allowFallbackUpload={true} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Camera capture with file upload fallback enabled. When camera access fails, users can upload photos from their device instead.',
+      },
+    },
+  },
+};
+
+export const NoFallback: Story = {
+  render: () => <CameraStoryWrapper allowFallbackUpload={false} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Camera capture without fallback upload option. Only camera capture is available.',
       },
     },
   },
