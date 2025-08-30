@@ -37,6 +37,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const videoReadyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const [cameraState, setCameraState] = useState<'idle' | 'loading' | 'ready' | 'error' | 'permission_check'>('idle');
   const [error, setError] = useState<CameraError | null>(null);
@@ -84,16 +85,21 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
 
   // Start camera with permission check
   const startCamera = useCallback(async () => {
+    console.debug('[CameraCapture] Starting camera initialization');
+    
     if (!isCameraSupported()) {
+      console.error('[CameraCapture] Camera not supported on this device');
       handleCameraError({ name: 'NotSupportedError', message: 'Camera not supported' });
       return;
     }
 
+    console.debug('[CameraCapture] Setting state to permission_check');
     setCameraState('permission_check');
     setError(null);
 
     try {
       // First, request permission using our enhanced hook
+      console.debug('[CameraCapture] Requesting camera permission');
       const permissionGranted = await requestPermission({
         facingMode,
         showFallback: allowFallbackUpload,
@@ -102,6 +108,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
 
       if (!permissionGranted) {
         // Permission was denied - error details are already in the permission state
+        console.error('[CameraCapture] Permission denied:', permission.error);
         setCameraState('error');
         const permissionError: CameraError = {
           type: 'permission',
@@ -113,6 +120,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
       }
 
       // Permission granted, now start the camera
+      console.debug('[CameraCapture] Permission granted, starting camera stream');
       setCameraState('loading');
 
       const constraints: MediaStreamConstraints = {
@@ -126,12 +134,79 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
 
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       streamRef.current = stream;
+      console.debug('[CameraCapture] Media stream obtained, setting up video element');
 
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.onloadedmetadata = () => {
+        const video = videoRef.current;
+        video.srcObject = stream;
+
+        // Set up multiple event listeners for video readiness
+        const handleVideoReady = () => {
+          console.debug('[CameraCapture] Video ready - transitioning to ready state');
+          
+          // Clear timeout if it exists
+          if (videoReadyTimeoutRef.current) {
+            clearTimeout(videoReadyTimeoutRef.current);
+            videoReadyTimeoutRef.current = null;
+          }
+          
+          // Clean up listeners once ready
+          video.removeEventListener('loadedmetadata', handleVideoReady);
+          video.removeEventListener('canplay', handleVideoReady);
+          video.removeEventListener('loadeddata', handleVideoReady);
+          video.removeEventListener('error', handleVideoError);
+          
           setCameraState('ready');
         };
+
+        const handleVideoError = (event: Event) => {
+          console.error('[CameraCapture] Video error event:', event);
+          
+          // Clear timeout if it exists
+          if (videoReadyTimeoutRef.current) {
+            clearTimeout(videoReadyTimeoutRef.current);
+            videoReadyTimeoutRef.current = null;
+          }
+          
+          handleCameraError(new Error('Video stream initialization failed'));
+        };
+
+        // Add multiple event listeners for better reliability
+        video.addEventListener('loadedmetadata', handleVideoReady, { once: true });
+        video.addEventListener('canplay', handleVideoReady, { once: true });
+        video.addEventListener('loadeddata', handleVideoReady, { once: true });
+        video.addEventListener('error', handleVideoError, { once: true });
+
+        console.debug('[CameraCapture] Video src set, waiting for ready events');
+
+        // Timeout fallback - if no events fire within 5 seconds, force ready state
+        videoReadyTimeoutRef.current = setTimeout(() => {
+          console.warn('[CameraCapture] Video ready events timeout - checking video state');
+          
+          // Ensure video element is still available
+          if (!videoRef.current) {
+            console.error('[CameraCapture] Video element no longer available during timeout check');
+            handleCameraError(new Error('Video element became unavailable'));
+            return;
+          }
+          
+          const currentVideo = videoRef.current;
+          
+          // Check if video has valid dimensions as a final check
+          if (currentVideo.videoWidth > 0 && currentVideo.videoHeight > 0) {
+            console.debug('[CameraCapture] Video has valid dimensions, forcing ready state');
+            handleVideoReady();
+          } else {
+            console.error('[CameraCapture] Video dimensions invalid after timeout:', {
+              videoWidth: currentVideo.videoWidth,
+              videoHeight: currentVideo.videoHeight,
+              readyState: currentVideo.readyState,
+              networkState: currentVideo.networkState,
+              srcObject: !!currentVideo.srcObject
+            });
+            handleCameraError(new Error('Video stream timeout - unable to initialize camera'));
+          }
+        }, 5000);
       }
     } catch (err) {
       handleCameraError(err as Error);
@@ -140,6 +215,14 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
 
   // Stop camera stream
   const stopCamera = useCallback(() => {
+    console.debug('[CameraCapture] Stopping camera');
+    
+    // Clear any pending timeout
+    if (videoReadyTimeoutRef.current) {
+      clearTimeout(videoReadyTimeoutRef.current);
+      videoReadyTimeoutRef.current = null;
+    }
+    
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
