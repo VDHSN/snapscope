@@ -140,5 +140,5 @@ The application is deployed on Vercel (per README). The client package is config
 - **ALWAYS** create storybook stories for new components you create in @packages/ui/
 - **ALWAYS** put components in @packages/ui/ if you create new ones
 - use `??` instead of `||` for null coalescing operations
-- **ALWAYS** use the @agent-frontend-pwa-engineer when writing any code in `packags/ui` or `packages/client`.
+- **ALWAYS** use the @agent-frontend-pwa-engineer when making any code changes
 

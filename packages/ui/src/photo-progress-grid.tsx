@@ -6,13 +6,6 @@ import type { PhotoPosition, CapturedPhoto } from './photo-guide-types';
 import { createSafeBackgroundImage, isValidImageDataUrl } from './photo-utils';
 import { createResponsiveStyles, injectResponsiveStyles, RESPONSIVE_GRIDS, TOUCH_TARGET_SIZE } from './responsive-utils';
 
-// Static styles that don't change based on props
-const GRID_STYLES = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(min(80px, 100%), 1fr))',
-  gap: 'var(--space-sm)'
-} as const;
-
 // Responsive grid styles using utility functions
 const RESPONSIVE_GRID_STYLES = createResponsiveStyles('.photo-progress-grid', {
   base: {

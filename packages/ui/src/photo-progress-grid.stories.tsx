@@ -318,7 +318,7 @@ export const MobileView: Story = {
         />
         
         <div style={{ marginTop: 'var(--space-md)', fontSize: 'var(--font-size-small)', color: 'var(--text-secondary)' }}>
-          Mobile view (< 640px): 3-column grid with optimized spacing
+          Mobile view (&lt; 640px): 3-column grid with optimized spacing
         </div>
       </div>
     );

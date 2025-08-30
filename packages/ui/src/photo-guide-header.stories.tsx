@@ -209,7 +209,7 @@ export const SmallMobileView: Story = {
     <div style={{ width: '100%' }}>
       <PhotoGuideHeader {...args} />
       <div style={{ padding: 'var(--space-sm)', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', background: 'var(--bg-primary)' }}>
-        Small mobile (< 480px): Controls stack vertically, minimal padding, compact layout
+        Small mobile (&lt; 480px): Controls stack vertically, minimal padding, compact layout
       </div>
     </div>
   ),
