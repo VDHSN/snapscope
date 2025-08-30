@@ -11,16 +11,15 @@ import { ThemeToggle } from '@snapscope/ui/theme-toggle';
 import { ArrowLeftIcon, CameraIcon, CheckIcon } from '@snapscope/ui/icon';
 import { CameraCapture } from '@snapscope/ui/camera-capture';
 import { useClaims } from '@/hooks/useStorage';
-import { photoBlobStorage } from '@/lib/photo-storage';
+import { unifiedPhotoStorage } from '@/lib/photo-storage-unified';
 import { 
   PHOTO_POSITIONS, 
   getPositionById, 
   getNextPosition,
-  calculateProgress,
   areAllRequiredPhotosCompleted,
   PHOTO_GUIDE_METADATA 
 } from '@/lib/photo-positions';
-import type { Claim } from '@/types/claim';
+import type { Claim, PhotoReference } from '@/types/claim';
 
 export default function PhotoGuidePage() {
   const router = useRouter();
@@ -77,26 +76,81 @@ export default function PhotoGuidePage() {
   const currentPosition = getPositionById(currentPositionId);
   const allRequiredComplete = areAllRequiredPhotosCompleted(completedPositions);
 
-  // Get current position photo for display
-  const getCurrentPositionPhoto = () => {
-    if (!claim || !currentPosition) return null;
-    
-    const photo = claim.photos?.find(p => p.damageAreaId === currentPosition.id);
-    if (!photo) return null;
-    
-    // Get photo data URL for display
-    const dataUrl = photoBlobStorage.getPhotoDataUrl(photo.id);
-    return dataUrl ? { ...photo, dataUrl } : null;
-  };
+  // State for current position photo
+  const [currentPositionPhoto, setCurrentPositionPhoto] = useState<(PhotoReference & { dataUrl: string }) | null>(null);
+  // State for storing photo data URLs for the progress grid
+  const [photoDataUrls, setPhotoDataUrls] = useState<Record<string, string>>({});
 
-  const currentPositionPhoto = getCurrentPositionPhoto();
+  // Get current position photo for display
+  useEffect(() => {
+    const loadCurrentPositionPhoto = async () => {
+      if (!claim || !currentPosition) {
+        setCurrentPositionPhoto(null);
+        return;
+      }
+      
+      const photo = claim.photos?.find(p => p.damageAreaId === currentPosition.id);
+      if (!photo) {
+        setCurrentPositionPhoto(null);
+        return;
+      }
+      
+      try {
+        // Get photo data URL for display
+        const dataUrl = await unifiedPhotoStorage.getPhotoDataUrl(photo.id);
+        setCurrentPositionPhoto(dataUrl ? { ...photo, dataUrl } : null);
+      } catch (error) {
+        console.warn('Failed to load current position photo:', error);
+        setCurrentPositionPhoto(null);
+      }
+    };
+
+    loadCurrentPositionPhoto();
+  }, [claim, currentPosition]);
+
+  // Load photo data URLs for progress grid
+  useEffect(() => {
+    const loadPhotoDataUrls = async () => {
+      if (!claim?.photos) return;
+
+      const urlMap: Record<string, string> = {};
+      
+      // Load data URLs for all photos
+      await Promise.all(
+        claim.photos.map(async (photo) => {
+          if (photo.damageAreaId) {
+            try {
+              const dataUrl = await unifiedPhotoStorage.getPhotoDataUrl(photo.id);
+              if (dataUrl) {
+                urlMap[photo.id] = dataUrl;
+              }
+            } catch (error) {
+              console.warn(`Failed to load photo ${photo.id}:`, error);
+            }
+          }
+        })
+      );
+
+      setPhotoDataUrls(urlMap);
+    };
+
+    loadPhotoDataUrls();
+  }, [claim?.photos]);
 
   // Check storage capacity on load
   useEffect(() => {
-    const storageCheck = photoBlobStorage.checkStorageCapacity();
-    if (storageCheck.warning) {
-      setStorageWarning(storageCheck.warning);
-    }
+    const checkStorageCapacity = async () => {
+      try {
+        const storageCheck = await unifiedPhotoStorage.checkStorageCapacity();
+        if (storageCheck.warning) {
+          setStorageWarning(storageCheck.warning);
+        }
+      } catch (error) {
+        console.warn('Failed to check storage capacity:', error);
+      }
+    };
+
+    checkStorageCapacity();
   }, []);
 
   const handleBack = () => {
@@ -107,16 +161,21 @@ export default function PhotoGuidePage() {
     router.push('/assessments');
   };
 
-  const handleTakePhoto = () => {
-    // Check storage capacity before opening camera
-    const storageCheck = photoBlobStorage.checkStorageCapacity();
-    if (!storageCheck.available) {
-      setError(storageCheck.warning || 'Storage full. Unable to take more photos.');
-      return;
+  const handleTakePhoto = async () => {
+    try {
+      // Check storage capacity before opening camera
+      const storageCheck = await unifiedPhotoStorage.checkStorageCapacity();
+      if (!storageCheck.available) {
+        setError(storageCheck.warning || 'Storage full. Unable to take more photos.');
+        return;
+      }
+      
+      setError(null);
+      setShowCamera(true);
+    } catch (error) {
+      console.error('Failed to check storage capacity:', error);
+      setError('Unable to check storage capacity. Please try again.');
     }
-    
-    setError(null);
-    setShowCamera(true);
   };
 
   const handlePhotoCapture = async (photoBlob: Blob) => {
@@ -127,17 +186,16 @@ export default function PhotoGuidePage() {
 
     try {
       // Check storage capacity before saving
-      const storageCheck = photoBlobStorage.checkStorageCapacity();
+      const storageCheck = await unifiedPhotoStorage.checkStorageCapacity();
       if (!storageCheck.available) {
         throw new Error('Storage full. Unable to save photo.');
       }
 
       const timestamp = new Date();
-      const photoId = `photo_${timestamp.getTime()}_${Math.random().toString(36).substring(2, 15)}`;
-      const filename = `${currentPosition.id}_${photoId}.jpg`;
+      const filename = `${currentPosition.id}_${timestamp.getTime()}.jpg`;
 
-      // Save photo using photoBlobStorage
-      const photoReference = await photoBlobStorage.savePhoto(photoBlob, {
+      // Save photo using unifiedPhotoStorage
+      const photoReference = await unifiedPhotoStorage.savePhoto(photoBlob, {
         filename,
         caption: currentPosition.name,
         damageAreaId: currentPosition.id,
@@ -172,9 +230,13 @@ export default function PhotoGuidePage() {
       setShowCamera(false);
       
       // Check storage after saving
-      const postSaveCheck = photoBlobStorage.checkStorageCapacity();
-      if (postSaveCheck.warning) {
-        setStorageWarning(postSaveCheck.warning);
+      try {
+        const postSaveCheck = await unifiedPhotoStorage.checkStorageCapacity();
+        if (postSaveCheck.warning) {
+          setStorageWarning(postSaveCheck.warning);
+        }
+      } catch (error) {
+        console.warn('Failed to check storage capacity after saving:', error);
       }
       
     } catch (error) {
@@ -208,37 +270,6 @@ export default function PhotoGuidePage() {
     }
   };
 
-  const handleDeletePhoto = async (positionId: string) => {
-    if (!claim) return;
-
-    try {
-      // Find the photo to delete
-      const photoToDelete = claim.photos?.find(p => p.damageAreaId === positionId);
-      if (!photoToDelete) return;
-
-      // Delete photo blob and reference
-      photoBlobStorage.deletePhoto(photoToDelete.id);
-
-      // Update claim
-      const updatedClaim: Claim = {
-        ...claim,
-        photos: claim.photos?.filter(p => p.id !== photoToDelete.id) || [],
-        updatedAt: new Date(),
-      };
-
-      await saveClaim(updatedClaim);
-      setClaim(updatedClaim);
-
-      // Update completed positions
-      const newCompleted = completedPositions.filter(id => id !== positionId);
-      setCompletedPositions(newCompleted);
-
-      setError(null);
-    } catch (error) {
-      console.error('Error deleting photo:', error);
-      setError('Failed to delete photo. Please try again.');
-    }
-  };
 
   // Keyboard navigation
   const handleKeyDown = (event: React.KeyboardEvent, positionId: string) => {
@@ -612,7 +643,7 @@ export default function PhotoGuidePage() {
           }}>
             {PHOTO_POSITIONS.slice(0, 8).map((position) => {
               const positionPhoto = claim?.photos?.find(p => p.damageAreaId === position.id);
-              const photoDataUrl = positionPhoto ? photoBlobStorage.getPhotoDataUrl(positionPhoto.id) : null;
+              const photoDataUrl = positionPhoto ? photoDataUrls[positionPhoto.id] : null;
               
               return (
                 <button
