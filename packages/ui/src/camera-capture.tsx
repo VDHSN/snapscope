@@ -507,8 +507,8 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
           </div>
         )}
 
-        {/* Video Stream */}
-        {cameraState === 'ready' && (
+        {/* Video Stream - render during loading AND ready states */}
+        {(cameraState === 'loading' || cameraState === 'ready') && (
           <>
             <video
               ref={videoRef}
@@ -521,46 +521,51 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
                 height: '100%',
                 objectFit: 'cover',
                 background: 'black',
+                // Hide video during loading, show when ready
+                opacity: cameraState === 'ready' ? 1 : 0,
+                zIndex: cameraState === 'ready' ? 1 : -1,
               }}
             />
             
-            {/* Capture Overlay */}
-            <div style={{
-              position: 'absolute',
-              bottom: 'var(--space-xl)',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              display: 'flex',
-              gap: 'var(--space-md)',
-              alignItems: 'center',
-            }}>
-              {/* Capture Button */}
-              <button
-                onClick={capturePhoto}
-                disabled={isCapturing}
-                style={{
-                  width: '80px',
-                  height: '80px',
-                  borderRadius: '50%',
-                  border: '4px solid white',
-                  background: isCapturing ? 'rgba(255, 255, 255, 0.5)' : 'transparent',
-                  cursor: isCapturing ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.2s ease',
-                }}
-                title="Take photo"
-              >
-                <div style={{
-                  width: '60px',
-                  height: '60px',
-                  borderRadius: '50%',
-                  background: 'white',
-                  opacity: isCapturing ? 0.7 : 1,
-                }} />
-              </button>
-            </div>
+            {/* Capture Overlay - only show when ready */}
+            {cameraState === 'ready' && (
+              <div style={{
+                position: 'absolute',
+                bottom: 'var(--space-xl)',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                display: 'flex',
+                gap: 'var(--space-md)',
+                alignItems: 'center',
+              }}>
+                {/* Capture Button */}
+                <button
+                  onClick={capturePhoto}
+                  disabled={isCapturing}
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
+                    border: '4px solid white',
+                    background: isCapturing ? 'rgba(255, 255, 255, 0.5)' : 'transparent',
+                    cursor: isCapturing ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s ease',
+                  }}
+                  title="Take photo"
+                >
+                  <div style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%',
+                    background: 'white',
+                    opacity: isCapturing ? 0.7 : 1,
+                  }} />
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>
