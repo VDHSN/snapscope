@@ -16,6 +16,8 @@ export interface CameraPermissionInfo {
     name: string;
     supportsPermissionAPI: boolean;
     requiresUserGesture: boolean;
+    isMobile: boolean;
+    isIOS: boolean;
   };
 }
 
@@ -23,12 +25,33 @@ export interface PermissionRequestOptions {
   facingMode?: 'user' | 'environment';
   showFallback?: boolean;
   onFallback?: () => void;
+  preferExactConstraints?: boolean; // For mobile devices to enforce exact camera
 }
 
 interface BrowserInfo {
   name: string;
   supportsPermissionAPI: boolean;
   requiresUserGesture: boolean;
+  isMobile: boolean;
+  isIOS: boolean;
+}
+
+/**
+ * Detect if device is mobile
+ */
+function isMobileDevice(): boolean {
+  const userAgent = navigator.userAgent.toLowerCase();
+  return /android|iphone|ipad|mobile|tablet/i.test(userAgent) || 
+         (navigator.maxTouchPoints > 0 && /macintosh/i.test(userAgent)); // iPad on iOS 13+
+}
+
+/**
+ * Detect if device is iOS (iPhone/iPad)
+ */
+function isIOSDevice(): boolean {
+  const userAgent = navigator.userAgent.toLowerCase();
+  return /iphone|ipad|ipod/i.test(userAgent) || 
+         (navigator.maxTouchPoints > 0 && /macintosh/i.test(userAgent)); // iPad on iOS 13+
 }
 
 /**
@@ -37,23 +60,44 @@ interface BrowserInfo {
 function getBrowserInfo(): BrowserInfo {
   const userAgent = navigator.userAgent.toLowerCase();
   
-  // Basic browser detection
+  // Improved browser detection - order matters!
   let browserName = 'unknown';
-  if (userAgent.includes('chrome')) browserName = 'chrome';
-  else if (userAgent.includes('firefox')) browserName = 'firefox';
-  else if (userAgent.includes('safari')) browserName = 'safari';
-  else if (userAgent.includes('edge')) browserName = 'edge';
+  
+  // Check for Edge first (contains 'chrome' in user agent)
+  if (userAgent.includes('edg/') || userAgent.includes('edge/')) {
+    browserName = 'edge';
+  }
+  // Check for Firefox
+  else if (userAgent.includes('firefox')) {
+    browserName = 'firefox';
+  }
+  // Check for Safari - must be before Chrome check
+  // Safari on iOS doesn't include 'safari' but includes 'version'
+  else if ((userAgent.includes('safari') && !userAgent.includes('chrome')) || 
+           (userAgent.includes('version') && (userAgent.includes('mobile') || userAgent.includes('iphone') || userAgent.includes('ipad')))) {
+    browserName = 'safari';
+  }
+  // Chrome and Chrome-based browsers (check last)
+  else if (userAgent.includes('chrome')) {
+    browserName = 'chrome';
+  }
 
   // Check if Permissions API is supported
   const supportsPermissionAPI = 'permissions' in navigator;
 
-  // Most mobile browsers require user gesture
-  const requiresUserGesture = /android|iphone|ipad|mobile/i.test(userAgent);
+  // Detect mobile and iOS devices
+  const isMobile = isMobileDevice();
+  const isIOS = isIOSDevice();
+
+  // iOS Safari and most mobile browsers require user gesture
+  const requiresUserGesture = isMobile || isIOS;
 
   return {
     name: browserName,
     supportsPermissionAPI,
     requiresUserGesture,
+    isMobile,
+    isIOS,
   };
 }
 
@@ -190,15 +234,60 @@ export function usePermissions(): {
         streamRef.current = null;
       }
 
-      // Request access to camera
+      // Build camera constraints based on device type
+      const browserInfo = browserInfoRef.current;
+      const facingModeValue = options.facingMode ?? 'environment';
+      
+      // For mobile devices, use exact constraints to enforce rear camera
+      // For desktop, use ideal constraints as fallback
+      const shouldUseExactConstraints = options.preferExactConstraints ?? browserInfo.isMobile;
+      
+      let videoConstraints: MediaTrackConstraints = {};
+      
+      if (shouldUseExactConstraints && facingModeValue === 'environment') {
+        // Try exact constraint first for rear camera on mobile
+        videoConstraints = {
+          facingMode: { exact: facingModeValue },
+        };
+      } else {
+        // Use ideal constraint as fallback or for desktop
+        videoConstraints = {
+          facingMode: { ideal: facingModeValue },
+        };
+      }
+
       const constraints: MediaStreamConstraints = {
-        video: {
-          facingMode: options.facingMode ?? 'environment',
-        },
+        video: videoConstraints,
         audio: false,
       };
 
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      console.debug('[usePermissions] Camera constraints:', constraints);
+
+      let stream: MediaStream;
+      
+      try {
+        // Try with initial constraints
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+      } catch (error) {
+        // If exact constraint failed and we're on mobile, try with ideal constraint
+        if (shouldUseExactConstraints && facingModeValue === 'environment') {
+          console.warn('[usePermissions] Exact facingMode constraint failed, trying ideal:', error);
+          
+          const fallbackConstraints: MediaStreamConstraints = {
+            video: {
+              facingMode: { ideal: facingModeValue },
+            },
+            audio: false,
+          };
+          
+          console.debug('[usePermissions] Fallback camera constraints:', fallbackConstraints);
+          stream = await navigator.mediaDevices.getUserMedia(fallbackConstraints);
+        } else {
+          // Re-throw the error if we can't provide fallback
+          throw error;
+        }
+      }
+      
       streamRef.current = stream;
 
       // Permission granted
