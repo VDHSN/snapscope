@@ -1,10 +1,19 @@
 'use client';
 
 import { Typography } from '@snapscope/ui/typography';
+import { Logo } from '@snapscope/ui/logo';
 import { ThemeToggle } from '@snapscope/ui/theme-toggle';
 import { AssessmentList } from '@/components/AssessmentList';
+import { useRouter } from 'next/navigation';
 
 export default function AssessmentsPage() {
+  const router = useRouter();
+  
+  const handleLogoClick = () => {
+    // Stay on current page or refresh
+    router.push('/assessments');
+  };
+
   return (
     <div style={{ 
       minHeight: '100vh', 
@@ -29,13 +38,30 @@ export default function AssessmentsPage() {
         color: 'white',
         textAlign: 'center'
       }}>
-        <Typography variant="h1" style={{ 
-          color: 'white',
-          marginBottom: 'var(--space-sm)',
-          fontSize: 'var(--font-size-h1)'
-        }}>
-          SnapScope
-        </Typography>
+        <div 
+          onClick={handleLogoClick}
+          style={{ 
+            cursor: 'pointer',
+            display: 'flex',
+            justifyContent: 'center',
+            marginBottom: 'var(--space-sm)'
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Go to home"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleLogoClick();
+            }
+          }}
+        >
+          <Logo 
+            size="xl" 
+            variant="full" 
+            style={{ color: 'white' }}
+          />
+        </div>
         <Typography variant="body" style={{ 
           color: 'rgba(255, 255, 255, 0.9)',
           fontSize: 'var(--font-size-small)'

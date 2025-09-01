@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Typography } from '@snapscope/ui/typography';
+import { Logo } from '@snapscope/ui/logo';
 import { Button } from '@snapscope/ui/button';
 import { Card } from '@snapscope/ui/card';
 import { Badge } from '@snapscope/ui/badge';
@@ -47,6 +48,10 @@ export default function VINEntryPage() {
 
   const handleBack = () => {
     router.back();
+  };
+
+  const handleLogoClick = () => {
+    router.push('/assessments');
   };
 
   const handleContinue = async () => {
@@ -146,6 +151,32 @@ export default function VINEntryPage() {
             marginBottom: 'var(--space-md)'
           }}
         />
+
+        {/* Logo */}
+        <div 
+          onClick={handleLogoClick}
+          style={{ 
+            cursor: 'pointer',
+            display: 'flex',
+            justifyContent: 'center',
+            marginBottom: 'var(--space-md)'
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Go to home"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleLogoClick();
+            }
+          }}
+        >
+          <Logo 
+            size="md" 
+            variant="full" 
+            style={{ color: 'white' }}
+          />
+        </div>
 
         {/* Title */}
         <Typography variant="h2" style={{ 

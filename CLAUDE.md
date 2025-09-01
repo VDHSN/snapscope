@@ -77,6 +77,15 @@ cd packages/ui && pnpm build-storybook
 ```bash
 # Claude Code CLI (configured)
 pnpm c
+
+# Run PR & pre-commit checks
+pnpm run checks
+
+# Run full build
+pnpm turbo run build
+
+# run lint command for specific package
+pnpm turbo run lint-fix --filter="@snapscope/ui"
 ```
 
 ## Package Structure
@@ -106,19 +115,32 @@ When working with the UI library from the client:
 - All packages use TypeScript with strict configuration
 - The project uses pnpm workspace dependencies for internal packages
 
+## Testing
+
+- Use the puppeteer MCP server to view the website running locally
+- get Random VINs by visiting this site: https://randomvin.com/
+    - Real VINs: `1FMPU18L9WLA04056`, `JTEDS41AX82059224`, `JTJGF10U630150394`
+    - Random VINs: `4A3AE35G11E084392`, `2FALP74W8RX149728`
+
+
 ## Deployment
 
 The application is deployed on Vercel (per README). The client package is configured for Vercel deployment with Next.js.
+
+
+## YOUR BEHAVIOR
+
 - **ALWAYS** use the github CLI tool to access repository links.
 - **ALWAYS** include --no-gpg-sign when doing `git commit`
 - **ALWAYS** prefer `pnpx` over `npx` for running npm packages
 - **ALWAYS** prefer using the vercel MCP server when interacting with vercel, fetching project or build status
 - Prefer using Context7 MCP to research API libraries over searching the web
-
 - **Always** create git branches using `(feature/fix/chore)/<gh-issue-number>-<summary-slug>` format
 - when doing large coding tasks, prefer to use the frontend engineer agent
 - **ALWAYS** use `pnpm turbo run --filter="<PACKAGE>"`  when running pnpm scripts.
+- **NEVER** cd into a directory to run commands, **ALWAYS PREFER** to run `pnpm turbo run --filter"<package>"`
 - **ALWAYS** use `lint-fix` command when linting
 - *ALWAYS* use existing components from @packages/ui/
 - **ALWAYS** create storybook stories for new components you create in @packages/ui/
+- **ALWAYS** use the @agent-frontend-pwa-engineer when making any code changes
 - **ALWAYS** put components in @packages/ui/ if you create new ones

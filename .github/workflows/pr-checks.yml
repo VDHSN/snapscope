@@ -76,10 +76,18 @@ jobs:
           echo "🔍 Running build checks..."
           pnpm turbo build --continue
 
-      - name: Success summary
-        if: success()
-        run: |
-          echo "✅ All checks passed!"
-          echo "- Linting: PASSED"
-          echo "- Type checking: PASSED" 
-          echo "- Build: PASSED"
+       - name: Success summary
+         if: success()
+         run: |
+           echo "✅ All checks passed!"
+           echo "- Linting: PASSED"
+           echo "- Type checking: PASSED"
+           echo "- Build: PASSED"
+
+       - name: Notify Discord on Failure
+         if: failure()
+         run: |
+           curl -H "Content-Type: application/json" \
+                -X POST \
+                -d "{\"content\": \"❌ PR #${{ github.event.pull_request.number }} checks failed: ${{ github.event.pull_request.title }}\"}" \
+                ${{ secrets.DISCORD_WEBHOOK_URL }}
