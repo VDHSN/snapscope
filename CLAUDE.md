@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to opencode when working with code in this repository.
 
 ## Memory MCP
 
@@ -75,8 +75,8 @@ cd packages/ui && pnpm build-storybook
 
 ### Root Level
 ```bash
-# Claude Code CLI (configured)
-pnpm c
+# opencode CLI
+opencode
 
 # Run PR & pre-commit checks
 pnpm run checks

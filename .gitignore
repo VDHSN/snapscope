@@ -11,3 +11,4 @@ tsconfig.tsbuildinfo
 **/public/sw.js
 **/public/worker-*.js
 .pnpm-store
+.worktrees

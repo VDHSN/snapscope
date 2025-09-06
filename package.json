@@ -13,7 +13,8 @@
     "dev:start": "devpod up --open-ide=false .",
     "dev:connect": "ssh snapscope.devpod",
     "dev:clean": "devpod delete .",
-    "dev:omnara": "caffeinate -i -s uv run omnara"
+    "dev:omnara": "caffeinate -i -s uv run omnara",
+    "postinstall": "ln -sf CLAUDE.md AGENTS.md"
   },
   "workspaces": [
     "packages/*"
