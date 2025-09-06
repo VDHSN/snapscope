@@ -9,7 +9,7 @@ import { Card } from '@snapscope/ui/card';
 import { Progress } from '@snapscope/ui/progress';
 import { ThemeToggle } from '@snapscope/ui/theme-toggle';
 import { ArrowLeftIcon, CameraIcon, CheckIcon } from '@snapscope/ui/icon';
-import { CameraCapture } from '@snapscope/ui/camera-capture';
+import { PhotoCaptureScreen } from '@snapscope/ui/photo-capture-screen';
 import { useClaims } from '@/hooks/useStorage';
 import { unifiedPhotoStorage } from '@/lib/photo-storage-unified';
 import { 
@@ -35,6 +35,7 @@ export default function PhotoGuidePage() {
   const [showCamera, setShowCamera] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [storageWarning, setStorageWarning] = useState<string | null>(null);
+  const [blurWarning, setBlurWarning] = useState<string | null>(null);
 
   // Load claim data and initialize photo state
   useEffect(() => {
@@ -178,11 +179,25 @@ export default function PhotoGuidePage() {
     }
   };
 
-  const handlePhotoCapture = async (photoBlob: Blob) => {
+  const handleBlurDetected = (isBlurry: boolean) => {
+    if (isBlurry) {
+      setBlurWarning('The photo appears blurry. You can retake it or continue with this photo.');
+    } else {
+      setBlurWarning(null);
+    }
+  };
+
+  const handlePhotoCapture = async (photoBlob: Blob, isBlurry?: boolean) => {
     if (!claim || !currentPosition) return;
 
     setSaving(true);
     setError(null);
+    setBlurWarning(null); // Clear blur warning when capturing
+
+    // Log blur detection result for debugging
+    if (isBlurry !== undefined) {
+      console.debug('[PhotoCapture] Blur detection result:', isBlurry);
+    }
 
     try {
       // Check storage capacity before saving
@@ -493,6 +508,41 @@ export default function PhotoGuidePage() {
             </button>
           </div>
         )}
+
+        {/* Blur Warning */}
+        {blurWarning && !error && !storageWarning && (
+          <div style={{
+            background: 'var(--color-warning-bg)',
+            border: '1px solid var(--color-warning)',
+            borderRadius: 'var(--border-radius-md)',
+            padding: 'var(--space-md)',
+            marginBottom: 'var(--space-lg)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--space-sm)'
+          }}>
+            <div style={{ color: 'var(--color-warning)', fontSize: '20px' }}>📸</div>
+            <div style={{ flex: 1 }}>
+              <Typography variant="body" style={{ color: 'var(--color-warning)', fontWeight: 'var(--font-weight-medium)' }}>
+                {blurWarning}
+              </Typography>
+            </div>
+            <button
+              onClick={() => setBlurWarning(null)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--color-warning)',
+                cursor: 'pointer',
+                padding: 'var(--space-xs)',
+                fontSize: '16px'
+              }}
+              title="Dismiss warning"
+            >
+              ✕
+            </button>
+          </div>
+        )}
         {/* Current Position Card */}
         {currentPosition && (
           <Card
@@ -746,15 +796,22 @@ export default function PhotoGuidePage() {
         )}
       </div>
 
-      {/* Camera Capture */}
-      <CameraCapture
+      {/* Photo Capture Screen */}
+      <PhotoCaptureScreen
         isOpen={showCamera}
         onClose={() => setShowCamera(false)}
         onCapture={handlePhotoCapture}
         onError={(error) => {
           console.error('Camera error:', error);
-          alert(`Camera error: ${error}`);
+          setError(`Camera error: ${error}`);
         }}
+        headerText={currentPosition?.name}
+        footerText={currentPosition?.name}
+        progressText={`${completedPositions.length}/${PHOTO_GUIDE_METADATA.totalRequired} photos complete`}
+        overlayColor="rgba(123, 97, 255, 0.3)" // Match existing purple gradient
+        enableBlurDetection={true}
+        blurThreshold={15} // Good threshold for vehicle photos
+        onBlurDetected={handleBlurDetected}
         facingMode="environment" // Rear camera for vehicle photos
         quality={0.8}
         maxWidth={1920}
