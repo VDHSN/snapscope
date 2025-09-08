@@ -158,6 +158,7 @@ export const ErrorState: Story = {
     src: 'https://invalid-url.com/nonexistent-video.mp4',
     showControls: true,
     aspectRatio: 'video',
+    width: "120px"
   },
   parameters: {
     docs: {
