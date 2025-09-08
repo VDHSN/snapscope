@@ -99,6 +99,7 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
   const [showCameraWarning, setShowCameraWarning] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [isAnalyzingBlur, setIsAnalyzingBlur] = useState(false);
+  const [prevIsOpen, setPrevIsOpen] = useState(false);
   const maxRetries = 2;
 
   // Use the permissions hook
@@ -408,11 +409,14 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
       videoRef.current.srcObject = null;
     }
     
+    // Reset all camera-related state
     setCameraState('idle');
-    setRetryCount(0); // Reset retry count when stopping camera
-    setShowCameraWarning(false); // Clear warning
-    setStreamInfo(null); // Clear stream info
-    setIsAnalyzingBlur(false); // Reset blur analysis
+    setError(null);
+    setRetryCount(0);
+    setShowCameraWarning(false);
+    setStreamInfo(null);
+    setIsCapturing(false);
+    setIsAnalyzingBlur(false);
   }, []);
 
   // Capture photo from video stream
@@ -483,37 +487,49 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
     // This would require lifting the facingMode state up to the parent component
   }, [stopCamera]);
 
-  // Start camera when modal opens
+  // Handle modal open/close - start camera when opening, stop when closing
   useEffect(() => {
-    if (isOpen && cameraState === 'idle') {
+    if (isOpen && !prevIsOpen) {
+      // Modal just opened - always start camera
+      console.debug('[PhotoCaptureScreen] Modal opened, starting camera');
       startCamera();
+    } else if (!isOpen && prevIsOpen) {
+      // Modal just closed - always stop camera
+      console.debug('[PhotoCaptureScreen] Modal closed, stopping camera');
+      stopCamera();
     }
-  }, [isOpen, cameraState, startCamera]);
+    
+    // Update previous state
+    setPrevIsOpen(isOpen);
+  }, [isOpen, prevIsOpen, startCamera, stopCamera]);
 
   // Handle retry after state change
   useEffect(() => {
-    if (cameraState === 'idle' && retryCount > 0) {
-      // Slight delay before retry
+    if (cameraState === 'idle' && retryCount > 0 && isOpen) {
+      // Only retry if modal is still open
       const timeoutId = setTimeout(() => {
+        console.debug('[PhotoCaptureScreen] Retrying camera after error');
         startCamera();
       }, 500);
       
       return () => clearTimeout(timeoutId);
     }
-  }, [cameraState, retryCount, startCamera]);
+  }, [cameraState, retryCount, startCamera, isOpen]);
 
-  // Cleanup when component unmounts or modal closes
+  // Cleanup when component unmounts
   useEffect(() => {
     return () => {
+      console.debug('[PhotoCaptureScreen] Component unmounting, cleaning up');
       stopCamera();
     };
   }, [stopCamera]);
 
   // Handle modal close
   const handleClose = useCallback(() => {
-    stopCamera();
+    // Note: stopCamera will be called automatically by the isOpen effect
+    // when onClose() causes isOpen to become false
     onClose();
-  }, [stopCamera, onClose]);
+  }, [onClose]);
 
   // Handle file upload fallback
   const handleFileUpload = useCallback(() => {
