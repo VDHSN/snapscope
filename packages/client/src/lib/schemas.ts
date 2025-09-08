@@ -85,7 +85,7 @@ const claimSchema = z.object({
   vehicle: vehicleSchema,
   contacts: z.array(claimContactSchema),
   damages: z.array(damageAssessmentSchema),
-  photos: z.array(photoReferenceSchema),
+  photos: z.record(z.string(), photoReferenceSchema).optional(),
   status: z.enum(['draft', 'in_progress', 'completed', 'submitted', 'approved', 'rejected']),
   priority: z.enum(['low', 'normal', 'high', 'urgent']),
   createdAt: z.date(),

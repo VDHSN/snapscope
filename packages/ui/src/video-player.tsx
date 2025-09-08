@@ -15,6 +15,7 @@ export interface VideoPlayerProps extends React.VideoHTMLAttributes<HTMLVideoEle
   showControls?: boolean;
   aspectRatio?: 'video' | 'square' | 'widescreen' | 'ultrawide';
   lazyLoad?: boolean;
+  useDefaultFallback?: boolean;
 }
 
 const aspectRatios = {
@@ -41,6 +42,7 @@ export const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>(
     showControls = true,
     aspectRatio = 'video',
     lazyLoad = true,
+    useDefaultFallback = true,
     className = '',
     style,
     onLoadStart,
@@ -206,6 +208,54 @@ export const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>(
 
     // Show error placeholder if no fallback
     if (isError) {
+      // Show noise GIF if useDefaultFallback is enabled
+      if (useDefaultFallback) {
+        return (
+          <div
+            style={{
+              ...combinedStyle,
+              position: 'relative',
+              backgroundColor: 'var(--bg-surface)',
+              backgroundImage: 'url(/noise.gif)',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'repeat',
+              backgroundPosition: 'center',
+              borderRadius: 'var(--border-radius-md)',
+              overflow: 'hidden',
+            }}
+            className={className}
+            role="img"
+            aria-label="Video failed to load - showing technical difficulties pattern"
+          >
+            {/* Overlay with subtle message */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                color: 'white',
+              }}
+            >
+              <div style={{ textAlign: 'center', textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)' }}>
+                <p style={{ margin: 0, fontSize: 'var(--font-size-small)', fontWeight: 'var(--font-weight-medium)' }}>
+                  Technical Difficulties
+                </p>
+                <p style={{ margin: '4px 0 0 0', fontSize: 'var(--font-size-xs)', opacity: 0.8 }}>
+                  Video content unavailable
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      }
+      
+      // Fallback to original SVG error placeholder
       return (
         <div
           style={{

@@ -317,8 +317,8 @@ class IndexedDBPhotoStorage {
       // Encrypt the blob
       const encryptedData = await this.encryptBlob(compressedBlob);
 
-      // Generate photo ID
-      const photoId = `photo_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+      // Generate position-based photo ID for atomic retakes
+      const photoId = metadata.damageAreaId ? `${metadata.damageAreaId}_photo` : `photo_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
 
       // Create photo reference
       const photoReference: PhotoReference = {
@@ -410,11 +410,29 @@ class IndexedDBPhotoStorage {
   }
 
   /**
-   * Get photo as object URL
+   * Get photo as object URL with cache busting for retakes
    */
-  async getPhotoObjectUrl(photoId: string): Promise<string | null> {
+  async getPhotoObjectUrl(photoId: string, cacheBust?: boolean): Promise<string | null> {
     const blob = await this.getPhotoBlob(photoId);
-    return blob ? URL.createObjectURL(blob) : null;
+    if (!blob) return null;
+    
+    const objectUrl = URL.createObjectURL(blob);
+    
+    // Add cache busting parameter if requested (for retakes)
+    if (cacheBust) {
+      return `${objectUrl}#t=${Date.now()}`;
+    }
+    
+    return objectUrl;
+  }
+
+  /**
+   * Clear any cached references for a photo ID (useful for retakes)
+   */
+  async clearPhotoCache(photoId: string): Promise<void> {
+    // For IndexedDB, we don't have external caching, but this method
+    // provides interface compatibility for cache invalidation
+    console.log(`Cache cleared for photo ID: ${photoId}`);
   }
 
   /**

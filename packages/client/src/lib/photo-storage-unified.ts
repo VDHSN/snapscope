@@ -156,22 +156,22 @@ class UnifiedPhotoStorage {
   }
 
   /**
-   * Get photo as object URL
+   * Get photo as object URL with optional cache busting
    */
-  async getPhotoObjectUrl(photoId: string): Promise<string | null> {
+  async getPhotoObjectUrl(photoId: string, cacheBust?: boolean): Promise<string | null> {
     await this.initialize();
 
     if (this.config.preferredBackend === 'indexeddb') {
-      return indexedDBPhotoStorage.getPhotoObjectUrl(photoId);
+      return indexedDBPhotoStorage.getPhotoObjectUrl(photoId, cacheBust);
     } else {
       return legacyStorage.getPhotoObjectUrl(photoId);
     }
   }
 
   /**
-   * Get photo as data URL (fallback for localStorage compatibility)
+   * Get photo as data URL with optional cache busting (fallback for localStorage compatibility)
    */
-  async getPhotoDataUrl(photoId: string): Promise<string | null> {
+  async getPhotoDataUrl(photoId: string, cacheBust?: boolean): Promise<string | null> {
     await this.initialize();
 
     if (this.config.preferredBackend === 'indexeddb') {
@@ -181,13 +181,32 @@ class UnifiedPhotoStorage {
 
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
+        reader.onload = () => {
+          let dataUrl = reader.result as string;
+          // Add cache busting parameter if requested
+          if (cacheBust) {
+            dataUrl += `#t=${Date.now()}`;
+          }
+          resolve(dataUrl);
+        };
         reader.onerror = () => reject(new Error('Failed to convert blob to data URL'));
         reader.readAsDataURL(blob);
       });
     } else {
       return legacyStorage.getPhotoDataUrl(photoId);
     }
+  }
+
+  /**
+   * Clear photo cache for retakes
+   */
+  async clearPhotoCache(photoId: string): Promise<void> {
+    await this.initialize();
+
+    if (this.config.preferredBackend === 'indexeddb') {
+      return indexedDBPhotoStorage.clearPhotoCache(photoId);
+    }
+    // Legacy storage doesn't have caching, so this is a no-op
   }
 
   /**
@@ -381,9 +400,8 @@ class UnifiedPhotoStorage {
   }
 }
 
-// Export singleton instance
-export const unifiedPhotoStorage = new UnifiedPhotoStorage();
+// Export the class for manual instantiation
+export { UnifiedPhotoStorage };
 
-// Backward compatibility exports
-export { unifiedPhotoStorage as photoBlobStorage };
+// Export type
 export type { PhotoReference } from '@/types/claim';
