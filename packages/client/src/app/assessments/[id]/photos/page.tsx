@@ -11,7 +11,7 @@ import { ThemeToggle } from '@snapscope/ui/theme-toggle';
 import { ArrowLeftIcon, CameraIcon, CheckIcon } from '@snapscope/ui/icon';
 import { PhotoCaptureScreen } from '@snapscope/ui/photo-capture-screen';
 import { useClaims } from '@/hooks/useStorage';
-import { unifiedPhotoStorage } from '@/lib/photo-storage-unified';
+import { usePhotoStorage } from '@/hooks/usePhotoStorage';
 import { 
   PHOTO_POSITIONS, 
   getPositionById, 
@@ -25,6 +25,7 @@ export default function PhotoGuidePage() {
   const router = useRouter();
   const params = useParams();
   const { getClaim, saveClaim } = useClaims();
+  const { photoStorage, isReady: storageReady, initializationError } = usePhotoStorage();
   const claimId = params.id as string;
 
   const [loading, setLoading] = useState(true);
@@ -55,11 +56,8 @@ export default function PhotoGuidePage() {
       }
       
       // Initialize completed positions from existing photos
-      const existingPhotos = loadedClaim.photos || [];
-      const completed = existingPhotos
-        .filter(photo => photo.damageAreaId) // Photos associated with positions
-        .map(photo => photo.damageAreaId!)
-        .filter(Boolean);
+      const existingPhotos = loadedClaim.photos || {};
+      const completed = Object.keys(existingPhotos); // Keys are now damageAreaIds
       
       setCompletedPositions(completed);
       
@@ -85,48 +83,65 @@ export default function PhotoGuidePage() {
   // Get current position photo for display
   useEffect(() => {
     const loadCurrentPositionPhoto = async () => {
-      if (!claim || !currentPosition) {
+      if (!claim || !currentPosition || !photoStorage || !storageReady) {
         setCurrentPositionPhoto(null);
         return;
       }
       
-      const photo = claim.photos?.find(p => p.damageAreaId === currentPosition.id);
+      const photo = claim.photos ? claim.photos[currentPosition.id] : undefined;
       if (!photo) {
         setCurrentPositionPhoto(null);
         return;
       }
       
       try {
-        // Get photo data URL for display
-        const dataUrl = await unifiedPhotoStorage.getPhotoDataUrl(photo.id);
+        // Get photo data URL for display with cache busting for retakes
+        const isRetake = completedPositions.includes(currentPosition.id);
+        const dataUrl = await photoStorage.getPhotoDataUrl(photo.id, isRetake);
         setCurrentPositionPhoto(dataUrl ? { ...photo, dataUrl } : null);
       } catch (error) {
         console.warn('Failed to load current position photo:', error);
-        setCurrentPositionPhoto(null);
+        // Retry once without cache busting
+        try {
+          const retryDataUrl = await photoStorage.getPhotoDataUrl(photo.id);
+          setCurrentPositionPhoto(retryDataUrl ? { ...photo, dataUrl: retryDataUrl } : null);
+        } catch (retryError) {
+          console.warn('Retry failed for current position photo:', retryError);
+          setCurrentPositionPhoto(null);
+        }
       }
     };
 
     loadCurrentPositionPhoto();
-  }, [claim, currentPosition]);
+  }, [claim, currentPosition, photoStorage, storageReady, completedPositions]);
 
   // Load photo data URLs for progress grid
   useEffect(() => {
     const loadPhotoDataUrls = async () => {
-      if (!claim?.photos) return;
+      if (!claim?.photos || !photoStorage || !storageReady) return;
 
       const urlMap: Record<string, string> = {};
       
-      // Load data URLs for all photos
+      // Load data URLs for all photos (photos are now keyed by damageAreaId)
       await Promise.all(
-        claim.photos.map(async (photo) => {
-          if (photo.damageAreaId) {
+        Object.values(claim.photos).map(async (photo) => {
+          try {
+            // Use cache busting for recently completed positions that might be retakes
+            const isRecentlyCompleted = photo.damageAreaId ? completedPositions.includes(photo.damageAreaId) : false;
+            const dataUrl = await photoStorage.getPhotoDataUrl(photo.id, isRecentlyCompleted);
+            if (dataUrl) {
+              urlMap[photo.id] = dataUrl;
+            }
+          } catch (error) {
+            console.warn(`Failed to load photo ${photo.id}:`, error);
+            // Retry without cache busting
             try {
-              const dataUrl = await unifiedPhotoStorage.getPhotoDataUrl(photo.id);
-              if (dataUrl) {
-                urlMap[photo.id] = dataUrl;
+              const retryDataUrl = await photoStorage.getPhotoDataUrl(photo.id);
+              if (retryDataUrl) {
+                urlMap[photo.id] = retryDataUrl;
               }
-            } catch (error) {
-              console.warn(`Failed to load photo ${photo.id}:`, error);
+            } catch (retryError) {
+              console.warn(`Retry failed for photo ${photo.id}:`, retryError);
             }
           }
         })
@@ -136,13 +151,15 @@ export default function PhotoGuidePage() {
     };
 
     loadPhotoDataUrls();
-  }, [claim?.photos]);
+  }, [claim?.photos, photoStorage, storageReady, completedPositions]);
 
   // Check storage capacity on load
   useEffect(() => {
     const checkStorageCapacity = async () => {
+      if (!photoStorage || !storageReady) return;
+      
       try {
-        const storageCheck = await unifiedPhotoStorage.checkStorageCapacity();
+        const storageCheck = await photoStorage.checkStorageCapacity();
         if (storageCheck.warning) {
           setStorageWarning(storageCheck.warning);
         }
@@ -152,7 +169,7 @@ export default function PhotoGuidePage() {
     };
 
     checkStorageCapacity();
-  }, []);
+  }, [photoStorage, storageReady]);
 
   const handleBack = () => {
     router.back();
@@ -163,9 +180,14 @@ export default function PhotoGuidePage() {
   };
 
   const handleTakePhoto = async () => {
+    if (!photoStorage || !storageReady) {
+      setError('Photo storage not ready. Please wait a moment and try again.');
+      return;
+    }
+    
     try {
       // Check storage capacity before opening camera
-      const storageCheck = await unifiedPhotoStorage.checkStorageCapacity();
+      const storageCheck = await photoStorage.checkStorageCapacity();
       if (!storageCheck.available) {
         setError(storageCheck.warning || 'Storage full. Unable to take more photos.');
         return;
@@ -188,7 +210,10 @@ export default function PhotoGuidePage() {
   };
 
   const handlePhotoCapture = async (photoBlob: Blob, isBlurry?: boolean) => {
-    if (!claim || !currentPosition) return;
+    if (!claim || !currentPosition || !photoStorage || !storageReady) {
+      setError('Unable to save photo. Storage not ready.');
+      return;
+    }
 
     setSaving(true);
     setError(null);
@@ -201,7 +226,7 @@ export default function PhotoGuidePage() {
 
     try {
       // Check storage capacity before saving
-      const storageCheck = await unifiedPhotoStorage.checkStorageCapacity();
+      const storageCheck = await photoStorage.checkStorageCapacity();
       if (!storageCheck.available) {
         throw new Error('Storage full. Unable to save photo.');
       }
@@ -209,8 +234,8 @@ export default function PhotoGuidePage() {
       const timestamp = new Date();
       const filename = `${currentPosition.id}_${timestamp.getTime()}.jpg`;
 
-      // Save photo using unifiedPhotoStorage
-      const photoReference = await unifiedPhotoStorage.savePhoto(photoBlob, {
+      // Save photo using photoStorage
+      const photoReference = await photoStorage.savePhoto(photoBlob, {
         filename,
         caption: currentPosition.name,
         damageAreaId: currentPosition.id,
@@ -218,8 +243,19 @@ export default function PhotoGuidePage() {
         cloudUrl: undefined,
       });
 
+      // Clear cache for retakes to ensure immediate UI updates
+      if (completedPositions.includes(currentPosition.id)) {
+        await photoStorage.clearPhotoCache(photoReference.id);
+      }
+
+      // Create updated photos record - now keyed by damageAreaId for O(1) access
+      const updatedPhotos = { ...claim.photos || {} };
+      
+      // Simple assignment - replaces existing photo if it exists (retake scenario)
+      updatedPhotos[currentPosition.id] = photoReference;
+      
       // Update completed positions
-      const newCompleted = [...completedPositions, currentPosition.id];
+      const newCompleted = [...new Set([...completedPositions, currentPosition.id])];
       setCompletedPositions(newCompleted);
       
       // Check if all required photos are completed
@@ -228,7 +264,7 @@ export default function PhotoGuidePage() {
       // Update claim with new photo and potentially new status
       const updatedClaim: Claim = {
         ...claim,
-        photos: [...(claim.photos || []), photoReference],
+        photos: updatedPhotos,
         status: allRequired ? 'completed' : claim.status,
         updatedAt: timestamp,
       };
@@ -236,17 +272,20 @@ export default function PhotoGuidePage() {
       await saveClaim(updatedClaim);
       setClaim(updatedClaim);
       
-      // Move to next position if available
-      const nextPosition = getNextPosition(currentPosition.id);
-      if (nextPosition) {
-        setCurrentPositionId(nextPosition.id);
+      // Only auto-navigate to next position for NEW photos, not retakes
+      const isRetake = completedPositions.includes(currentPosition.id);
+      if (!isRetake) {
+        const nextPosition = getNextPosition(currentPosition.id);
+        if (nextPosition) {
+          setCurrentPositionId(nextPosition.id);
+        }
       }
       
       setShowCamera(false);
       
       // Check storage after saving
       try {
-        const postSaveCheck = await unifiedPhotoStorage.checkStorageCapacity();
+        const postSaveCheck = await photoStorage.checkStorageCapacity();
         if (postSaveCheck.warning) {
           setStorageWarning(postSaveCheck.warning);
         }
@@ -294,7 +333,7 @@ export default function PhotoGuidePage() {
     }
   };
 
-  if (loading) {
+  if (loading || !storageReady) {
     return (
       <div style={{ 
         minHeight: '100vh', 
@@ -303,7 +342,9 @@ export default function PhotoGuidePage() {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        <Typography variant="body">Loading...</Typography>
+        <Typography variant="body">
+          {loading ? 'Loading...' : initializationError ? `Storage Error: ${initializationError.message}` : 'Initializing photo storage...'}
+        </Typography>
       </div>
     );
   }
@@ -692,7 +733,7 @@ export default function PhotoGuidePage() {
             gap: 'var(--space-sm)'
           }}>
             {PHOTO_POSITIONS.slice(0, 8).map((position) => {
-              const positionPhoto = claim?.photos?.find(p => p.damageAreaId === position.id);
+              const positionPhoto = claim?.photos ? claim.photos[position.id] : undefined;
               const photoDataUrl = positionPhoto ? photoDataUrls[positionPhoto.id] : null;
               
               return (

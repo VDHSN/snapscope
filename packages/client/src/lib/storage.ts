@@ -42,6 +42,61 @@ function clearExpiredCache(): void {
 }
 
 /**
+ * Migrate photos from array to Record structure for a single claim
+ * Now keys photos by damageAreaId for O(1) direct access
+ */
+function migrateClaimPhotos(claim: unknown): Claim {
+  // Type guard to ensure we're working with an object
+  if (typeof claim !== 'object' || claim === null) {
+    throw new Error('Invalid claim data for migration');
+  }
+  
+  const claimData = claim as Record<string, unknown>;
+  
+  if (claimData.photos && Array.isArray(claimData.photos)) {
+    const photosRecord: Record<string, PhotoReference> = {};
+    claimData.photos.forEach((photo: PhotoReference) => {
+      // Key by damageAreaId if it exists, otherwise skip (photos without damageAreaId are not position-based)
+      if (photo.damageAreaId) {
+        photosRecord[photo.damageAreaId] = photo;
+      }
+    });
+    return {
+      ...claimData,
+      photos: photosRecord,
+    } as unknown as Claim;
+  }
+  
+  // If photos is already an object but keyed by photo.id, migrate it to damageAreaId keys
+  if (claimData.photos && typeof claimData.photos === 'object' && !Array.isArray(claimData.photos)) {
+    const currentPhotos = claimData.photos as Record<string, PhotoReference>;
+    const photosRecord: Record<string, PhotoReference> = {};
+    
+    // Check if we need to migrate from photo.id keys to damageAreaId keys
+    const firstPhoto = Object.values(currentPhotos)[0];
+    if (firstPhoto && Object.keys(currentPhotos).includes(firstPhoto.id)) {
+      // This looks like it's keyed by photo.id, migrate to damageAreaId
+      Object.values(currentPhotos).forEach((photo: PhotoReference) => {
+        if (photo.damageAreaId) {
+          photosRecord[photo.damageAreaId] = photo;
+        }
+      });
+      return {
+        ...claimData,
+        photos: photosRecord,
+      } as unknown as Claim;
+    }
+  }
+  
+  // Ensure photos is an object if it's undefined
+  if (!claimData.photos) {
+    claimData.photos = {};
+  }
+  
+  return claimData as unknown as Claim;
+}
+
+/**
  * Get data from cache if valid, otherwise from storage
  */
 function getCachedData<T>(key: string, fallback: T, schema?: z.ZodType<T>): T {
@@ -54,6 +109,19 @@ function getCachedData<T>(key: string, fallback: T, schema?: z.ZodType<T>): T {
   
   const data = localStorage.getItem(key);
   const parsed = safeParse(data, fallback, schema);
+  
+  // Apply migration for claims data
+  if (key === STORAGE_KEYS.CLAIMS && Array.isArray(parsed)) {
+    const migratedClaims = parsed.map(migrateClaimPhotos);
+    // Save migrated data back to storage
+    try {
+      localStorage.setItem(key, safeStringify(migratedClaims));
+    } catch (error) {
+      console.warn('Failed to save migrated claims data:', error);
+    }
+    storageCache.set(key, { data: migratedClaims, timestamp: Date.now() });
+    return migratedClaims as T;
+  }
   
   // Cache the parsed data
   storageCache.set(key, { data: parsed, timestamp: Date.now() });
@@ -264,8 +332,11 @@ export const claimsStorage = {
     const claims = this.getAll();
     const existingIndex = claims.findIndex(c => c.id === claim.id);
     
+    // Ensure the claim has the correct photos structure
+    const migratedClaim = migrateClaimPhotos(claim);
+    
     const updatedClaim = {
-      ...claim,
+      ...migratedClaim,
       updatedAt: new Date(),
     };
 

@@ -121,7 +121,7 @@ export function useClaims() {
         },
         contacts: [],
         damages: [],
-        photos: [],
+        photos: {},
         status: 'draft',
         priority: 'normal',
         createdAt: now,

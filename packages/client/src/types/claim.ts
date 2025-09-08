@@ -76,7 +76,7 @@ export interface Claim {
   
   // Assessment data
   damages: DamageAssessment[];
-  photos: PhotoReference[];
+  photos?: Record<string, PhotoReference>;
   
   // Status and workflow
   status: 'draft' | 'in_progress' | 'completed' | 'submitted' | 'approved' | 'rejected';
