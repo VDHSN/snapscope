@@ -744,7 +744,7 @@ export default function PhotoGuidePage() {
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 'var(--space-sm)'
           }}>
-            {photoPositions.slice(0, 8).map((position) => {
+            {photoPositions.map((position) => {
               const positionPhoto = claim?.photos ? claim.photos[position.id] : undefined;
               const photoDataUrl = positionPhoto ? photoDataUrls[positionPhoto.id] : null;
               

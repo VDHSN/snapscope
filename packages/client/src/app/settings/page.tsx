@@ -110,7 +110,7 @@ export default function SettingsPage() {
       <div style={headerStyle}>
         <button
           style={backButtonStyle}
-          onClick={() => router.push('/')}
+          onClick={() => router.push('/assessments')}
           onMouseEnter={(e) => {
             e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
           }}
