@@ -16,7 +16,6 @@ import { useCarrierSettings } from '@/hooks/useCarrierSettings';
 import {
   getPhotoPositionsForCarrier,
   getPositionById,
-  getNextPosition,
   areAllRequiredPhotosCompleted,
   getPhotoMetadataForCarrier
 } from '@/lib/photo-positions';
@@ -282,17 +281,11 @@ export default function PhotoGuidePage() {
 
       await saveClaim(updatedClaim);
       setClaim(updatedClaim);
-      
-      // Only auto-navigate to next position for NEW photos, not retakes
-      const isRetake = completedPositions.includes(currentPosition.id);
-      if (!isRetake) {
-        const nextPosition = getNextPosition(currentPosition.id);
-        if (nextPosition) {
-          setCurrentPositionId(nextPosition.id);
-        }
-      }
-      
+
       setShowCamera(false);
+
+      // Navigate to damage notes page
+      router.push(`/assessments/${claimId}/photos/notes?photoId=${photoReference.id}&positionId=${currentPosition.id}`);
       
       // Check storage after saving
       try {
