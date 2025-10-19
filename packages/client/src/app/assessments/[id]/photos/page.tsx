@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Typography } from '@snapscope/ui/typography';
 import { Logo } from '@snapscope/ui/logo';
@@ -10,6 +10,7 @@ import { Progress } from '@snapscope/ui/progress';
 import { ThemeToggle } from '@snapscope/ui/theme-toggle';
 import { ArrowLeftIcon, CameraIcon, CheckIcon } from '@snapscope/ui/icon';
 import { PhotoCaptureScreen } from '@snapscope/ui/photo-capture-screen';
+import { PhotoNotesDisplay } from '@snapscope/ui/photo-notes-display';
 import { useClaims } from '@/hooks/useStorage';
 import { usePhotoStorage } from '@/hooks/usePhotoStorage';
 import { useCarrierSettings } from '@/hooks/useCarrierSettings';
@@ -336,6 +337,46 @@ export default function PhotoGuidePage() {
       handlePositionSelect(positionId);
     }
   };
+
+  // Handle notes save with auto-save
+  const handleNotesSave = useCallback(async (newNotes: string) => {
+    if (!claim || !currentPosition) {
+      console.warn('Cannot save notes: claim or currentPosition not available');
+      return;
+    }
+
+    try {
+      // Get current photo for this position
+      const currentPhoto = claim.photos ? claim.photos[currentPosition.id] : undefined;
+
+      if (!currentPhoto) {
+        console.warn('No photo found for current position');
+        return;
+      }
+
+      // Update photo with new notes
+      const updatedPhoto = {
+        ...currentPhoto,
+        notes: newNotes.trim() || undefined,
+      };
+
+      // Update claim with modified photo
+      const updatedPhotos = { ...claim.photos || {} };
+      updatedPhotos[currentPosition.id] = updatedPhoto;
+
+      const updatedClaim = {
+        ...claim,
+        photos: updatedPhotos,
+        updatedAt: new Date(),
+      };
+
+      await saveClaim(updatedClaim);
+      setClaim(updatedClaim);
+    } catch (error) {
+      console.error('Failed to save notes:', error);
+      throw error; // Re-throw to let PhotoNotesDisplay handle error state
+    }
+  }, [claim, currentPosition, saveClaim]);
 
   if (loading || !storageReady) {
     return (
@@ -664,9 +705,18 @@ export default function PhotoGuidePage() {
                   </div>
                 )}
               </div>
-              
+
+              {/* Damage Notes - Only show if photo exists */}
+              {currentPositionPhoto && (
+                <PhotoNotesDisplay
+                  notes={currentPositionPhoto.notes}
+                  onSave={handleNotesSave}
+                  isSaving={saving}
+                />
+              )}
+
               {/* Guidance Text */}
-              <Typography variant="caption" style={{ 
+              <Typography variant="caption" style={{
                 color: 'var(--text-secondary)',
                 fontSize: 'var(--font-size-small)',
                 fontStyle: 'italic',
