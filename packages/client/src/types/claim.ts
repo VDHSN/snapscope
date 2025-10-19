@@ -57,6 +57,35 @@ export interface PhotoReference {
   };
 }
 
+export interface PhotoStep {
+  id: string;
+  label: string;
+  description?: string;
+  required: boolean;
+  order: number;
+  category: 'exterior' | 'interior' | 'vin' | 'damage';
+}
+
+export interface DamagePhotoConfig {
+  requireLabeling: boolean;
+  allowVoiceNotes: boolean;
+  skipLabelingOption: boolean;
+}
+
+export interface PhotoWorkflow {
+  standardPhotos: PhotoStep[];
+  damagePhotos: DamagePhotoConfig;
+}
+
+export interface Carrier {
+  id: string;
+  name: string;
+  workflow: PhotoWorkflow;
+  isTemplate: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface Claim {
   id: string;
   claimNumber?: string;
@@ -69,25 +98,28 @@ export interface Claim {
       longitude: number;
     };
   };
-  
+
   // Parties involved
   vehicle: Vehicle;
   contacts: ClaimContact[];
-  
+
   // Assessment data
   damages: DamageAssessment[];
   photos?: Record<string, PhotoReference>;
-  
+
+  // Carrier workflow
+  carrierId?: string;
+
   // Status and workflow
   status: 'draft' | 'in_progress' | 'completed' | 'submitted' | 'approved' | 'rejected';
   priority: 'low' | 'normal' | 'high' | 'urgent';
-  
+
   // Metadata
   createdAt: Date;
   updatedAt: Date;
   createdBy?: string; // Adjuster ID
   syncStatus: 'local_only' | 'synced' | 'sync_pending' | 'sync_failed';
-  
+
   // Additional notes and documentation
   notes?: string;
   weatherConditions?: string;

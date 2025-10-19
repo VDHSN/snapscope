@@ -97,7 +97,7 @@ export function useClaims() {
     return claims.filter(claim => claim.status === status);
   }, [claims]);
 
-  const createClaimWithVIN = useCallback(async (vin: string): Promise<Claim> => {
+  const createClaimWithVIN = useCallback(async (vin: string, carrierId?: string): Promise<Claim> => {
     try {
       const now = new Date();
       const claimId = `claim_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
@@ -116,12 +116,13 @@ export function useClaims() {
           id: vehicleId,
           vin: vin.toUpperCase(),
           make: undefined, // To be filled in next steps
-          model: undefined, // To be filled in next steps  
+          model: undefined, // To be filled in next steps
           year: new Date().getFullYear(), // Default to current year, to be updated
         },
         contacts: [],
         damages: [],
         photos: {},
+        carrierId, // Optional carrier ID
         status: 'draft',
         priority: 'normal',
         createdAt: now,
