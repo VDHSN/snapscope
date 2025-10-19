@@ -9,7 +9,8 @@ import type {
   UserPreferences,
   SyncQueueItem,
   StorageMetadata,
-  PhotoReference
+  PhotoReference,
+  Carrier
 } from '@/types/claim';
 import { schemas, storageKeySchema } from './schemas';
 
@@ -20,6 +21,7 @@ const STORAGE_KEYS = {
   SYNC_QUEUE: 'snapscope_sync_queue',
   METADATA: 'snapscope_metadata',
   PHOTOS: 'snapscope_photos',
+  CARRIER_SETTINGS: 'snapscope_carrier_settings',
 } as const;
 
 // Storage version for migration handling
@@ -50,8 +52,19 @@ function migrateClaimPhotos(claim: unknown): Claim {
   if (typeof claim !== 'object' || claim === null) {
     throw new Error('Invalid claim data for migration');
   }
-  
+
   const claimData = claim as Record<string, unknown>;
+
+  // Validate required claim properties
+  if (!('id' in claimData) || typeof claimData.id !== 'string') {
+    throw new Error('Invalid claim data: missing or invalid id');
+  }
+  if (!('vehicle' in claimData) || typeof claimData.vehicle !== 'object' || claimData.vehicle === null) {
+    throw new Error('Invalid claim data: missing or invalid vehicle');
+  }
+  if (!('status' in claimData) || typeof claimData.status !== 'string') {
+    throw new Error('Invalid claim data: missing or invalid status');
+  }
   
   if (claimData.photos && Array.isArray(claimData.photos)) {
     const photosRecord: Record<string, PhotoReference> = {};
@@ -649,6 +662,153 @@ function getDefaultPreferences(): UserPreferences {
 }
 
 /**
+ * Carrier settings storage operations
+ */
+export const carrierStorage = {
+  /**
+   * Get all carriers
+   */
+  getAll(): Carrier[] {
+    if (!isLocalStorageAvailable()) return [];
+
+    return getCachedData(STORAGE_KEYS.CARRIER_SETTINGS, [], schemas.carriers);
+  },
+
+  /**
+   * Get carrier by ID
+   */
+  getById(id: string): Carrier | null {
+    const carriers = this.getAll();
+    return carriers.find(carrier => carrier.id === id) ?? null;
+  },
+
+  /**
+   * Save carrier (create or update)
+   */
+  save(carrier: Carrier): void {
+    if (!isLocalStorageAvailable()) {
+      throw new StorageError('localStorage is not available');
+    }
+
+    const { canStore, warning } = checkStorageQuota();
+    if (!canStore) {
+      throw new StorageError('Storage quota exceeded. Cannot save carrier.');
+    }
+
+    if (warning) {
+      console.warn(warning);
+    }
+
+    const carriers = this.getAll();
+    const existingIndex = carriers.findIndex(c => c.id === carrier.id);
+
+    const updatedCarrier = {
+      ...carrier,
+      updatedAt: new Date(),
+    };
+
+    if (existingIndex >= 0) {
+      carriers[existingIndex] = updatedCarrier;
+    } else {
+      carriers.push(updatedCarrier);
+    }
+
+    try {
+      setCachedData(STORAGE_KEYS.CARRIER_SETTINGS, carriers);
+    } catch (error) {
+      invalidateCache(STORAGE_KEYS.CARRIER_SETTINGS);
+      throw new StorageError('Failed to save carrier to storage', error as Error);
+    }
+  },
+
+  /**
+   * Delete carrier
+   */
+  delete(id: string): boolean {
+    if (!isLocalStorageAvailable()) return false;
+
+    const carriers = this.getAll();
+    const filteredCarriers = carriers.filter(carrier => carrier.id !== id);
+
+    if (filteredCarriers.length === carriers.length) {
+      return false; // Carrier not found
+    }
+
+    try {
+      setCachedData(STORAGE_KEYS.CARRIER_SETTINGS, filteredCarriers);
+      invalidateCache(STORAGE_KEYS.CARRIER_SETTINGS);
+      return true;
+    } catch (error) {
+      throw new StorageError('Failed to delete carrier', error as Error);
+    }
+  },
+
+  /**
+   * Clear all carriers
+   */
+  clear(): void {
+    if (!isLocalStorageAvailable()) return;
+
+    localStorage.removeItem(STORAGE_KEYS.CARRIER_SETTINGS);
+    invalidateCache(STORAGE_KEYS.CARRIER_SETTINGS);
+  },
+
+  /**
+   * Export carriers as JSON string
+   */
+  export(): string {
+    const carriers = this.getAll();
+    return safeStringify(carriers);
+  },
+
+  /**
+   * Import carriers from JSON string
+   */
+  import(jsonData: string): { success: boolean; error?: string; imported: number } {
+    try {
+      const data = JSON.parse(jsonData);
+
+      if (!Array.isArray(data)) {
+        return { success: false, error: 'Invalid data format: expected array', imported: 0 };
+      }
+
+      let imported = 0;
+      const carriers = this.getAll();
+
+      for (const carrierData of data) {
+        try {
+          // Validate carrier data with schema
+          const carrier = schemas.carrier.parse({
+            ...carrierData,
+            createdAt: new Date(carrierData.createdAt),
+            updatedAt: new Date(carrierData.updatedAt),
+          });
+
+          // Check if carrier already exists
+          const existingIndex = carriers.findIndex(c => c.id === carrier.id);
+          if (existingIndex >= 0) {
+            carriers[existingIndex] = carrier;
+          } else {
+            carriers.push(carrier);
+          }
+          imported++;
+        } catch (error) {
+          console.warn('Skipping invalid carrier:', error);
+        }
+      }
+
+      if (imported > 0) {
+        setCachedData(STORAGE_KEYS.CARRIER_SETTINGS, carriers);
+      }
+
+      return { success: true, imported };
+    } catch (error) {
+      return { success: false, error: `Import failed: ${error}`, imported: 0 };
+    }
+  },
+};
+
+/**
  * Cross-tab synchronization using storage events
  */
 export function addStorageEventListener(callback: (key: string, newValue: unknown) => void): () => void {
@@ -662,7 +822,7 @@ export function addStorageEventListener(callback: (key: string, newValue: unknow
   };
 
   window.addEventListener('storage', handler);
-  
+
   // Return cleanup function
   return () => window.removeEventListener('storage', handler);
 }

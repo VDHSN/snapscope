@@ -12,12 +12,13 @@ import { ArrowLeftIcon, CameraIcon, CheckIcon } from '@snapscope/ui/icon';
 import { PhotoCaptureScreen } from '@snapscope/ui/photo-capture-screen';
 import { useClaims } from '@/hooks/useStorage';
 import { usePhotoStorage } from '@/hooks/usePhotoStorage';
-import { 
-  PHOTO_POSITIONS, 
-  getPositionById, 
+import { useCarrierSettings } from '@/hooks/useCarrierSettings';
+import {
+  getPhotoPositionsForCarrier,
+  getPositionById,
   getNextPosition,
   areAllRequiredPhotosCompleted,
-  PHOTO_GUIDE_METADATA 
+  getPhotoMetadataForCarrier
 } from '@/lib/photo-positions';
 import type { Claim, PhotoReference } from '@/types/claim';
 
@@ -25,25 +26,30 @@ export default function PhotoGuidePage() {
   const router = useRouter();
   const params = useParams();
   const { getClaim, saveClaim } = useClaims();
+  const { getCarrier } = useCarrierSettings();
   const { photoStorage, isReady: storageReady, initializationError } = usePhotoStorage();
   const claimId = params.id as string;
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [claim, setClaim] = useState<Claim | null>(null);
-  const [currentPositionId, setCurrentPositionId] = useState(PHOTO_POSITIONS[0].id);
+  const [currentPositionId, setCurrentPositionId] = useState('');
   const [completedPositions, setCompletedPositions] = useState<string[]>([]);
   const [showCamera, setShowCamera] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [storageWarning, setStorageWarning] = useState<string | null>(null);
   const [blurWarning, setBlurWarning] = useState<string | null>(null);
 
+  // Get carrier-specific photo positions
+  const photoPositions = getPhotoPositionsForCarrier(claim?.carrierId);
+  const carrierName = claim?.carrierId ? getCarrier(claim.carrierId)?.name : null;
+
   // Load claim data and initialize photo state
   useEffect(() => {
     const loadedClaim = getClaim(claimId);
     if (loadedClaim) {
       setClaim(loadedClaim);
-      
+
       // Update status to in_progress if it's still in draft
       if (loadedClaim.status === 'draft') {
         const updatedClaim = {
@@ -54,26 +60,31 @@ export default function PhotoGuidePage() {
         saveClaim(updatedClaim);
         setClaim(updatedClaim);
       }
-      
+
       // Initialize completed positions from existing photos
       const existingPhotos = loadedClaim.photos || {};
       const completed = Object.keys(existingPhotos); // Keys are now damageAreaIds
-      
+
       setCompletedPositions(completed);
-      
+
+      // Get carrier-specific positions
+      const positions = getPhotoPositionsForCarrier(loadedClaim.carrierId);
+
       // Set current position to first incomplete required position
-      const nextIncomplete = PHOTO_POSITIONS.find(pos => 
+      const nextIncomplete = positions.find(pos =>
         pos.required && !completed.includes(pos.id)
       );
       if (nextIncomplete) {
         setCurrentPositionId(nextIncomplete.id);
+      } else if (positions.length > 0) {
+        setCurrentPositionId(positions[0].id);
       }
     }
     setLoading(false);
   }, [claimId, getClaim, saveClaim]);
 
-  const currentPosition = getPositionById(currentPositionId);
-  const allRequiredComplete = areAllRequiredPhotosCompleted(completedPositions);
+  const currentPosition = getPositionById(currentPositionId, claim?.carrierId);
+  const allRequiredComplete = areAllRequiredPhotosCompleted(completedPositions, claim?.carrierId);
 
   // State for current position photo
   const [currentPositionPhoto, setCurrentPositionPhoto] = useState<(PhotoReference & { dataUrl: string }) | null>(null);
@@ -313,10 +324,10 @@ export default function PhotoGuidePage() {
 
   const handleSkipOptional = () => {
     // Skip to next required position or continue if all required are done
-    const nextRequired = PHOTO_POSITIONS.find(pos => 
+    const nextRequired = photoPositions.find(pos =>
       pos.required && !completedPositions.includes(pos.id) && pos.order > (currentPosition?.order || 0)
     );
-    
+
     if (nextRequired) {
       setCurrentPositionId(nextRequired.id);
     } else if (allRequiredComplete) {
@@ -468,7 +479,8 @@ export default function PhotoGuidePage() {
           color: 'rgba(255, 255, 255, 0.9)',
           fontSize: 'var(--font-size-small)'
         }}>
-          {completedPositions.length} of {PHOTO_GUIDE_METADATA.totalRequired} required photos completed
+          {completedPositions.length} of {getPhotoMetadataForCarrier(claim?.carrierId).totalRequired} required photos completed
+          {carrierName && ` - Following ${carrierName} Workflow`}
         </Typography>
       </div>
 
@@ -732,7 +744,7 @@ export default function PhotoGuidePage() {
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 'var(--space-sm)'
           }}>
-            {PHOTO_POSITIONS.slice(0, 8).map((position) => {
+            {photoPositions.map((position) => {
               const positionPhoto = claim?.photos ? claim.photos[position.id] : undefined;
               const photoDataUrl = positionPhoto ? photoDataUrls[positionPhoto.id] : null;
               
@@ -848,7 +860,7 @@ export default function PhotoGuidePage() {
         }}
         headerText={currentPosition?.name}
         footerText={currentPosition?.name}
-        progressText={`${completedPositions.length}/${PHOTO_GUIDE_METADATA.totalRequired} photos complete`}
+        progressText={`${completedPositions.length}/${getPhotoMetadataForCarrier(claim?.carrierId).totalRequired} photos complete`}
         overlayColor="rgba(123, 97, 255, 0.3)" // Match existing purple gradient
         enableBlurDetection={true}
         blurThreshold={15} // Good threshold for vehicle photos

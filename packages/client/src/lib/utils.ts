@@ -3,10 +3,10 @@
  */
 
 /**
- * Generate a unique ID for entities
+ * Generate a unique ID for entities using cryptographically secure random UUID
  */
 export function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  return crypto.randomUUID();
 }
 
 /**
@@ -198,4 +198,32 @@ export function capitalizeWords(str: string): string {
 export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength - 3) + '...';
+}
+
+/**
+ * Sanitize user input to prevent XSS attacks
+ * Strips HTML tags and dangerous characters
+ */
+export function sanitizeInput(input: string): string {
+  if (!input) return '';
+
+  return input
+    .trim()
+    .replace(/[<>]/g, '') // Remove < and >
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/on\w+\s*=/gi, '') // Remove event handlers like onclick=
+    .substring(0, 500); // Limit length to 500 chars
+}
+
+/**
+ * Sanitize carrier name - more restrictive for names
+ */
+export function sanitizeCarrierName(name: string): string {
+  if (!name) return '';
+
+  return name
+    .trim()
+    .replace(/[<>'"&]/g, '') // Remove potentially dangerous chars
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .substring(0, 100); // Limit to 100 chars
 }

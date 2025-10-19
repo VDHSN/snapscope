@@ -31,13 +31,14 @@ const EmptyState = memo(() => (
 
 EmptyState.displayName = 'EmptyState';
 
-export const AssessmentList = memo<AssessmentListProps>(({ 
-  assessments, 
-  loading = false, 
-  error, 
+export const AssessmentList = memo<AssessmentListProps>(({
+  assessments,
+  loading = false,
+  error,
   readOnly = false,
-  onAssessmentSelect, 
-  onAddAssessment 
+  onAssessmentSelect,
+  onAddAssessment,
+  onSettingsClick
 }) => {
   if (loading) {
     return (
@@ -59,15 +60,19 @@ export const AssessmentList = memo<AssessmentListProps>(({
 
   return (
     <div style={{ position: 'relative', minHeight: '400px' }}>
-      {/* Create Assessment Button - Only show when not readOnly and not loading/error */}
+      {/* Create Assessment and Settings Buttons - Only show when not readOnly and not loading/error */}
       {!readOnly && !loading && !error && (
-        <div style={{ marginBottom: 'var(--space-lg)' }}>
-          <Button 
+        <div style={{
+          marginBottom: 'var(--space-lg)',
+          display: 'flex',
+          gap: 'var(--space-sm)',
+        }}>
+          <Button
             variant="primary"
             onClick={() => onAddAssessment?.()}
             aria-label="Create Assessment"
             style={{
-              width: '100%',
+              flex: 1,
               padding: 'var(--space-md)',
               fontSize: 'var(--font-size-body)',
               fontWeight: 'var(--font-weight-semibold)',
@@ -75,6 +80,20 @@ export const AssessmentList = memo<AssessmentListProps>(({
           >
             Create Assessment
           </Button>
+          {onSettingsClick && (
+            <Button
+              variant="secondary"
+              onClick={() => onSettingsClick()}
+              aria-label="Settings"
+              style={{
+                padding: 'var(--space-md)',
+                fontSize: 'var(--font-size-body)',
+                fontWeight: 'var(--font-weight-semibold)',
+              }}
+            >
+              Settings
+            </Button>
+          )}
         </div>
       )}
 

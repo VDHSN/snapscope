@@ -13,6 +13,7 @@ export interface AssessmentListProps {
   readOnly?: boolean;
   onAssessmentSelect?: (assessment: Assessment) => void;
   onAddAssessment?: () => void;
+  onSettingsClick?: () => void;
 }
 
 export interface AssessmentCardProps {

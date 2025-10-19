@@ -114,7 +114,7 @@ export const photoBlobStorage = {
       const dataUrl = await blobToDataUrl(compressedBlob);
       
       // Generate photo ID
-      const photoId = `photo_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+      const photoId = crypto.randomUUID();
       
       // Create PhotoReference
       const photoReference: PhotoReference = {

@@ -73,6 +73,35 @@ const coordinatesSchema = z.object({
   longitude: z.number().min(-180).max(180),
 });
 
+const photoStepSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  description: z.string().optional(),
+  required: z.boolean(),
+  order: z.number().int().min(0),
+  category: z.enum(['exterior', 'interior', 'vin', 'damage']),
+});
+
+const damagePhotoConfigSchema = z.object({
+  requireLabeling: z.boolean(),
+  allowVoiceNotes: z.boolean(),
+  skipLabelingOption: z.boolean(),
+});
+
+const photoWorkflowSchema = z.object({
+  standardPhotos: z.array(photoStepSchema),
+  damagePhotos: damagePhotoConfigSchema,
+});
+
+const carrierSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  workflow: photoWorkflowSchema,
+  isTemplate: z.boolean(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
 const claimSchema = z.object({
   id: z.string().min(1),
   claimNumber: z.string().optional(),
@@ -86,6 +115,7 @@ const claimSchema = z.object({
   contacts: z.array(claimContactSchema),
   damages: z.array(damageAssessmentSchema),
   photos: z.record(z.string(), photoReferenceSchema).optional(),
+  carrierId: z.string().optional(),
   status: z.enum(['draft', 'in_progress', 'completed', 'submitted', 'approved', 'rejected']),
   priority: z.enum(['low', 'normal', 'high', 'urgent']),
   createdAt: z.date(),
@@ -136,11 +166,16 @@ export const schemas = {
   claimContact: claimContactSchema,
   damageAssessment: damageAssessmentSchema,
   photoReference: photoReferenceSchema,
+  photoStep: photoStepSchema,
+  damagePhotoConfig: damagePhotoConfigSchema,
+  photoWorkflow: photoWorkflowSchema,
+  carrier: carrierSchema,
   claim: claimSchema,
   userPreferences: userPreferencesSchema,
   syncQueueItem: syncQueueItemSchema,
   storageMetadata: storageMetadataSchema,
   claims: z.array(claimSchema),
+  carriers: z.array(carrierSchema),
   syncQueue: z.array(syncQueueItemSchema),
 } as const;
 
@@ -150,6 +185,7 @@ export const storageKeySchema = z.enum([
   'snapscope_sync_queue',
   'snapscope_user_preferences',
   'snapscope_storage_metadata',
+  'snapscope_carrier_settings',
 ]);
 
 // ISO date string validation schema

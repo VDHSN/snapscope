@@ -9,10 +9,12 @@ import { Card } from '@snapscope/ui/card';
 import { Badge } from '@snapscope/ui/badge';
 import { Progress } from '@snapscope/ui/progress';
 import { VINInput } from '@snapscope/ui/vin-input';
+import { CarrierSelector } from '@snapscope/ui/carrier-selector';
 import { ThemeToggle } from '@snapscope/ui/theme-toggle';
 import { ArrowLeftIcon, CameraIcon, EditIcon } from '@snapscope/ui/icon';
 import { isValidVIN } from '@/lib/vin-utils';
 import { useClaims } from '@/hooks/useStorage';
+import { useCarrierSettings } from '@/hooks/useCarrierSettings';
 
 
 type VINEntryMethod = 'manual' | 'scan' | null;
@@ -32,9 +34,11 @@ const trackEvent = (eventName: string, eventData?: Record<string, string | numbe
 export default function VINEntryPage() {
   const router = useRouter();
   const { createClaimWithVIN } = useClaims();
+  const { carriers } = useCarrierSettings();
   const [vin, setVin] = useState('');
   const [selectedMethod, setSelectedMethod] = useState<VINEntryMethod>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showCarrierSelector, setShowCarrierSelector] = useState(false);
 
   const isVinValid = isValidVIN(vin);
   const canContinue = selectedMethod === 'manual' && isVinValid;
@@ -56,25 +60,37 @@ export default function VINEntryPage() {
 
   const handleContinue = async () => {
     if (!canContinue) return;
-    
+
+    // Show carrier selector modal
+    setShowCarrierSelector(true);
+  };
+
+  const handleCarrierSelect = async (carrierId: string) => {
+    await createAssessment(carrierId);
+  };
+
+  const handleSkipCarrier = async () => {
+    await createAssessment(undefined);
+  };
+
+  const createAssessment = async (carrierId: string | undefined) => {
     setIsSubmitting(true);
-    
+
     try {
       // Track analytics for VIN entry completion
       trackEvent('vin_entry_completed', { vin: vin.substring(0, 3) + '***' }); // Partial VIN for privacy
 
-      // Create claim with VIN using useClaims hook
-      console.log('Creating assessment with VIN:', vin);
-      const newClaim = await createClaimWithVIN(vin);
-      
+      // Create claim with VIN and optional carrier
+      console.log('Creating assessment with VIN:', vin, 'and carrier:', carrierId);
+      const newClaim = await createClaimWithVIN(vin, carrierId);
+
       console.log('Assessment created with ID:', newClaim.id);
-      
+
       // Navigate to next step (vehicle info page - to be implemented)
       router.push(`/assessments/${newClaim.id}/vehicle-info`);
-      
+
     } catch (error) {
       console.error('Error creating assessment:', error);
-      // TODO: Show error toast
       alert('Failed to create assessment. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -374,7 +390,7 @@ export default function VINEntryPage() {
         )}
 
         {/* Continue Button */}
-        <div style={{ 
+        <div style={{
           position: 'sticky',
           bottom: 'var(--space-md)',
           marginTop: 'auto'
@@ -394,6 +410,24 @@ export default function VINEntryPage() {
           </Button>
         </div>
       </div>
+
+      {/* Carrier Selector Modal */}
+      <CarrierSelector
+        carriers={carriers.map((c) => ({
+          id: c.id,
+          name: c.name,
+          photoCount: c.workflow.standardPhotos.length,
+          isTemplate: c.isTemplate,
+        }))}
+        isOpen={showCarrierSelector}
+        onClose={() => setShowCarrierSelector(false)}
+        onSelectCarrier={handleCarrierSelect}
+        onSkip={handleSkipCarrier}
+        onCreateNew={() => {
+          setShowCarrierSelector(false);
+          router.push('/settings/carriers/new?template=custom');
+        }}
+      />
     </div>
   );
 }

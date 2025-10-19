@@ -318,7 +318,7 @@ class IndexedDBPhotoStorage {
       const encryptedData = await this.encryptBlob(compressedBlob);
 
       // Generate position-based photo ID for atomic retakes
-      const photoId = metadata.damageAreaId ? `${metadata.damageAreaId}_photo` : `photo_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+      const photoId = metadata.damageAreaId ? `${metadata.damageAreaId}_photo` : crypto.randomUUID();
 
       // Create photo reference
       const photoReference: PhotoReference = {
