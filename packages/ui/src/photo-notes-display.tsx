@@ -27,9 +27,12 @@ export const PhotoNotesDisplay = React.memo<PhotoNotesDisplayProps>(({
   const savedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Update local notes when prop changes (from external save)
+  // Only sync when NOT editing to prevent overwriting user input
   useEffect(() => {
-    setLocalNotes(notes);
-  }, [notes]);
+    if (!isEditing) {
+      setLocalNotes(notes);
+    }
+  }, [notes, isEditing]);
 
   // Handle save with status updates
   const handleSave = useCallback(async (newNotes: string) => {
