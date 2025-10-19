@@ -16,6 +16,11 @@ export const AssessmentList = memo<AssessmentListProps>(({ onAssessmentSelect })
     router.push('/assessments/new');
   };
 
+  const handleSettingsClick = () => {
+    console.log('Navigating to settings');
+    router.push('/settings');
+  };
+
   const handleAssessmentSelect = (assessment: Assessment) => {
     console.log('Navigating to assessment:', assessment.id);
     // Navigate directly to photos page for now
@@ -31,6 +36,7 @@ export const AssessmentList = memo<AssessmentListProps>(({ onAssessmentSelect })
       readOnly={false}
       onAssessmentSelect={onAssessmentSelect || handleAssessmentSelect}
       onAddAssessment={handleAddAssessment}
+      onSettingsClick={handleSettingsClick}
     />
   );
 });
