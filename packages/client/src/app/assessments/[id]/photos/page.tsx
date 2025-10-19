@@ -434,13 +434,16 @@ export default function PhotoGuidePage() {
   }
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: 'var(--bg-primary)',
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'relative'
-    }}>
+    <div
+      data-testid="page-photos-workflow"
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-primary)',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative'
+      }}
+    >
       {/* Theme Toggle */}
       <div style={{ 
         position: 'absolute', 

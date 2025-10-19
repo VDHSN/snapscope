@@ -7,6 +7,7 @@ export interface VINInputProps extends Omit<InputProps, 'value' | 'onChange' | '
   showCharacterCount?: boolean;
   showValidation?: boolean;
   'aria-describedby'?: string;
+  'data-testid'?: string;
 }
 
 /**
@@ -51,17 +52,18 @@ function getValidationState(vin: string): {
 }
 
 export const VINInput = React.forwardRef<HTMLInputElement, VINInputProps>(
-  ({ 
-    value, 
-    onChange, 
-    showCharacterCount = true, 
-    showValidation = true, 
+  ({
+    value,
+    onChange,
+    showCharacterCount = true,
+    showValidation = true,
     style,
     'aria-describedby': ariaDescribedBy,
-    ...props 
+    'data-testid': testId = 'vin-input',
+    ...props
   }, ref) => {
     const validation = getValidationState(value);
-    
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const formatted = formatVINInput(e.target.value);
       onChange(formatted);
@@ -104,7 +106,7 @@ export const VINInput = React.forwardRef<HTMLInputElement, VINInputProps>(
     ].filter(Boolean).join(' ') || undefined;
 
     return (
-      <div style={containerStyle}>
+      <div style={containerStyle} data-testid={`${testId}-container`}>
         <Input
           ref={ref}
           value={value}
@@ -116,25 +118,28 @@ export const VINInput = React.forwardRef<HTMLInputElement, VINInputProps>(
           aria-describedby={fullAriaDescribedBy}
           aria-invalid={validation.variant === 'error'}
           role="textbox"
+          data-testid={testId}
           {...props}
         />
-        
+
         {showCharacterCount && (
-          <div 
+          <div
             style={counterStyle}
             aria-live="polite"
             aria-label={`Character count: ${value.length} of 17`}
+            data-testid={`${testId}-counter`}
           >
             {value.length}/17
           </div>
         )}
-        
+
         {showValidation && validation.message && (
-          <div 
+          <div
             id={validationId}
             style={messageStyle}
             role={validation.variant === 'error' ? 'alert' : 'status'}
             aria-live="polite"
+            data-testid={`${testId}-validation`}
           >
             {validation.message}
           </div>

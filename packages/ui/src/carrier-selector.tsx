@@ -19,6 +19,7 @@ export interface CarrierSelectorProps {
   onCreateNew?: () => void;
   title?: string;
   className?: string;
+  'data-testid'?: string;
 }
 
 const overlayStyle: React.CSSProperties = {
@@ -158,6 +159,7 @@ export const CarrierSelector = React.forwardRef<HTMLDivElement, CarrierSelectorP
       onCreateNew,
       title = 'Select Carrier Workflow',
       className,
+      'data-testid': testId = 'carrier-selector',
     },
     ref
   ) => {
@@ -206,8 +208,9 @@ export const CarrierSelector = React.forwardRef<HTMLDivElement, CarrierSelectorP
         role="dialog"
         aria-modal="true"
         aria-labelledby="carrier-selector-title"
+        data-testid={`${testId}-overlay`}
       >
-        <div ref={ref} className={className} style={modalStyle}>
+        <div ref={ref} className={className} style={modalStyle} data-testid={testId}>
           <div style={headerStyle}>
             <h2 id="carrier-selector-title" style={titleStyle}>
               {title}
@@ -230,6 +233,7 @@ export const CarrierSelector = React.forwardRef<HTMLDivElement, CarrierSelectorP
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 aria-label="Search carriers"
+                data-testid={`${testId}-search`}
               />
             </div>
 
@@ -250,6 +254,7 @@ export const CarrierSelector = React.forwardRef<HTMLDivElement, CarrierSelectorP
                     onMouseLeave={() => setHoveredId(null)}
                     role="button"
                     tabIndex={0}
+                    data-testid={`${testId}-carrier-${carrier.id}`}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
@@ -286,7 +291,7 @@ export const CarrierSelector = React.forwardRef<HTMLDivElement, CarrierSelectorP
           </div>
 
           <div style={footerStyle}>
-            <Button variant="secondary" onClick={onSkip} style={{ flex: 1 }}>
+            <Button variant="secondary" onClick={onSkip} style={{ flex: 1 }} data-testid={`${testId}-skip-button`}>
               Skip (Use Default)
             </Button>
             {onCreateNew && (
@@ -297,6 +302,7 @@ export const CarrierSelector = React.forwardRef<HTMLDivElement, CarrierSelectorP
                   onClose();
                 }}
                 style={{ flex: 1 }}
+                data-testid={`${testId}-create-button`}
               >
                 Create New
               </Button>

@@ -4,6 +4,7 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   elevation?: 1 | 2 | 3;
   padding?: 'sm' | 'md' | 'lg' | 'xl';
   children: React.ReactNode;
+  'data-testid'?: string;
 }
 
 const baseStyle: React.CSSProperties = {

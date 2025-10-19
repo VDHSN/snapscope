@@ -16,18 +16,21 @@ export interface PhotoPositionCardProps {
   onRetakePhoto?: () => void;
   onSkip?: () => void;
   onImageError?: (error: Error) => void;
+  'data-testid'?: string;
 }
 
-export const PhotoPositionCard = React.memo<PhotoPositionCardProps>(({ 
-  position, 
-  photo, 
-  isSaving = false, 
+export const PhotoPositionCard = React.memo<PhotoPositionCardProps>(({
+  position,
+  photo,
+  isSaving = false,
   isLoading = false,
-  onTakePhoto, 
-  onRetakePhoto, 
+  onTakePhoto,
+  onRetakePhoto,
   onSkip,
-  onImageError
+  onImageError,
+  'data-testid': testId
 }) => {
+  const cardTestId = testId || `photo-card-${position.id}`;
   const [imageError, setImageError] = useState(false);
 
   // Validate photo data URL
@@ -111,7 +114,7 @@ export const PhotoPositionCard = React.memo<PhotoPositionCardProps>(({
     injectResponsiveStyles('photo-position-card-responsive', responsiveStyles);
   }, []);
   return (
-    <Card elevation={2} padding="lg">
+    <Card elevation={2} padding="lg" data-testid={cardTestId}>
       <div className="photo-position-card-container">
         <Typography variant="h3" style={{ 
           color: 'var(--text-primary)',
@@ -130,10 +133,11 @@ export const PhotoPositionCard = React.memo<PhotoPositionCardProps>(({
         </Typography>
         
         {/* Photo Preview Area */}
-        <div 
+        <div
           className="photo-preview-area"
+          data-testid={`${cardTestId}-preview`}
           style={{
-            border: safeDataUrl && !imageError ? '2px solid var(--color-success)' : 
+            border: safeDataUrl && !imageError ? '2px solid var(--color-success)' :
                    imageError || (!isValidPhoto && photo?.dataUrl) ? '2px solid var(--color-error)' :
                    '2px dashed var(--border-color)'
           }}
@@ -232,6 +236,7 @@ export const PhotoPositionCard = React.memo<PhotoPositionCardProps>(({
               onClick={onRetakePhoto ?? onTakePhoto}
               disabled={isSaving || isLoading}
               style={{ flex: 1 }}
+              data-testid={`${cardTestId}-retake-button`}
             >
               {isSaving ? 'Saving...' : isLoading ? 'Processing...' : 'Retake Photo'}
             </Button>
@@ -242,6 +247,7 @@ export const PhotoPositionCard = React.memo<PhotoPositionCardProps>(({
               onClick={onTakePhoto}
               disabled={isSaving || isLoading}
               style={{ flex: 1 }}
+              data-testid={`${cardTestId}-take-button`}
             >
               <CameraIcon size="sm" aria-hidden />
               {isSaving ? 'Saving...' : isLoading ? 'Processing...' : 'Take Photo'}
@@ -253,6 +259,7 @@ export const PhotoPositionCard = React.memo<PhotoPositionCardProps>(({
               variant="secondary"
               size="lg"
               onClick={onSkip}
+              data-testid={`${cardTestId}-skip-button`}
             >
               Skip
             </Button>

@@ -103,13 +103,16 @@ export default function VINEntryPage() {
   }, []);
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: 'var(--bg-primary)',
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'relative'
-    }}>
+    <div
+      data-testid="page-new-assessment"
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-primary)',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative'
+      }}
+    >
       {/* Theme Toggle */}
       <div style={{ 
         position: 'absolute', 
@@ -121,12 +124,16 @@ export default function VINEntryPage() {
       </div>
 
       {/* Header with purple gradient */}
-      <div style={{ 
-        background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-        padding: 'var(--space-md)',
-        paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))', // Space for theme toggle
-        color: 'white'
-      }}>
+      <header
+        data-testid="new-assessment-header"
+        role="banner"
+        style={{
+          background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
+          padding: 'var(--space-md)',
+          paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))', // Space for theme toggle
+          color: 'white'
+        }}
+      >
         {/* Back button and progress */}
         <div style={{ 
           display: 'flex',
@@ -138,7 +145,8 @@ export default function VINEntryPage() {
             variant="secondary"
             size="sm"
             onClick={handleBack}
-            style={{ 
+            data-testid="vin-entry-back-button"
+            style={{
               background: 'rgba(255, 255, 255, 0.2)',
               border: '1px solid rgba(255, 255, 255, 0.3)',
               color: 'white',
@@ -203,22 +211,25 @@ export default function VINEntryPage() {
           Enter Vehicle VIN
         </Typography>
         
-        <Typography variant="body" style={{ 
+        <Typography variant="body" style={{
           color: 'rgba(255, 255, 255, 0.9)',
           fontSize: 'var(--font-size-small)'
         }}>
           We need the VIN to start your assessment
         </Typography>
-      </div>
+      </header>
 
       {/* Content */}
-      <div style={{ 
-        flex: 1,
-        maxWidth: '480px',
-        margin: '0 auto',
-        padding: 'var(--space-lg) var(--space-md)',
-        width: '100%'
-      }}>
+      <main
+        data-testid="new-assessment-main-content"
+        style={{
+          flex: 1,
+          maxWidth: '480px',
+          margin: '0 auto',
+          padding: 'var(--space-lg) var(--space-md)',
+          width: '100%'
+        }}
+      >
         {/* VIN Entry Methods */}
         <div style={{ 
           display: 'flex',
@@ -400,6 +411,7 @@ export default function VINEntryPage() {
             size="lg"
             disabled={!canContinue || isSubmitting}
             onClick={handleContinue}
+            data-testid="vin-entry-continue-button"
             style={{
               width: '100%',
               opacity: canContinue ? 1 : 0.5,
@@ -409,7 +421,7 @@ export default function VINEntryPage() {
             {isSubmitting ? 'Creating Assessment...' : 'Continue'}
           </Button>
         </div>
-      </div>
+      </main>
 
       {/* Carrier Selector Modal */}
       <CarrierSelector

@@ -15,11 +15,14 @@ export default function AssessmentsPage() {
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: 'var(--bg-primary)',
-      position: 'relative'
-    }}>
+    <div
+      data-testid="page-assessments-list"
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-primary)',
+        position: 'relative'
+      }}
+    >
       {/* Theme Toggle */}
       <div style={{ 
         position: 'absolute', 
@@ -29,15 +32,20 @@ export default function AssessmentsPage() {
       }}>
         <ThemeToggle />
       </div>
-      
+
+
       {/* Header with Gradient */}
-      <div style={{ 
-        background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-        padding: 'var(--space-xl) var(--space-md) var(--space-2xl)',
-        paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))', // Space for theme toggle
-        color: 'white',
-        textAlign: 'center'
-      }}>
+      <header
+        data-testid="assessments-header"
+        role="banner"
+        style={{
+          background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
+          padding: 'var(--space-xl) var(--space-md) var(--space-2xl)',
+          paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))', // Space for theme toggle
+          color: 'white',
+          textAlign: 'center'
+        }}
+      >
         <div 
           onClick={handleLogoClick}
           style={{ 
@@ -68,17 +76,21 @@ export default function AssessmentsPage() {
         }}>
           Vehicle Damage Assessment
         </Typography>
-      </div>
-      
+      </header>
+
+
       {/* Content Area */}
-      <div style={{ 
-        maxWidth: '480px', 
-        margin: '0 auto',
-        padding: 'var(--space-lg) var(--space-md)',
-        minHeight: 'calc(100vh - 180px)'
-      }}>
+      <main
+        data-testid="assessments-main-content"
+        style={{
+          maxWidth: '480px',
+          margin: '0 auto',
+          padding: 'var(--space-lg) var(--space-md)',
+          minHeight: 'calc(100vh - 180px)'
+        }}
+      >
         <AssessmentList />
-      </div>
+      </main>
     </div>
   );
 }
