@@ -48,6 +48,17 @@ export default function PhotoGuidePage() {
   useEffect(() => {
     const loadedClaim = getClaim(claimId);
     if (loadedClaim) {
+      console.log('[DamageNotes] Claim loaded, photos:', Object.keys(loadedClaim.photos || {}).length);
+
+      // Log notes for debugging
+      if (loadedClaim.photos) {
+        Object.entries(loadedClaim.photos).forEach(([key, photo]) => {
+          if (photo.notes) {
+            console.log('[DamageNotes] Photo', key, 'has notes:', photo.notes.substring(0, 50));
+          }
+        });
+      }
+
       setClaim(loadedClaim);
 
       // Update status to in_progress if it's still in draft
@@ -98,26 +109,34 @@ export default function PhotoGuidePage() {
         setCurrentPositionPhoto(null);
         return;
       }
-      
+
       const photo = claim.photos ? claim.photos[currentPosition.id] : undefined;
       if (!photo) {
         setCurrentPositionPhoto(null);
         return;
       }
-      
+
+      console.log('[DamageNotes] Loading photo for position:', currentPosition.id, 'Has notes:', !!photo.notes, 'Notes preview:', photo.notes?.substring(0, 50));
+
       try {
         // Get photo data URL for display with cache busting for retakes
         const isRetake = completedPositions.includes(currentPosition.id);
         const dataUrl = await photoStorage.getPhotoDataUrl(photo.id, isRetake);
-        setCurrentPositionPhoto(dataUrl ? { ...photo, dataUrl } : null);
+        const photoWithDataUrl = dataUrl ? { ...photo, dataUrl } : null;
+
+        if (photoWithDataUrl) {
+          console.log('[DamageNotes] Setting currentPositionPhoto with notes:', photoWithDataUrl.notes?.substring(0, 50));
+        }
+
+        setCurrentPositionPhoto(photoWithDataUrl);
       } catch (error) {
-        console.warn('Failed to load current position photo:', error);
+        console.warn('[DamageNotes] Failed to load current position photo:', error);
         // Retry once without cache busting
         try {
           const retryDataUrl = await photoStorage.getPhotoDataUrl(photo.id);
           setCurrentPositionPhoto(retryDataUrl ? { ...photo, dataUrl: retryDataUrl } : null);
         } catch (retryError) {
-          console.warn('Retry failed for current position photo:', retryError);
+          console.warn('[DamageNotes] Retry failed for current position photo:', retryError);
           setCurrentPositionPhoto(null);
         }
       }
@@ -341,7 +360,7 @@ export default function PhotoGuidePage() {
   // Handle notes save with auto-save
   const handleNotesSave = useCallback(async (newNotes: string) => {
     if (!claim || !currentPosition) {
-      console.warn('Cannot save notes: claim or currentPosition not available');
+      console.warn('[DamageNotes] Cannot save notes: claim or currentPosition not available');
       return;
     }
 
@@ -350,9 +369,11 @@ export default function PhotoGuidePage() {
       const currentPhoto = claim.photos ? claim.photos[currentPosition.id] : undefined;
 
       if (!currentPhoto) {
-        console.warn('No photo found for current position');
+        console.warn('[DamageNotes] No photo found for current position:', currentPosition.id);
         return;
       }
+
+      console.log('[DamageNotes] Saving notes for position:', currentPosition.id, 'Notes:', newNotes.substring(0, 50));
 
       // Update photo with new notes
       const updatedPhoto = {
@@ -370,10 +391,14 @@ export default function PhotoGuidePage() {
         updatedAt: new Date(),
       };
 
+      console.log('[DamageNotes] Updated photo object:', { id: updatedPhoto.id, notes: updatedPhoto.notes?.substring(0, 50), damageAreaId: updatedPhoto.damageAreaId });
+
       await saveClaim(updatedClaim);
+      console.log('[DamageNotes] Claim saved successfully');
+
       setClaim(updatedClaim);
     } catch (error) {
-      console.error('Failed to save notes:', error);
+      console.error('[DamageNotes] Failed to save notes:', error);
       throw error; // Re-throw to let PhotoNotesDisplay handle error state
     }
   }, [claim, currentPosition, saveClaim]);
