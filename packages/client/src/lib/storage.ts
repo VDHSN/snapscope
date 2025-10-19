@@ -52,8 +52,19 @@ function migrateClaimPhotos(claim: unknown): Claim {
   if (typeof claim !== 'object' || claim === null) {
     throw new Error('Invalid claim data for migration');
   }
-  
+
   const claimData = claim as Record<string, unknown>;
+
+  // Validate required claim properties
+  if (!('id' in claimData) || typeof claimData.id !== 'string') {
+    throw new Error('Invalid claim data: missing or invalid id');
+  }
+  if (!('vehicle' in claimData) || typeof claimData.vehicle !== 'object' || claimData.vehicle === null) {
+    throw new Error('Invalid claim data: missing or invalid vehicle');
+  }
+  if (!('status' in claimData) || typeof claimData.status !== 'string') {
+    throw new Error('Invalid claim data: missing or invalid status');
+  }
   
   if (claimData.photos && Array.isArray(claimData.photos)) {
     const photosRecord: Record<string, PhotoReference> = {};

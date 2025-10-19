@@ -7,6 +7,7 @@ import { Input } from '@snapscope/ui/input';
 import { CarrierCard } from '@snapscope/ui/carrier-card';
 import { useRouter } from 'next/navigation';
 import { useCarrierSettings } from '@/hooks/useCarrierSettings';
+import { ErrorBoundary } from '@/components/error-boundary';
 
 const pageStyle: React.CSSProperties = {
   minHeight: '100vh',
@@ -128,7 +129,7 @@ const CARRIER_TEMPLATES = [
   { id: 'custom', name: 'Custom Workflow', photoCount: 8 },
 ];
 
-export default function CarriersPage() {
+function CarriersPageContent() {
   const router = useRouter();
   const {
     carriers,
@@ -368,5 +369,13 @@ export default function CarriersPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function CarriersPage() {
+  return (
+    <ErrorBoundary>
+      <CarriersPageContent />
+    </ErrorBoundary>
   );
 }

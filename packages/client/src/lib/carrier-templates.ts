@@ -144,7 +144,7 @@ export const createCarrierFromTemplate = (
 
   return {
     ...template,
-    id: `carrier-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+    id: crypto.randomUUID(),
     name: name ?? template.name,
     isTemplate: false,
     createdAt: new Date(),

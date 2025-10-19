@@ -131,41 +131,57 @@ export const WorkflowBuilder = React.forwardRef<HTMLDivElement, WorkflowBuilderP
       })
     );
 
-    const handleDragEnd = (event: DragEndEvent) => {
-      const { active, over } = event;
+    const handleDragEnd = React.useCallback(
+      (event: DragEndEvent) => {
+        const { active, over } = event;
 
-      if (over && active.id !== over.id) {
-        const oldIndex = steps.findIndex((step) => step.id === active.id);
-        const newIndex = steps.findIndex((step) => step.id === over.id);
+        if (over && active.id !== over.id) {
+          const oldIndex = steps.findIndex((step) => step.id === active.id);
+          const newIndex = steps.findIndex((step) => step.id === over.id);
 
-        const reorderedSteps = arrayMove(steps, oldIndex, newIndex);
+          const reorderedSteps = arrayMove(steps, oldIndex, newIndex);
 
-        const updatedSteps = reorderedSteps.map((step, index) => ({
+          const updatedSteps = reorderedSteps.map((step, index) => ({
+            ...step,
+            order: index + 1,
+          }));
+
+          onChange(updatedSteps);
+        }
+      },
+      [steps, onChange]
+    );
+
+    const handleToggleRequired = React.useCallback(
+      (stepId: string) => {
+        const updatedSteps = steps.map((step) =>
+          step.id === stepId ? { ...step, required: !step.required } : step
+        );
+        onChange(updatedSteps);
+        onToggleRequired?.(stepId);
+      },
+      [steps, onChange, onToggleRequired]
+    );
+
+    const handleDelete = React.useCallback(
+      (stepId: string) => {
+        const filteredSteps = steps.filter((step) => step.id !== stepId);
+        const updatedSteps = filteredSteps.map((step, index) => ({
           ...step,
           order: index + 1,
         }));
-
         onChange(updatedSteps);
-      }
-    };
+        onDeleteStep?.(stepId);
+      },
+      [steps, onChange, onDeleteStep]
+    );
 
-    const handleToggleRequired = (stepId: string) => {
-      const updatedSteps = steps.map((step) =>
-        step.id === stepId ? { ...step, required: !step.required } : step
-      );
-      onChange(updatedSteps);
-      onToggleRequired?.(stepId);
-    };
-
-    const handleDelete = (stepId: string) => {
-      const filteredSteps = steps.filter((step) => step.id !== stepId);
-      const updatedSteps = filteredSteps.map((step, index) => ({
-        ...step,
-        order: index + 1,
-      }));
-      onChange(updatedSteps);
-      onDeleteStep?.(stepId);
-    };
+    const handleEdit = React.useCallback(
+      (stepId: string) => {
+        onEditStep?.(stepId);
+      },
+      [onEditStep]
+    );
 
     const canAddMore = !maxSteps || steps.length < maxSteps;
 
@@ -197,7 +213,7 @@ export const WorkflowBuilder = React.forwardRef<HTMLDivElement, WorkflowBuilderP
                   <SortablePhotoStep
                     key={step.id}
                     step={step}
-                    onEdit={onEditStep ? () => onEditStep(step.id) : undefined}
+                    onEdit={onEditStep ? () => handleEdit(step.id) : undefined}
                     onDelete={
                       onDeleteStep ? () => handleDelete(step.id) : undefined
                     }
