@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "pnpm run build:components && pnpm run build:storybook",
-    "build:components": "tsup src/button.tsx src/typography.tsx src/input.tsx src/vin-input.tsx src/badge.tsx src/card.tsx src/progress.tsx src/theme-toggle.tsx src/logo.tsx src/video-player.tsx src/assessment-card.tsx src/assessment-list.tsx src/feature-card.tsx src/icon.tsx src/camera-capture.tsx src/photo-capture-screen.tsx src/blur-detection.ts src/photo-preview-grid.tsx src/photo-position-card.tsx src/photo-progress-grid.tsx src/photo-guide-header.tsx src/photo-guide-types.ts src/photo-utils.ts src/responsive-utils.ts src/error-boundary.tsx src/types.ts src/carrier-card.tsx src/photo-step-card.tsx src/carrier-selector.tsx src/workflow-builder.tsx --format esm,cjs --dts",
+    "build:components": "tsup src/button.tsx src/typography.tsx src/input.tsx src/vin-input.tsx src/badge.tsx src/card.tsx src/progress.tsx src/theme-toggle.tsx src/logo.tsx src/video-player.tsx src/assessment-card.tsx src/assessment-list.tsx src/feature-card.tsx src/icon.tsx src/camera-capture.tsx src/photo-capture-screen.tsx src/blur-detection.ts src/photo-preview-grid.tsx src/photo-position-card.tsx src/photo-progress-grid.tsx src/photo-guide-header.tsx src/photo-guide-types.ts src/photo-utils.ts src/responsive-utils.ts src/error-boundary.tsx src/types.ts src/carrier-card.tsx src/photo-step-card.tsx src/carrier-selector.tsx src/workflow-builder.tsx src/toast.tsx --format esm,cjs --dts",
     "dev": "storybook dev -p 6006",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint-fix": "eslint src/**/*.{ts,tsx} --fix",
@@ -143,6 +143,10 @@
     "./workflow-builder": {
       "types": "./src/workflow-builder.tsx",
       "import": "./src/workflow-builder.tsx"
+    },
+    "./toast": {
+      "types": "./src/toast.tsx",
+      "import": "./src/toast.tsx"
     }
   },
   "devDependencies": {

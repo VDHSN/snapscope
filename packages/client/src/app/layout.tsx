@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { ThemeInitializer } from '../components/theme-initializer';
 import { DefaultsInitializer } from '../components/defaults-initializer';
+import { ToastProvider } from '@snapscope/ui/toast';
 import "./globals.css";
 
 const inter = Inter({
@@ -158,11 +159,13 @@ export default function RootLayout({
       <body
         className={`${inter.variable} antialiased`}
       >
-        <ThemeInitializer />
-        <DefaultsInitializer />
-        {children}
-        <Analytics />
-        <SpeedInsights />
+        <ToastProvider>
+          <ThemeInitializer />
+          <DefaultsInitializer />
+          {children}
+          <Analytics />
+          <SpeedInsights />
+        </ToastProvider>
       </body>
     </html>
   );

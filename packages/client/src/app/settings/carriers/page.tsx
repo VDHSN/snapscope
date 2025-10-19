@@ -8,6 +8,8 @@ import { CarrierCard } from '@snapscope/ui/carrier-card';
 import { useRouter } from 'next/navigation';
 import { useCarrierSettings } from '@/hooks/useCarrierSettings';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { useToast } from '@snapscope/ui/toast';
+import { CARRIER_TEMPLATE_LIST } from '@/lib/carrier-templates';
 
 const pageStyle: React.CSSProperties = {
   minHeight: '100vh',
@@ -121,16 +123,9 @@ const templateButtonStyle: React.CSSProperties = {
   fontFamily: 'inherit',
 };
 
-const CARRIER_TEMPLATES = [
-  { id: 'state-farm', name: 'State Farm', photoCount: 14 },
-  { id: 'progressive', name: 'Progressive', photoCount: 12 },
-  { id: 'geico', name: 'Geico', photoCount: 10 },
-  { id: 'allstate', name: 'Allstate', photoCount: 15 },
-  { id: 'custom', name: 'Custom Workflow', photoCount: 8 },
-];
-
 function CarriersPageContent() {
   const router = useRouter();
+  const { showToast } = useToast();
   const {
     carriers,
     loading,
@@ -162,7 +157,7 @@ function CarriersPageContent() {
       URL.revokeObjectURL(url);
     } catch (err) {
       console.error('Export failed:', err);
-      alert('Failed to export carriers');
+      showToast('Failed to export carriers', 'error');
     }
   };
 
@@ -178,13 +173,13 @@ function CarriersPageContent() {
       const text = await file.text();
       const result = await importCarriers(text);
       if (result.success) {
-        alert(`Successfully imported ${result.imported ?? 0} carriers`);
+        showToast(`Successfully imported ${result.imported ?? 0} carriers`, 'success');
       } else {
-        alert(`Import failed: ${result.error ?? 'Unknown error'}`);
+        showToast(`Import failed: ${result.error ?? 'Unknown error'}`, 'error');
       }
     } catch (err) {
       console.error('Import failed:', err);
-      alert('Failed to import carriers');
+      showToast('Failed to import carriers', 'error');
     }
 
     if (fileInputRef.current) {
@@ -202,9 +197,10 @@ function CarriersPageContent() {
 
     try {
       await deleteCarrier(carrierId);
+      showToast('Carrier deleted successfully', 'success');
     } catch (err) {
       console.error('Delete failed:', err);
-      alert('Failed to delete carrier');
+      showToast('Failed to delete carrier', 'error');
     }
   };
 
@@ -334,7 +330,7 @@ function CarriersPageContent() {
             </Typography>
 
             <div style={templateGridStyle}>
-              {CARRIER_TEMPLATES.map((template) => (
+              {CARRIER_TEMPLATE_LIST.map((template) => (
                 <button
                   key={template.id}
                   style={templateButtonStyle}

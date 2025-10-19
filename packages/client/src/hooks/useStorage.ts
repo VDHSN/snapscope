@@ -100,8 +100,8 @@ export function useClaims() {
   const createClaimWithVIN = useCallback(async (vin: string, carrierId?: string): Promise<Claim> => {
     try {
       const now = new Date();
-      const claimId = `claim_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
-      const vehicleId = `vehicle_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+      const claimId = crypto.randomUUID();
+      const vehicleId = crypto.randomUUID();
 
       const newClaim: Claim = {
         id: claimId,

@@ -151,3 +151,14 @@ export const createCarrierFromTemplate = (
     updatedAt: new Date(),
   };
 };
+
+/**
+ * Template list for UI display (without full carrier data)
+ */
+export const CARRIER_TEMPLATE_LIST = [
+  { id: 'state-farm', name: 'State Farm', photoCount: STATE_FARM_PHOTOS.length },
+  { id: 'progressive', name: 'Progressive', photoCount: PROGRESSIVE_PHOTOS.length },
+  { id: 'geico', name: 'Geico', photoCount: GEICO_PHOTOS.length },
+  { id: 'allstate', name: 'Allstate', photoCount: ALLSTATE_PHOTOS.length },
+  { id: 'custom', name: 'Custom Workflow', photoCount: CUSTOM_PHOTOS.length },
+];

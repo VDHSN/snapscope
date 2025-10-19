@@ -8,6 +8,8 @@ import { WorkflowBuilder, PhotoStep } from '@snapscope/ui/workflow-builder';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCarrierSettings } from '@/hooks/useCarrierSettings';
 import { createCarrierFromTemplate } from '@/lib/carrier-templates';
+import { sanitizeCarrierName, sanitizeInput } from '@/lib/utils';
+import { useToast } from '@snapscope/ui/toast';
 import type { Carrier } from '@/types/claim';
 
 const pageStyle: React.CSSProperties = {
@@ -122,6 +124,7 @@ export default function CarrierEditorPage({ params }: CarrierEditorPageProps) {
   const resolvedParams = use(params);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { showToast } = useToast();
   const { saveCarrier, deleteCarrier, getCarrier } = useCarrierSettings();
 
   const [carrier, setCarrier] = useState<Carrier | null>(null);
@@ -174,7 +177,7 @@ export default function CarrierEditorPage({ params }: CarrierEditorPageProps) {
     try {
       const updatedCarrier: Carrier = {
         ...carrier,
-        name: carrierName,
+        name: sanitizeCarrierName(carrierName),
         workflow: {
           ...carrier.workflow,
           standardPhotos: steps,
@@ -184,10 +187,11 @@ export default function CarrierEditorPage({ params }: CarrierEditorPageProps) {
 
       await saveCarrier(updatedCarrier);
       setIsDirty(false);
+      showToast('Carrier saved successfully', 'success');
       router.push('/settings/carriers');
     } catch (err) {
       console.error('Save failed:', err);
-      alert('Failed to save carrier');
+      showToast('Failed to save carrier', 'error');
     }
   };
 
@@ -206,10 +210,11 @@ export default function CarrierEditorPage({ params }: CarrierEditorPageProps) {
 
     try {
       await deleteCarrier(carrier.id);
+      showToast('Carrier deleted successfully', 'success');
       router.push('/settings/carriers');
     } catch (err) {
       console.error('Delete failed:', err);
-      alert('Failed to delete carrier');
+      showToast('Failed to delete carrier', 'error');
     }
   };
 
@@ -219,14 +224,14 @@ export default function CarrierEditorPage({ params }: CarrierEditorPageProps) {
 
   const handleCreateStep = () => {
     if (!newStepData.label.trim()) {
-      alert('Please enter a label');
+      showToast('Please enter a label for the photo step', 'warning');
       return;
     }
 
     const newStep: PhotoStep = {
-      id: `step-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-      label: newStepData.label,
-      description: newStepData.description || undefined,
+      id: crypto.randomUUID(),
+      label: sanitizeInput(newStepData.label),
+      description: newStepData.description ? sanitizeInput(newStepData.description) : undefined,
       category: newStepData.category,
       required: newStepData.required,
       order: steps.length + 1,
