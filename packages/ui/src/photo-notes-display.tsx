@@ -47,22 +47,18 @@ export const PhotoNotesDisplay = React.memo<PhotoNotesDisplayProps>(
     );
 
     // Handle text change
-    const handleChange = useCallback(
-      (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const newValue = e.target.value;
-        setLocalNotes(newValue);
-      },
-      []
-    );
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setLocalNotes(e.target.value);
+    };
 
     // Handle expand
-    const handleExpand = useCallback(() => {
+    const handleExpand = () => {
       setIsEditing(true);
       // Focus textarea after expansion animation
       setTimeout(() => {
         textareaRef.current?.focus();
       }, 100);
-    }, []);
+    };
 
     // Handle collapse
     const handleCollapse = useCallback(() => {
