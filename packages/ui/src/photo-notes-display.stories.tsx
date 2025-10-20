@@ -9,7 +9,7 @@ const meta: Meta<typeof PhotoNotesDisplay> = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'Inline damage notes display and editing component with auto-save functionality. Shows collapsed view with notes or "Add Notes" button, expands to editable TextArea with debounced auto-save.',
+        component: 'Inline damage notes display and editing component with auto-save functionality. Shows collapsed view with notes or "Add Notes" button, expands to editable TextArea.',
       },
     },
   },
@@ -21,7 +21,7 @@ const meta: Meta<typeof PhotoNotesDisplay> = {
     },
     onSave: {
       action: 'saved',
-      description: 'Callback when notes are saved (debounced)',
+      description: 'Callback when notes are saved',
     },
     isSaving: {
       control: 'boolean',
@@ -30,11 +30,7 @@ const meta: Meta<typeof PhotoNotesDisplay> = {
     placeholder: {
       control: 'text',
       description: 'Placeholder text for TextArea',
-    },
-    debounceMs: {
-      control: 'number',
-      description: 'Debounce delay in milliseconds',
-    },
+    }
   },
 };
 
@@ -105,34 +101,9 @@ export const Interactive: Story = {
   },
 };
 
-export const FastDebounce: Story = {
-  render: () => {
-    const [notes, setNotes] = useState('');
-
-    const handleSave = async (newNotes: string) => {
-      console.log('Saving notes (fast):', newNotes);
-      setNotes(newNotes);
-    };
-
-    return (
-      <div style={{ maxWidth: '480px' }}>
-        <PhotoNotesDisplay
-          notes={notes}
-          onSave={handleSave}
-          debounceMs={300}
-        />
-
-        <p style={{ marginTop: 'var(--space-md)', fontSize: 'var(--font-size-small)', color: 'var(--text-secondary)' }}>
-          This example uses a 300ms debounce (faster than default 800ms). Check console for save events.
-        </p>
-      </div>
-    );
-  },
-};
-
 export const SaveError: Story = {
   render: () => {
-    const [notes, setNotes] = useState('These notes will fail to save.');
+    const [notes, _setNotes] = useState('These notes will fail to save.');
 
     const handleSave = async (newNotes: string) => {
       console.log('Attempting to save:', newNotes);

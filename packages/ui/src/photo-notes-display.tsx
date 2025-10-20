@@ -38,14 +38,6 @@ export const PhotoNotesDisplay = React.memo<PhotoNotesDisplayProps>(
         try {
           await onSave(newNotes);
           setSaveStatus("saved");
-
-          // Clear saved status after 2 seconds
-          if (savedTimeoutRef.current) {
-            clearTimeout(savedTimeoutRef.current);
-          }
-          savedTimeoutRef.current = setTimeout(() => {
-            setSaveStatus("idle");
-          }, 2000);
         } catch (error) {
           console.error("Failed to save notes:", error);
           setSaveStatus("error");
@@ -113,21 +105,6 @@ export const PhotoNotesDisplay = React.memo<PhotoNotesDisplayProps>(
             }}
           >
             Saving...
-          </Typography>
-        );
-      }
-
-      if (saveStatus === "saved") {
-        return (
-          <Typography
-            variant="caption"
-            style={{
-              color: "var(--color-success)",
-              fontSize: "var(--font-size-xs)",
-              fontStyle: "italic",
-            }}
-          >
-            Saved ✓
           </Typography>
         );
       }

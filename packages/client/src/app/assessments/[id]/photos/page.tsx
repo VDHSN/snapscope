@@ -124,11 +124,10 @@ export default function PhotoGuidePage() {
   );
 
   // Extract just the photo ID - this only changes when switching photos, not when notes update
-  const currentPhotoId = useMemo(() => {
-    if (!claim || !currentPosition) return undefined;
-    const photo = claim.photos ? claim.photos[currentPosition.id] : undefined;
-    return photo?.id;
-  }, [claim?.photos, currentPosition?.id]);
+  const currentPhotoId =
+    claim?.photos && currentPosition?.id
+      ? claim.photos[currentPosition.id]?.id ?? 0
+      : 0;
 
   // Get current position photo for display
   // Only reloads dataUrl when photo ID changes (not when notes update)
@@ -158,12 +157,17 @@ export default function PhotoGuidePage() {
         // Get photo data URL for display with cache busting for retakes
         const isRetake = completedPositions.includes(currentPosition.id);
         const dataUrl = await photoStorage.getPhotoDataUrl(photo.id, isRetake);
+
         const photoWithDataUrl = dataUrl ? { ...photo, dataUrl } : null;
 
         if (photoWithDataUrl) {
           console.log(
             "[DamageNotes] Setting currentPositionPhoto with notes:",
-            photoWithDataUrl.notes?.substring(0, 50)
+            photoWithDataUrl.notes?.substring(0, 50),
+            {
+              isRetake,
+              photoWithDataUrl,
+            }
           );
         }
 
@@ -193,10 +197,9 @@ export default function PhotoGuidePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     currentPhotoId,
-    currentPosition,
-    photoStorage,
+    currentPosition?.id,
     storageReady,
-    completedPositions,
+    completedPositions.length,
   ]);
 
   // Load photo data URLs for progress grid
@@ -461,10 +464,10 @@ export default function PhotoGuidePage() {
 
         // Update claim with modified photo
         const updatedPhotos = { ...(claim.photos || {}) };
-        const updatedPhoto = updatedPhotos[currentPosition.id] = {
+        const updatedPhoto = (updatedPhotos[currentPosition.id] = {
           ...currentPhoto,
           notes: newNotes?.trim(),
-        };
+        });
 
         const updatedClaim = {
           ...claim,

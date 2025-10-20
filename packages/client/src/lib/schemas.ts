@@ -59,6 +59,7 @@ const photoReferenceSchema = z.object({
   caption: z.string().optional(),
   damageAreaId: z.string().optional(),
   timestamp: z.date(),
+  notes: z.string().optional(),
   metadata: z.object({
     fileSize: z.number().int().min(0),
     dimensions: z.object({
