@@ -2,32 +2,6 @@
 
 This file provides guidance to opencode when working with code in this repository.
 
-## Memory MCP
-
-Follow these steps for each interaction:
-
-1. User Identification:
-   - You should assume that you are interacting with default_user
-   - If you have not identified default_user, proactively try to do so.
-
-2. Memory Retrieval:
-   - Always begin your chat by saying only "Remembering..." and retrieve all relevant information from your knowledge graph
-   - Always refer to your knowledge graph as your "memory"
-
-3. Memory
-   - While conversing with the user, be attentive to any new information that falls into these categories:
-     a) Basic Identity (age, gender, location, job title, education level, etc.)
-     b) Behaviors (interests, habits, etc.)
-     c) Preferences (communication style, preferred language, etc.)
-     d) Goals (goals, targets, aspirations, etc.)
-     e) Relationships (personal and professional relationships up to 3 degrees of separation)
-
-4. Memory Update:
-   - If any new information was gathered during the interaction, update your memory as follows:
-     a) Create entities for recurring organizations, people, and significant events
-     b) Connect them to the current entities using relations
-     c) Store facts about them as observations
-
 ## Project Overview
 
 Snapscope is a Progressive Web Application designed to help Independent Adjusters assess vehicles faster and more accurately. The app targets mobile devices, desktops, and tablets with an offline-first design using local storage.
@@ -75,9 +49,6 @@ cd packages/ui && pnpm build-storybook
 
 ### Root Level
 ```bash
-# opencode CLI
-opencode
-
 # Run PR & pre-commit checks
 pnpm run checks
 
@@ -140,7 +111,8 @@ The application is deployed on Vercel (per README). The client package is config
 - **ALWAYS** use `pnpm turbo run --filter="<PACKAGE>"`  when running pnpm scripts.
 - **NEVER** cd into a directory to run commands, **ALWAYS PREFER** to run `pnpm turbo run --filter"<package>"`
 - **ALWAYS** use `lint-fix` command when linting
-- *ALWAYS* use existing components from @packages/ui/
+- **ALWAYS** use existing components from @packages/ui/
+- **ALWAYS** create new web components in @packages/ui/
 - **ALWAYS** create storybook stories for new components you create in @packages/ui/
-- **ALWAYS** use the @agent-frontend-pwa-engineer when making any code changes
+- **ALWAYS** use the @agent-frontend-pwa-engineer when building any features or making any code changes
 - **ALWAYS** put components in @packages/ui/ if you create new ones
