@@ -38,7 +38,7 @@ export default function DamageNotesPage() {
   const [error, setError] = useState<string | null>(null);
 
   const photoPositions = getPhotoPositionsForCarrier(claim?.carrierId);
-  const currentPosition = positionId ? getPositionById(positionId) : null;
+  const currentPosition = positionId ? getPositionById(positionId, claim?.carrierId) : null;
 
   const totalPhotos = photoPositions.filter(p => p.required).length;
   const completedPhotos = claim?.photos ? Object.keys(claim.photos).length : 0;
@@ -59,6 +59,13 @@ export default function DamageNotesPage() {
         if (foundPhoto) {
           setPhoto(foundPhoto);
           setNotes(foundPhoto.notes || '');
+        } else if (positionId) {
+          // Fallback to position ID if photo ID lookup failed
+          const fallbackPhoto = loadedClaim.photos[positionId];
+          if (fallbackPhoto) {
+            setPhoto(fallbackPhoto);
+            setNotes(fallbackPhoto.notes || '');
+          }
         }
       } else if (positionId && loadedClaim.photos) {
         const foundPhoto = loadedClaim.photos[positionId];
