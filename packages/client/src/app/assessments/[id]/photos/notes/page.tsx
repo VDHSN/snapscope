@@ -23,7 +23,7 @@ export default function DamageNotesPage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-  const { getClaim, saveClaim } = useClaims();
+  const { claims, loading: claimsLoading, saveClaim } = useClaims();
   const { photoStorage, isReady: storageReady } = usePhotoStorage();
   const claimId = params.id as string;
   const photoId = searchParams.get('photoId');
@@ -46,7 +46,10 @@ export default function DamageNotesPage() {
 
   // Load claim and photo data
   useEffect(() => {
-    const loadedClaim = getClaim(claimId);
+    // Wait for claims to load from storage before trying to access them
+    if (claimsLoading) return;
+
+    const loadedClaim = claims.find(c => c.id === claimId);
     if (loadedClaim) {
       setClaim(loadedClaim);
 
@@ -66,7 +69,7 @@ export default function DamageNotesPage() {
       }
     }
     setLoading(false);
-  }, [claimId, photoId, positionId, getClaim]);
+  }, [claimId, photoId, positionId, claims, claimsLoading]);
 
   // Load photo thumbnail
   useEffect(() => {
@@ -155,7 +158,7 @@ export default function DamageNotesPage() {
     }
   };
 
-  if (loading) {
+  if (loading || claimsLoading) {
     return (
       <div style={{
         minHeight: '100vh',
