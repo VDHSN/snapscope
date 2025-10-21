@@ -45,9 +45,9 @@ export function useAssessmentExport(): UseAssessmentExportReturn {
       const filename = generateExportFilename(claim);
 
       // Try to use Web Share API (mobile devices)
-      const canShare = navigator.share && navigator.canShare;
+      const hasShareApi = typeof navigator.share !== 'undefined' && typeof navigator.canShare !== 'undefined';
 
-      if (canShare) {
+      if (hasShareApi) {
         try {
           // Create File from Blob for sharing
           const file = new File([zipBlob], filename, {
@@ -93,7 +93,7 @@ export function useAssessmentExport(): UseAssessmentExportReturn {
     } finally {
       setIsExporting(false);
     }
-  }, [getClaim, saveClaim]);
+  }, [getClaim, saveClaim, updateExportTimestamp]);
 
   /**
    * Update claim with export timestamp
