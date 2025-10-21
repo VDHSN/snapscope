@@ -30,6 +30,9 @@ const sampleAssessments: Record<string, Assessment> = {
     status: 'COMPLETE',
     dateUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
     claimId: 'claim-1',
+    vin: '1FMPU18L9WLA04056',
+    completedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    exportedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
   },
   hondaCRV: {
     id: '2',
@@ -37,6 +40,7 @@ const sampleAssessments: Record<string, Assessment> = {
     status: 'IN PROGRESS',
     dateUpdated: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
     claimId: 'claim-2',
+    vin: 'JTEDS41AX82059224',
   },
   fordF150: {
     id: '3',
@@ -44,6 +48,8 @@ const sampleAssessments: Record<string, Assessment> = {
     status: 'COMPLETE',
     dateUpdated: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
     claimId: 'claim-3',
+    vin: 'JTJGF10U630150394',
+    completedAt: new Date(Date.now() - 30 * 60 * 1000),
   },
   chevroletMalibu: {
     id: '4',
@@ -51,6 +57,7 @@ const sampleAssessments: Record<string, Assessment> = {
     status: 'IN PROGRESS',
     dateUpdated: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
     claimId: 'claim-4',
+    vin: '4A3AE35G11E084392',
   },
 };
 

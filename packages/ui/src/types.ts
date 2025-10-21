@@ -4,6 +4,9 @@ export interface Assessment {
   status: 'IN PROGRESS' | 'COMPLETE';
   dateUpdated: Date;
   claimId: string;
+  completedAt?: Date;
+  exportedAt?: Date;
+  vin: string;
 }
 
 export interface AssessmentListProps {
@@ -14,9 +17,11 @@ export interface AssessmentListProps {
   onAssessmentSelect?: (assessment: Assessment) => void;
   onAddAssessment?: () => void;
   onSettingsClick?: () => void;
+  onExport?: (assessmentId: string) => void;
 }
 
 export interface AssessmentCardProps {
   assessment: Assessment;
   onClick?: () => void;
+  onExport?: (assessmentId: string) => void;
 }
