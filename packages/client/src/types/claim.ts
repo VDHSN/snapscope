@@ -48,6 +48,7 @@ export interface PhotoReference {
   caption?: string;
   damageAreaId?: string;
   timestamp: Date;
+  notes?: string; // Optional damage notes for the photo
   metadata?: {
     fileSize: number;
     dimensions?: {

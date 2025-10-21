@@ -48,14 +48,15 @@ export const AssessmentCard = memo<AssessmentCardProps>(({ assessment, onClick }
   };
 
   return (
-    <Card 
-      elevation={2} 
+    <Card
+      elevation={2}
       padding="lg"
       onClick={onClick}
       onKeyDown={handleKeyPress}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       aria-label={onClick ? `View assessment for ${assessment.vehicleName}` : undefined}
+      data-testid={`assessment-card-${assessment.id}`}
       style={{
         cursor: onClick ? 'pointer' : 'default',
         marginBottom: 'var(--space-md)',
@@ -104,7 +105,7 @@ export const AssessmentCard = memo<AssessmentCardProps>(({ assessment, onClick }
             }}>
               {assessment.vehicleName}
             </Typography>
-            <Badge variant={statusVariant} size="sm">
+            <Badge variant={statusVariant} size="sm" data-testid={`assessment-card-${assessment.id}-status`}>
               {statusLabel}
             </Badge>
           </div>

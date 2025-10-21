@@ -12,11 +12,14 @@ import { useRouter } from 'next/navigation';
 export default function Home() {
   const router = useRouter();
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: 'var(--bg-primary)',
-      padding: 'var(--space-md)',
-    }}>
+    <div
+      data-testid="page-home"
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-primary)',
+        padding: 'var(--space-md)',
+      }}
+    >
       {/* Theme Toggle */}
       <div style={{ 
         position: 'absolute', 
@@ -36,12 +39,15 @@ export default function Home() {
         justifyContent: 'center',
         textAlign: 'center',
       }}>
-        <main style={{ 
-          maxWidth: '800px', 
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 'var(--space-2xl)',
-        }}>
+        <main
+          data-testid="home-main-content"
+          style={{
+            maxWidth: '800px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--space-2xl)',
+          }}
+        >
           {/* Logo/Brand area */}
           <div style={{ 
             display: 'flex',
@@ -142,12 +148,13 @@ export default function Home() {
 
           {/* CTA Button */}
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button 
-              variant="primary" 
+            <Button
+              variant="primary"
               size="lg"
               onClick={() => {
                 router.push('/assessments');
               }}
+              data-testid="home-start-claim-button"
               style={{
                 borderRadius: '50px',
                 padding: '16px 32px',

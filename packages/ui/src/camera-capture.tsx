@@ -14,6 +14,7 @@ export interface CameraCaptureProps {
   maxHeight?: number; // max photo height, default 1080
   allowFallbackUpload?: boolean; // Allow file upload when camera fails
   onFallbackUpload?: () => void; // Callback for fallback file upload
+  'data-testid'?: string;
 }
 
 interface CameraError {
@@ -39,6 +40,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
   maxHeight = 1080,
   allowFallbackUpload = true,
   onFallbackUpload,
+  'data-testid': testId = 'camera-capture',
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -473,17 +475,20 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
   }
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'rgba(0, 0, 0, 0.95)',
-      display: 'flex',
-      flexDirection: 'column',
-      zIndex: 1000,
-    }}>
+    <div
+      data-testid={testId}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(0, 0, 0, 0.95)',
+        display: 'flex',
+        flexDirection: 'column',
+        zIndex: 1000,
+      }}
+    >
       {/* Header */}
       <div style={{
         display: 'flex',
@@ -520,6 +525,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
             variant="secondary"
             size="sm"
             onClick={handleClose}
+            data-testid={`${testId}-close-button`}
             style={{
               background: 'rgba(255, 255, 255, 0.2)',
               border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -645,23 +651,25 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
                 <Button
                   variant="primary"
                   onClick={startCamera}
+                  data-testid={`${testId}-retry-button`}
                   style={{ minHeight: '48px' }} // Better mobile touch target
                 >
                   Try Again
                 </Button>
               )}
-              
+
               {/* Retry button for generic errors with retry count */}
               {(error.type === 'generic' || error.type === 'wrong_camera') && retryCount < maxRetries && (
                 <Button
                   variant="primary"
                   onClick={retryCamera}
+                  data-testid={`${testId}-retry-button`}
                   style={{ minHeight: '48px' }} // Better mobile touch target
                 >
                   Retry ({retryCount}/{maxRetries})
                 </Button>
               )}
-              
+
               {/* Reset retry count button */}
               {retryCount >= maxRetries && (
                 <Button
@@ -671,6 +679,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
                     setError(null);
                     startCamera();
                   }}
+                  data-testid={`${testId}-retry-button`}
                   style={{
                     background: 'rgba(255, 255, 255, 0.1)',
                     border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -681,12 +690,13 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
                   Try Once More
                 </Button>
               )}
-              
+
               {/* Upload fallback */}
               {allowFallbackUpload && (
                 <Button
                   variant="secondary"
                   onClick={handleFileUpload}
+                  data-testid={`${testId}-upload-button`}
                   style={{
                     background: 'rgba(255, 255, 255, 0.1)',
                     border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -791,6 +801,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
                 <button
                   onClick={capturePhoto}
                   disabled={isCapturing}
+                  data-testid={`${testId}-capture-button`}
                   style={{
                     // Minimum 44px touch target recommended for mobile
                     width: '88px',

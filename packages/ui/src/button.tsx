@@ -4,6 +4,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   variant?: 'primary' | 'secondary' | 'destructive';
   size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
+  'data-testid'?: string;
 }
 
 const baseStyle: React.CSSProperties = {

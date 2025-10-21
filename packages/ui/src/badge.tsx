@@ -4,6 +4,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: 'success' | 'warning' | 'error' | 'info' | 'neutral';
   size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
+  'data-testid'?: string;
 }
 
 const baseStyle: React.CSSProperties = {

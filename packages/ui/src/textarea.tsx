@@ -1,9 +1,8 @@
 import React from 'react';
 
-export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
+export interface TextAreaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'> {
   size?: 'sm' | 'md' | 'lg';
   variant?: 'default' | 'error';
-  'data-testid'?: string;
 }
 
 const baseStyle: React.CSSProperties = {
@@ -17,6 +16,8 @@ const baseStyle: React.CSSProperties = {
   width: '100%',
   fontFamily: 'inherit',
   outline: 'none',
+  resize: 'vertical',
+  minHeight: '80px',
 };
 
 const variants = {
@@ -32,14 +33,17 @@ const sizes = {
   sm: {
     padding: '8px',
     fontSize: 'var(--font-size-small)',
+    minHeight: '60px',
   },
   md: {
     padding: '12px',
     fontSize: 'var(--font-size-body)',
+    minHeight: '80px',
   },
   lg: {
     padding: '16px',
     fontSize: 'var(--font-size-body)',
+    minHeight: '100px',
   },
 };
 
@@ -48,8 +52,8 @@ const focusStyle: React.CSSProperties = {
   boxShadow: '0 0 0 2px rgba(99, 102, 241, 0.1)',
 };
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ size = 'md', variant = 'default', style, onFocus, onBlur, ...props }, ref) => {
+export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
+  ({ size = 'md', variant = 'default', style, onFocus, onBlur, rows = 4, ...props }, ref) => {
     const [isFocused, setIsFocused] = React.useState(false);
 
     const variantStyle = variants[variant];
@@ -63,19 +67,20 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       ...style,
     };
 
-    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
       setIsFocused(true);
       onFocus?.(e);
     };
 
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
       setIsFocused(false);
       onBlur?.(e);
     };
 
     return (
-      <input
+      <textarea
         ref={ref}
+        rows={rows}
         style={combinedStyle}
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -85,4 +90,4 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = 'Input';
+TextArea.displayName = 'TextArea';
