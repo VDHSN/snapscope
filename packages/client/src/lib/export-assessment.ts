@@ -12,6 +12,7 @@ import type { Claim } from '@/types/claim';
 export interface ExportOptions {
   includeMetadata?: boolean;
   includeNotes?: boolean;
+  onProgress?: (progress: number, current: number, total: number) => void;
 }
 
 /**
@@ -41,6 +42,13 @@ export async function generateAssessmentZip(
   // Counter for exported photos
   let photoCount = 0;
 
+  // Track progress
+  const totalPhotos = Object.keys(claim.photos).length;
+  let processedPhotos = 0;
+
+  // Report initial progress
+  options.onProgress?.(0, 0, totalPhotos);
+
   // Iterate through photos and add them to ZIP
   for (const [damageAreaId, photoRef] of Object.entries(claim.photos)) {
     try {
@@ -65,6 +73,14 @@ export async function generateAssessmentZip(
       zip.file(photoFilename, photoBlob);
       photoCount++;
 
+      processedPhotos++;
+      // Report progress after each photo is processed
+      options.onProgress?.(
+        Math.round((processedPhotos / totalPhotos) * 100),
+        processedPhotos,
+        totalPhotos
+      );
+
       // Add notes if they exist and option is enabled
       if (options.includeNotes && photoRef.notes) {
         const notesFilename = `${sanitizedLabel}_notes.txt`;
@@ -85,6 +101,9 @@ export async function generateAssessmentZip(
     const metadata = generateMetadataText(claim, photoCount);
     zip.file('assessment_info.txt', metadata);
   }
+
+  // Report completion before ZIP compression
+  options.onProgress?.(100, totalPhotos, totalPhotos);
 
   // Generate and return ZIP as Blob
   try {

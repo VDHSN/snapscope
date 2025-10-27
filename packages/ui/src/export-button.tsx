@@ -16,6 +16,18 @@ const loadingSpinnerStyle: React.CSSProperties = {
   animation: 'spin 0.8s linear infinite'
 };
 
+const srOnlyStyle: React.CSSProperties = {
+  position: 'absolute',
+  width: '1px',
+  height: '1px',
+  padding: '0',
+  margin: '-1px',
+  overflow: 'hidden',
+  clip: 'rect(0, 0, 0, 0)',
+  whiteSpace: 'nowrap',
+  border: '0'
+};
+
 export const ExportButton = React.forwardRef<HTMLButtonElement, ExportButtonProps>(
   ({ loading = false, disabled, children = 'Export Assessment', ...props }, ref) => {
     // Inject keyframe animation into document if not already present
@@ -46,6 +58,9 @@ export const ExportButton = React.forwardRef<HTMLButtonElement, ExportButtonProp
         {loading ? (
           <>
             <span style={loadingSpinnerStyle} aria-hidden="true" />
+            <span style={srOnlyStyle} aria-live="polite">
+              Exporting assessment, please wait
+            </span>
             Exporting...
           </>
         ) : (

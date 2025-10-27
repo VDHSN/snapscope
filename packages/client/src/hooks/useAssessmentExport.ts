@@ -93,7 +93,7 @@ export function useAssessmentExport(): UseAssessmentExportReturn {
     } finally {
       setIsExporting(false);
     }
-  }, [getClaim, saveClaim, updateExportTimestamp]);
+  }, [getClaim, saveClaim]);
 
   /**
    * Update claim with export timestamp
@@ -128,19 +128,23 @@ export function useAssessmentExport(): UseAssessmentExportReturn {
  * Download a file using browser download
  */
 function downloadFile(blob: Blob, filename: string): void {
-  // Create download link
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
   link.download = filename;
+
+  // Cleanup function
+  const cleanup = () => {
+    URL.revokeObjectURL(url);
+  };
 
   // Append to body, click, and remove
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 
-  // Clean up URL after a delay
-  setTimeout(() => {
-    URL.revokeObjectURL(url);
-  }, 100);
+  // Use requestAnimationFrame + longer timeout for reliable cleanup on slow devices
+  requestAnimationFrame(() => {
+    setTimeout(cleanup, 1000);
+  });
 }
