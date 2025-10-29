@@ -174,6 +174,12 @@ export default function CarrierEditorPage({ params }: CarrierEditorPageProps) {
   const handleSave = async () => {
     if (!carrier) return;
 
+    // Validation: Require at least one photo step
+    if (steps.length === 0) {
+      showToast('You must add at least one photo step first', 'warning');
+      return;
+    }
+
     try {
       const updatedCarrier: Carrier = {
         ...carrier,
@@ -334,7 +340,7 @@ export default function CarrierEditorPage({ params }: CarrierEditorPageProps) {
               </Button>
             )}
           </div>
-          <Button onClick={handleSave} disabled={!isDirty}>
+          <Button onClick={handleSave} disabled={!isDirty || steps.length === 0}>
             Save Changes
           </Button>
         </div>
