@@ -100,6 +100,7 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
   const [retryCount, setRetryCount] = useState(0);
   const [isAnalyzingBlur, setIsAnalyzingBlur] = useState(false);
   const [prevIsOpen, setPrevIsOpen] = useState(false);
+  const [shouldRequestPermission, setShouldRequestPermission] = useState(false);
   const maxRetries = 2;
 
   // Use the permissions hook
@@ -217,30 +218,12 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
     console.debug('[PhotoCaptureScreen] Setting state to permission_check');
     setCameraState('permission_check');
     setError(null);
+    setShouldRequestPermission(true);
+  }, [facingMode, isCameraSupported, handleCameraError]);
 
+  // Initialize camera after permission is granted
+  const initializeCamera = useCallback(async () => {
     try {
-      // First, request permission using our enhanced hook with mobile constraints
-      console.debug('[PhotoCaptureScreen] Requesting camera permission with mobile constraints');
-      const permissionGranted = await requestPermission({
-        facingMode,
-        showFallback: allowFallbackUpload,
-        onFallback: onFallbackUpload,
-        preferExactConstraints: true, // Force exact constraints for better rear camera enforcement
-      });
-
-      if (!permissionGranted) {
-        // Permission was denied - error details are already in the permission state
-        console.error('[PhotoCaptureScreen] Permission denied:', permission.error);
-        setCameraState('error');
-        const permissionError: CameraError = {
-          type: 'permission',
-          message: permission.error ?? 'Camera permission denied',
-        };
-        setError(permissionError);
-        onError?.(permissionError.message);
-        return;
-      }
-
       // Permission granted, now start the camera with enhanced constraints
       console.debug('[PhotoCaptureScreen] Permission granted, starting camera stream');
       setCameraState('loading');
@@ -388,7 +371,7 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
     } catch (err) {
       handleCameraError(err as Error);
     }
-  }, [facingMode, maxWidth, maxHeight, isCameraSupported, handleCameraError, requestPermission, allowFallbackUpload, onFallbackUpload, permission.error, onError]);
+  }, [facingMode, maxWidth, maxHeight, handleCameraError, permission.browserInfo, validateCameraStream]);
 
   // Stop camera stream
   const stopCamera = useCallback(() => {
@@ -523,6 +506,38 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
       stopCamera();
     };
   }, [stopCamera]);
+
+  // Handle permission request after permission_check state is rendered
+  useEffect(() => {
+    if (!shouldRequestPermission || cameraState !== 'permission_check') return;
+
+    const requestCameraPermission = async () => {
+      const permissionGranted = await requestPermission({
+        facingMode,
+        showFallback: allowFallbackUpload,
+        onFallback: onFallbackUpload,
+        preferExactConstraints: true,
+      });
+
+      if (permissionGranted) {
+        await initializeCamera();
+      } else {
+        // Permission was denied - error details are already in the permission state
+        console.error('[PhotoCaptureScreen] Permission denied:', permission.error);
+        setCameraState('error');
+        const permissionError: CameraError = {
+          type: 'permission',
+          message: permission.error ?? 'Camera permission denied',
+        };
+        setError(permissionError);
+        onError?.(permissionError.message);
+      }
+
+      setShouldRequestPermission(false);
+    };
+
+    requestCameraPermission();
+  }, [shouldRequestPermission, cameraState, facingMode, allowFallbackUpload, onFallbackUpload, requestPermission, initializeCamera, permission.error, onError]);
 
   // Handle modal close
   const handleClose = useCallback(() => {
