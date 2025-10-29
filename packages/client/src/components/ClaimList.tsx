@@ -6,6 +6,7 @@
 
 import React, { memo, useMemo, useState, useCallback } from 'react';
 import { useVirtualScroll, useDebounce } from '@/lib/performance';
+import { formatDate, formatDateTime } from '@/lib/utils';
 import type { Claim } from '@/types/claim';
 
 interface ClaimListProps {
@@ -88,13 +89,13 @@ const ClaimItem = memo<{
       
       <div className="text-sm text-gray-600 space-y-1">
         <p><strong>Vehicle:</strong> {claim.vehicle.year} {claim.vehicle.make || 'TBD'} {claim.vehicle.model || 'TBD'}</p>
-        <p><strong>Date of Loss:</strong> {new Date(claim.dateOfLoss).toLocaleDateString()}</p>
+        <p><strong>Date of Loss:</strong> {formatDate(claim.dateOfLoss)}</p>
         {claim.location.address && (
           <p><strong>Location:</strong> {claim.location.address}</p>
         )}
         <div className="flex justify-between items-center mt-3">
           <span className="text-xs text-gray-500">
-            Updated: {new Date(claim.updatedAt).toLocaleString()}
+            Updated: {formatDateTime(claim.updatedAt)}
           </span>
           <span className={`text-xs px-2 py-1 rounded ${claim.priority === 'urgent' ? 'bg-red-100 text-red-800' : 
             claim.priority === 'high' ? 'bg-orange-100 text-orange-800' : 
