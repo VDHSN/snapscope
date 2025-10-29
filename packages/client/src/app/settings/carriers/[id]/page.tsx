@@ -313,6 +313,7 @@ export default function CarrierEditorPage({ params }: CarrierEditorPageProps) {
             steps={steps}
             onChange={setSteps}
             onAddStep={handleAddStep}
+            onDeleteStep={() => {}} // Enable delete buttons (deletion handled by onChange)
             onToggleRequired={(stepId) => {
               const updatedSteps = steps.map((step) =>
                 step.id === stepId ? { ...step, required: !step.required } : step
