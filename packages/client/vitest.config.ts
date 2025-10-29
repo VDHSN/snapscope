@@ -13,4 +13,10 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // Prevent PostCSS from being loaded during tests
+  css: {
+    postcss: {
+      plugins: [],
+    },
+  },
 });
