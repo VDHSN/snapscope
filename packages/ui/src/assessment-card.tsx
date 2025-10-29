@@ -4,29 +4,49 @@ import { Typography } from './typography';
 import { Badge } from './badge';
 import type { AssessmentCardProps } from './types';
 
-const getRelativeTimeString = (date: Date): string => {
+/**
+ * Get relative time string (e.g., "2 hours ago")
+ *
+ * Handles dates that may be deserialized from storage where Date objects
+ * are serialized as ISO strings. Accepts Date objects, string representations,
+ * or Unix timestamps.
+ *
+ * @param date - The date value (Date object, ISO string, or Unix timestamp)
+ * @returns Human-readable relative time string
+ */
+const getRelativeTimeString = (date: Date | string | number): string => {
+  // Convert input to Date object
+  const dateObj = typeof date === 'string' || typeof date === 'number'
+    ? new Date(date)
+    : date;
+
+  // Validate that we have a valid date
+  if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+    return 'Invalid Date';
+  }
+
   const now = new Date();
-  const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-  
+  const diffInMinutes = Math.floor((now.getTime() - dateObj.getTime()) / (1000 * 60));
+
   if (diffInMinutes < 60) {
     return `${diffInMinutes} minutes ago`;
   }
-  
+
   const diffInHours = Math.floor(diffInMinutes / 60);
   if (diffInHours < 24) {
     return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`;
   }
-  
+
   const diffInDays = Math.floor(diffInHours / 24);
   if (diffInDays === 1) {
     return 'Yesterday';
   }
-  
+
   if (diffInDays < 7) {
     return `${diffInDays} days ago`;
   }
-  
-  return date.toLocaleDateString();
+
+  return dateObj.toLocaleDateString();
 };
 
 export const AssessmentCard = memo<AssessmentCardProps>(({ assessment, onClick }) => {

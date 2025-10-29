@@ -202,7 +202,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
       // Build enhanced constraints similar to permission hook
       const isMobile = permission.browserInfo?.isMobile ?? false;
       
-      let videoConstraints: MediaTrackConstraints = {
+      const videoConstraints: MediaTrackConstraints = {
         width: { ideal: maxWidth, max: maxWidth },
         height: { ideal: maxHeight, max: maxHeight },
       };

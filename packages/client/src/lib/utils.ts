@@ -151,36 +151,129 @@ export function formatPhoneNumber(phone: string): string {
 }
 
 /**
- * Get relative time string (e.g., "2 hours ago")
+ * Format a date value for display.
+ *
+ * Handles dates that may be deserialized from storage (localStorage/IndexedDB)
+ * where Date objects are serialized as ISO strings. This function accepts
+ * Date objects, string representations (ISO 8601), or Unix timestamps.
+ *
+ * @param date - The date value to format (Date object, ISO string, or Unix timestamp)
+ * @param options - Optional Intl.DateTimeFormatOptions for customizing the output
+ * @returns Formatted date string, or "Invalid Date" if the input cannot be parsed
+ *
+ * @example
+ * // With Date object
+ * formatDate(new Date()) // "1/15/2025"
+ *
+ * @example
+ * // With ISO string (from localStorage)
+ * formatDate("2025-01-15T10:30:00.000Z") // "1/15/2025"
+ *
+ * @example
+ * // With Unix timestamp
+ * formatDate(1705318200000) // "1/15/2025"
+ *
+ * @example
+ * // With custom formatting
+ * formatDate(new Date(), { dateStyle: 'full' }) // "Monday, January 15, 2025"
  */
-export function getRelativeTime(date: Date): string {
+export function formatDate(
+  date: Date | string | number,
+  options?: Intl.DateTimeFormatOptions
+): string {
+  // Convert input to Date object
+  const dateObj = typeof date === 'string' || typeof date === 'number'
+    ? new Date(date)
+    : date;
+
+  // Validate that we have a valid date
+  if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+    return 'Invalid Date';
+  }
+
+  // Default to simple date format if no options provided
+  return dateObj.toLocaleDateString(undefined, options);
+}
+
+/**
+ * Format a date value for display with time.
+ *
+ * Similar to formatDate but includes time information. Handles dates that may be
+ * deserialized from storage where Date objects are serialized as ISO strings.
+ *
+ * @param date - The date value to format (Date object, ISO string, or Unix timestamp)
+ * @param options - Optional Intl.DateTimeFormatOptions for customizing the output
+ * @returns Formatted date and time string, or "Invalid Date" if the input cannot be parsed
+ *
+ * @example
+ * formatDateTime(new Date()) // "1/15/2025, 10:30:00 AM"
+ * formatDateTime("2025-01-15T10:30:00.000Z") // "1/15/2025, 10:30:00 AM"
+ */
+export function formatDateTime(
+  date: Date | string | number,
+  options?: Intl.DateTimeFormatOptions
+): string {
+  // Convert input to Date object
+  const dateObj = typeof date === 'string' || typeof date === 'number'
+    ? new Date(date)
+    : date;
+
+  // Validate that we have a valid date
+  if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+    return 'Invalid Date';
+  }
+
+  // Default to date and time format if no options provided
+  return dateObj.toLocaleString(undefined, options);
+}
+
+/**
+ * Get relative time string (e.g., "2 hours ago")
+ *
+ * Handles dates that may be deserialized from storage where Date objects
+ * are serialized as ISO strings.
+ *
+ * @param date - The date value (Date object, ISO string, or Unix timestamp)
+ * @returns Human-readable relative time string
+ */
+export function getRelativeTime(date: Date | string | number): string {
+  // Convert input to Date object
+  const dateObj = typeof date === 'string' || typeof date === 'number'
+    ? new Date(date)
+    : date;
+
+  // Validate that we have a valid date
+  if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+    return 'Invalid Date';
+  }
+
   const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-  
+  const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
+
   if (diffInSeconds < 60) {
     return 'just now';
   }
-  
+
   const diffInMinutes = Math.floor(diffInSeconds / 60);
   if (diffInMinutes < 60) {
     return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`;
   }
-  
+
   const diffInHours = Math.floor(diffInMinutes / 60);
   if (diffInHours < 24) {
     return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`;
   }
-  
+
   const diffInDays = Math.floor(diffInHours / 24);
   if (diffInDays < 30) {
     return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`;
   }
-  
+
   const diffInMonths = Math.floor(diffInDays / 30);
   if (diffInMonths < 12) {
     return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`;
   }
-  
+
   const diffInYears = Math.floor(diffInMonths / 12);
   return `${diffInYears} year${diffInYears === 1 ? '' : 's'} ago`;
 }
