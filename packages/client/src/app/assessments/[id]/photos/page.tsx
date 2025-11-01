@@ -403,8 +403,8 @@ export default function PhotoGuidePage() {
   };
 
   const handleContinue = () => {
-    // Navigate to next step (assessment review - to be implemented)
-    router.push(`/assessments/${claimId}/review`);
+    // Navigate to export page when all required photos are complete
+    router.push(`/assessments/${claimId}/export`);
   };
 
   const handleSkipOptional = () => {
@@ -1103,7 +1103,7 @@ export default function PhotoGuidePage() {
           </div>
         </Card>
 
-        {/* Continue Button */}
+        {/* Complete Assessment Button */}
         {allRequiredComplete && (
           <div
             style={{
@@ -1118,7 +1118,7 @@ export default function PhotoGuidePage() {
               onClick={handleContinue}
               style={{ width: "100%" }}
             >
-              Continue to Review
+              Complete Assessment
             </Button>
           </div>
         )}

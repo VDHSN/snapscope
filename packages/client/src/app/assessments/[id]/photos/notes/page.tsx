@@ -112,8 +112,8 @@ export default function DamageNotesPage() {
     const allRequired = areAllRequiredPhotosCompleted(completedPositionIds, claim.carrierId);
 
     if (allRequired) {
-      // Navigate to review page
-      router.push(`/assessments/${claimId}/review`);
+      // Navigate to export page
+      router.push(`/assessments/${claimId}/export`);
     } else {
       // Navigate back to photo guide
       router.push(`/assessments/${claimId}/photos`);

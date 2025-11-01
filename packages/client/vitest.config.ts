@@ -5,12 +5,18 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: [],
+    setupFiles: ['./src/__tests__/setup.ts'],
     css: false, // Disable CSS processing
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+    },
+  },
+  // Prevent PostCSS from being loaded during tests
+  css: {
+    postcss: {
+      plugins: [],
     },
   },
 });

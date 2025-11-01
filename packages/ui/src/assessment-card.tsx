@@ -49,7 +49,7 @@ const getRelativeTimeString = (date: Date | string | number): string => {
   return dateObj.toLocaleDateString();
 };
 
-export const AssessmentCard = memo<AssessmentCardProps>(({ assessment, onClick }) => {
+export const AssessmentCard = memo<AssessmentCardProps>(({ assessment, onClick, onExport }) => {
   const statusVariant = useMemo(() => {
     return assessment.status === 'COMPLETE' ? 'success' : 'warning';
   }, [assessment.status]);
@@ -64,6 +64,13 @@ export const AssessmentCard = memo<AssessmentCardProps>(({ assessment, onClick }
     if (onClick && (event.key === 'Enter' || event.key === ' ')) {
       event.preventDefault();
       onClick();
+    }
+  };
+
+  const handleExportClick = (event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent card click
+    if (onExport) {
+      onExport(assessment.id);
     }
   };
 
@@ -130,21 +137,67 @@ export const AssessmentCard = memo<AssessmentCardProps>(({ assessment, onClick }
             </Badge>
           </div>
 
-          {/* VIN (mock data for now) */}
-          <Typography variant="small" style={{ 
+          {/* VIN */}
+          <Typography variant="small" style={{
             color: 'var(--text-secondary)',
             fontSize: 'var(--font-size-caption)'
           }}>
-            VIN: 1HGBH41JXMN{Math.random().toString().slice(2,8)}
+            VIN: {assessment.vin}
           </Typography>
 
-          {/* Timestamp */}
-          <Typography variant="small" style={{ 
-            color: 'var(--text-tertiary)',
-            fontSize: 'var(--font-size-caption)'
+          {/* Timestamp and Completion Info */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--space-xs)'
           }}>
-            {getRelativeTimeString(assessment.dateUpdated)}
-          </Typography>
+            {assessment.completedAt && (
+              <Typography variant="small" style={{
+                color: 'var(--color-success)',
+                fontSize: 'var(--font-size-caption)',
+                fontWeight: 'var(--font-weight-medium)'
+              }}>
+                Completed: {new Date(assessment.completedAt).toLocaleDateString()}
+              </Typography>
+            )}
+            <Typography variant="small" style={{
+              color: 'var(--text-tertiary)',
+              fontSize: 'var(--font-size-caption)'
+            }}>
+              {getRelativeTimeString(assessment.dateUpdated)}
+            </Typography>
+          </div>
+
+          {/* Re-export button for completed assessments */}
+          {assessment.status === 'COMPLETE' && onExport && (
+            <button
+              onClick={handleExportClick}
+              style={{
+                marginTop: 'var(--space-xs)',
+                padding: 'var(--space-xs) var(--space-sm)',
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--border-color)',
+                borderRadius: 'var(--border-radius-sm)',
+                color: 'var(--text-primary)',
+                fontSize: 'var(--font-size-caption)',
+                fontWeight: 'var(--font-weight-medium)',
+                cursor: 'pointer',
+                transition: 'var(--transition-default)',
+                fontFamily: 'inherit',
+                alignSelf: 'flex-start',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--primary-start)';
+                e.currentTarget.style.color = 'white';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'var(--bg-surface)';
+                e.currentTarget.style.color = 'var(--text-primary)';
+              }}
+            >
+              Re-export Assessment
+            </button>
+          )}
         </div>
       </div>
     </Card>

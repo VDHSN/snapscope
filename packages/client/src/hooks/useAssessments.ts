@@ -8,6 +8,9 @@ export interface Assessment {
   status: 'IN PROGRESS' | 'COMPLETE';
   dateUpdated: Date;
   claimId: string;
+  completedAt?: Date;
+  exportedAt?: Date;
+  vin: string;
 }
 
 const mapClaimStatusToAssessment = (status: Claim['status']): Assessment['status'] => {
@@ -27,13 +30,16 @@ const mapClaimStatusToAssessment = (status: Claim['status']): Assessment['status
 export function useAssessments() {
   const { claims, loading, error } = useClaims();
   
-  const assessments = useMemo<Assessment[]>(() => 
+  const assessments = useMemo<Assessment[]>(() =>
     claims.map(claim => ({
       id: claim.id,
-      vehicleName: `${claim.vehicle.year} ${claim.vehicle.make} ${claim.vehicle.model}`,
+      vehicleName: `${claim.vehicle.year} ${claim.vehicle.make ?? ''} ${claim.vehicle.model ?? ''}`.trim(),
       status: mapClaimStatusToAssessment(claim.status),
       dateUpdated: claim.updatedAt,
-      claimId: claim.id
+      claimId: claim.id,
+      completedAt: claim.completedAt,
+      exportedAt: claim.exportedAt,
+      vin: claim.vehicle.vin
     }))
   , [claims]);
 

@@ -28,6 +28,11 @@ export const AssessmentList = memo<AssessmentListProps>(({ onAssessmentSelect })
     router.push(`/assessments/${assessment.id}/photos`);
   };
 
+  const handleExport = (assessmentId: string) => {
+    console.log('Navigating to export page for assessment:', assessmentId);
+    router.push(`/assessments/${assessmentId}/export`);
+  };
+
   return (
     <UIAssessmentList
       assessments={assessments}
@@ -37,6 +42,7 @@ export const AssessmentList = memo<AssessmentListProps>(({ onAssessmentSelect })
       onAssessmentSelect={onAssessmentSelect || handleAssessmentSelect}
       onAddAssessment={handleAddAssessment}
       onSettingsClick={handleSettingsClick}
+      onExport={handleExport}
     />
   );
 });

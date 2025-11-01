@@ -120,6 +120,8 @@ export interface Claim {
   updatedAt: Date;
   createdBy?: string; // Adjuster ID
   syncStatus: 'local_only' | 'synced' | 'sync_pending' | 'sync_failed';
+  completedAt?: Date; // When assessment was marked complete
+  exportedAt?: Date; // When assessment was last exported
 
   // Additional notes and documentation
   notes?: string;

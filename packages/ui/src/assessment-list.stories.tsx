@@ -34,6 +34,8 @@ const sampleAssessments: Assessment[] = [
     status: 'COMPLETE',
     dateUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
     claimId: 'claim-1',
+    vin: '1FMPU18L9WLA04056',
+    completedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
   },
   {
     id: '2',
@@ -41,6 +43,7 @@ const sampleAssessments: Assessment[] = [
     status: 'IN PROGRESS',
     dateUpdated: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
     claimId: 'claim-2',
+    vin: 'JTEDS41AX82059224',
   },
   {
     id: '3',
@@ -48,6 +51,8 @@ const sampleAssessments: Assessment[] = [
     status: 'COMPLETE',
     dateUpdated: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
     claimId: 'claim-3',
+    vin: 'JTJGF10U630150394',
+    completedAt: new Date(Date.now() - 30 * 60 * 1000),
   },
   {
     id: '4',
@@ -55,6 +60,7 @@ const sampleAssessments: Assessment[] = [
     status: 'IN PROGRESS',
     dateUpdated: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
     claimId: 'claim-4',
+    vin: '4A3AE35G11E084392',
   },
 ];
 
@@ -106,6 +112,8 @@ export const ManyAssessments: Story = {
         status: 'COMPLETE',
         dateUpdated: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
         claimId: 'claim-5',
+        vin: '2FALP74W8RX149728',
+        completedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
       },
       {
         id: '6',
@@ -113,6 +121,7 @@ export const ManyAssessments: Story = {
         status: 'IN PROGRESS',
         dateUpdated: new Date(Date.now() - 15 * 60 * 1000), // 15 minutes ago
         claimId: 'claim-6',
+        vin: '5YJ3E1EA5NF123456',
       },
     ],
   },

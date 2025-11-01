@@ -38,7 +38,8 @@ export const AssessmentList = memo<AssessmentListProps>(({
   readOnly = false,
   onAssessmentSelect,
   onAddAssessment,
-  onSettingsClick
+  onSettingsClick,
+  onExport
 }) => {
   if (loading) {
     return (
@@ -125,6 +126,7 @@ export const AssessmentList = memo<AssessmentListProps>(({
               key={assessment.id}
               assessment={assessment}
               onClick={() => onAssessmentSelect?.(assessment)}
+              onExport={onExport}
             />
           ))}
         </div>
