@@ -291,3 +291,11 @@ export const SunIcon = (props: Omit<IconProps, 'name'>) => (
 export const MoonIcon = (props: Omit<IconProps, 'name'>) => (
   <Icon name="moon" {...props} />
 );
+
+export const FlashIcon = (props: Omit<IconProps, 'name'>) => (
+  <Icon name="flash" {...props} />
+);
+
+export const FlashOffIcon = (props: Omit<IconProps, 'name'>) => (
+  <Icon name="flash-off" {...props} />
+);

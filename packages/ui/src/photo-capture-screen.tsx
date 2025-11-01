@@ -109,6 +109,7 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
   const [prevIsOpen, setPrevIsOpen] = useState(false);
   const [shouldRequestPermission, setShouldRequestPermission] = useState(false);
   const [torchSupported, setTorchSupported] = useState(false);
+  const [isTogglingFlash, setIsTogglingFlash] = useState(false);
   const maxRetries = 2;
 
   // Use the permissions hook
@@ -215,8 +216,8 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
 
   // Handle flash toggle
   const handleFlashToggle = useCallback(async () => {
-    if (!streamRef.current || !torchSupported) {
-      console.warn('[PhotoCaptureScreen] Cannot toggle flash: stream or torch not available');
+    if (!streamRef.current || !torchSupported || isTogglingFlash) {
+      console.warn('[PhotoCaptureScreen] Cannot toggle flash: stream, torch not available, or toggle in progress');
       return;
     }
 
@@ -227,6 +228,7 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
     }
 
     const newState = !flashEnabled;
+    setIsTogglingFlash(true);
 
     try {
       await videoTrack.applyConstraints({
@@ -237,8 +239,10 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
     } catch (error) {
       console.error('[PhotoCaptureScreen] Failed to toggle torch:', error);
       onError?.('Failed to toggle flash. Your device may not support this feature.');
+    } finally {
+      setIsTogglingFlash(false);
     }
-  }, [flashEnabled, torchSupported, onFlashToggle, onError]);
+  }, [flashEnabled, torchSupported, onFlashToggle, onError, isTogglingFlash]);
 
   // Start camera with permission check
   const startCamera = useCallback(async () => {

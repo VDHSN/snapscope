@@ -348,23 +348,35 @@ const PhotoCaptureScreenWithFlash = (args: any) => {
   const [capturedPhotos, setCapturedPhotos] = useState<Blob[]>([]);
 
   const handleCapture = (photoBlob: Blob) => {
-    console.log('Photo captured with flash:', flashEnabled);
+    console.log(`[Storybook] Photo captured with flash ${flashEnabled ? 'enabled' : 'disabled'}:`, photoBlob.size, 'bytes');
     setCapturedPhotos(prev => [...prev, photoBlob]);
     setIsOpen(false);
   };
 
   const handleError = (error: string) => {
-    console.error('Camera error:', error);
+    console.error('[Storybook] Camera error:', error);
     alert(`Camera Error: ${error}`);
   };
 
   const handleFlashToggle = (enabled: boolean) => {
-    console.log('Flash toggled:', enabled);
     setFlashEnabled(enabled);
+    console.log(`[Storybook] Flash ${enabled ? 'enabled ⚡' : 'disabled ⚡/'}`);
   };
 
   return (
     <div style={{ padding: '16px' }}>
+      <div style={{
+        padding: '1rem',
+        background: flashEnabled ? '#fffbea' : '#f3f4f6',
+        border: `2px solid ${flashEnabled ? '#f59e0b' : '#d1d5db'}`,
+        borderRadius: '0.5rem',
+        marginBottom: '1rem'
+      }}>
+        <p style={{ margin: 0, fontWeight: 'bold' }}>
+          Flash Status: {flashEnabled ? '⚡ Enabled' : '⚡/ Disabled'}
+        </p>
+      </div>
+
       <Button
         onClick={() => setIsOpen(true)}
         variant="primary"
@@ -407,22 +419,20 @@ export const WithFlashToggle: Story = {
     docs: {
       description: {
         story: `
-This story demonstrates the flash/torch toggle feature.
+Flash toggle functionality for low-light photo capture.
 
-**Browser Compatibility:**
-- Chrome Android: Full support
-- Samsung Internet: Full support
-- Opera Mobile: Full support
-- iOS Safari: NOT supported
-- Desktop browsers: NOT supported
+**Visual Indicators:**
+- ⚡ Flash icon = Flash enabled
+- ⚡/ Flash-off icon = Flash disabled
 
-The flash button will only appear when:
-1. Using the rear camera (facingMode: 'environment')
-2. Browser supports torch API
-3. Device has flash hardware
-4. onFlashToggle callback is provided
+**Browser Support:**
+- Chrome Android: Full support ✅
+- Samsung Internet: Full support ✅
+- Opera Mobile: Full support ✅
+- iOS Safari: NOT supported ❌
+- Desktop browsers: NOT supported ❌
 
-The flash toggle uses the MediaStream Image Capture API's torch constraint.
+**Note:** Flash toggle only appears on rear camera (environment facing mode).
         `
       }
     }
