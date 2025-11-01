@@ -51,6 +51,18 @@
       "outputs": [
         "**/*.tsbuildinfo"
       ]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!**/*.stories.*",
+        "!**/dist/**",
+        "!**/.next/**"
+      ],
+      "outputs": [
+        "coverage/**"
+      ]
     }
   }
 }

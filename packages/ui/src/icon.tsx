@@ -24,7 +24,10 @@ export type IconName =
   | 'error'
   // Theme toggle icons
   | 'sun'
-  | 'moon';
+  | 'moon'
+  // Camera flash icons
+  | 'flash'
+  | 'flash-off';
 
 export type IconSize = 'sm' | 'md' | 'lg';
 
@@ -171,6 +174,15 @@ const iconPaths: Record<IconName, React.ReactNode> = {
   'moon': (
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
   ),
+  'flash': (
+    <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+  ),
+  'flash-off': (
+    <>
+      <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      <path d="M3 3L21 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </>
+  ),
 };
 
 /**
@@ -278,4 +290,12 @@ export const SunIcon = (props: Omit<IconProps, 'name'>) => (
 
 export const MoonIcon = (props: Omit<IconProps, 'name'>) => (
   <Icon name="moon" {...props} />
+);
+
+export const FlashIcon = (props: Omit<IconProps, 'name'>) => (
+  <Icon name="flash" {...props} />
+);
+
+export const FlashOffIcon = (props: Omit<IconProps, 'name'>) => (
+  <Icon name="flash-off" {...props} />
 );

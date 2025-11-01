@@ -14,6 +14,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Button } from './button';
 import { Typography } from './typography';
+import { Icon } from './icon';
 import { usePermissions, type PermissionRequestOptions } from './hooks/use-permissions';
 import { detectBlur, quickBlurCheck } from './blur-detection';
 import { cssVars } from './tokens';
@@ -53,6 +54,10 @@ export interface PhotoCaptureScreenProps {
   allowFallbackUpload?: boolean;
   /** Callback for fallback upload */
   onFallbackUpload?: () => void;
+  /** Whether flash/torch is enabled */
+  flashEnabled?: boolean;
+  /** Callback when flash is toggled */
+  onFlashToggle?: (enabled: boolean) => void;
 }
 
 interface CameraError {
@@ -85,6 +90,8 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
   maxHeight = 1080,
   allowFallbackUpload = true,
   onFallbackUpload,
+  flashEnabled = false,
+  onFlashToggle,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -101,6 +108,8 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
   const [isAnalyzingBlur, setIsAnalyzingBlur] = useState(false);
   const [prevIsOpen, setPrevIsOpen] = useState(false);
   const [shouldRequestPermission, setShouldRequestPermission] = useState(false);
+  const [torchSupported, setTorchSupported] = useState(false);
+  const [isTogglingFlash, setIsTogglingFlash] = useState(false);
   const maxRetries = 2;
 
   // Use the permissions hook
@@ -200,10 +209,40 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
     setRetryCount(prev => prev + 1);
     setError(null);
     setShowCameraWarning(false);
-    
+
     // Reset state and try again
     setCameraState('idle');
   }, [retryCount, maxRetries]);
+
+  // Handle flash toggle
+  const handleFlashToggle = useCallback(async () => {
+    if (!streamRef.current || !torchSupported || isTogglingFlash) {
+      console.warn('[PhotoCaptureScreen] Cannot toggle flash: stream, torch not available, or toggle in progress');
+      return;
+    }
+
+    const videoTrack = streamRef.current.getVideoTracks()[0];
+    if (!videoTrack) {
+      console.warn('[PhotoCaptureScreen] No video track found');
+      return;
+    }
+
+    const newState = !flashEnabled;
+    setIsTogglingFlash(true);
+
+    try {
+      await videoTrack.applyConstraints({
+        advanced: [{ torch: newState } as MediaTrackConstraints]
+      });
+      onFlashToggle?.(newState);
+      console.debug('[PhotoCaptureScreen] Torch toggled to:', newState);
+    } catch (error) {
+      console.error('[PhotoCaptureScreen] Failed to toggle torch:', error);
+      onError?.('Failed to toggle flash. Your device may not support this feature.');
+    } finally {
+      setIsTogglingFlash(false);
+    }
+  }, [flashEnabled, torchSupported, onFlashToggle, onError, isTogglingFlash]);
 
   // Start camera with permission check
   const startCamera = useCallback(async () => {
@@ -284,12 +323,41 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
       setCameraState('validating');
       const streamInfo = validateCameraStream(stream, facingMode);
       setStreamInfo(streamInfo);
-      
+
       // Check if we got the wrong camera and show warning
       if (facingMode === 'environment' && streamInfo.facingMode !== 'environment') {
         setShowCameraWarning(true);
       } else {
         setShowCameraWarning(false);
+      }
+
+      // Check for torch support (only on rear camera)
+      let isTorchSupported = false;
+      if (facingMode === 'environment') {
+        try {
+          const videoTrack = stream.getVideoTracks()[0];
+          const capabilities = videoTrack?.getCapabilities() as MediaTrackCapabilities & { torch?: boolean };
+          const constraints = navigator.mediaDevices.getSupportedConstraints() as MediaTrackSupportedConstraints & { torch?: boolean };
+
+          isTorchSupported = !!(constraints.torch && capabilities?.torch);
+          console.debug('[PhotoCaptureScreen] Torch support detected:', isTorchSupported);
+        } catch (error) {
+          console.warn('[PhotoCaptureScreen] Failed to check torch support:', error);
+        }
+      }
+      setTorchSupported(isTorchSupported);
+
+      // Apply initial torch state if flash is enabled and supported
+      if (isTorchSupported && flashEnabled) {
+        try {
+          const videoTrack = stream.getVideoTracks()[0];
+          await videoTrack.applyConstraints({
+            advanced: [{ torch: true } as MediaTrackConstraints]
+          });
+          console.debug('[PhotoCaptureScreen] Torch enabled on camera start');
+        } catch (error) {
+          console.warn('[PhotoCaptureScreen] Failed to enable torch on start:', error);
+        }
       }
       
       console.debug('[PhotoCaptureScreen] Camera validated, setting up video element');
@@ -600,6 +668,24 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
           </Typography>
           
           <div style={{ display: 'flex', gap: cssVars.spaceSm }}>
+            {/* Flash toggle button (if torch supported) */}
+            {cameraState === 'ready' && torchSupported && onFlashToggle && (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleFlashToggle}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  color: 'white',
+                }}
+                aria-label={flashEnabled ? 'Turn flash off' : 'Turn flash on'}
+                title={flashEnabled ? 'Turn flash off' : 'Turn flash on'}
+              >
+                <Icon name={flashEnabled ? 'flash' : 'flash-off'} size="sm" />
+              </Button>
+            )}
+
             {/* Toggle camera button (if multiple cameras available) */}
             {cameraState === 'ready' && (
               <Button
@@ -616,7 +702,7 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
                 🔄
               </Button>
             )}
-            
+
             {/* Close button */}
             <Button
               variant="secondary"

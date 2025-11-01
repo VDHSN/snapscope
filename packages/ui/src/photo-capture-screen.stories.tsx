@@ -340,3 +340,101 @@ export const BlurDetectionPerformance: Story = {
     }
   }
 };
+
+// Flash toggle story
+const PhotoCaptureScreenWithFlash = (args: any) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [flashEnabled, setFlashEnabled] = useState(false);
+  const [capturedPhotos, setCapturedPhotos] = useState<Blob[]>([]);
+
+  const handleCapture = (photoBlob: Blob) => {
+    console.log(`[Storybook] Photo captured with flash ${flashEnabled ? 'enabled' : 'disabled'}:`, photoBlob.size, 'bytes');
+    setCapturedPhotos(prev => [...prev, photoBlob]);
+    setIsOpen(false);
+  };
+
+  const handleError = (error: string) => {
+    console.error('[Storybook] Camera error:', error);
+    alert(`Camera Error: ${error}`);
+  };
+
+  const handleFlashToggle = (enabled: boolean) => {
+    setFlashEnabled(enabled);
+    console.log(`[Storybook] Flash ${enabled ? 'enabled ⚡' : 'disabled ⚡/'}`);
+  };
+
+  return (
+    <div style={{ padding: '16px' }}>
+      <div style={{
+        padding: '1rem',
+        background: flashEnabled ? '#fffbea' : '#f3f4f6',
+        border: `2px solid ${flashEnabled ? '#f59e0b' : '#d1d5db'}`,
+        borderRadius: '0.5rem',
+        marginBottom: '1rem'
+      }}>
+        <p style={{ margin: 0, fontWeight: 'bold' }}>
+          Flash Status: {flashEnabled ? '⚡ Enabled' : '⚡/ Disabled'}
+        </p>
+      </div>
+
+      <Button
+        onClick={() => setIsOpen(true)}
+        variant="primary"
+        style={{ marginBottom: '16px' }}
+      >
+        Open Photo Capture with Flash
+      </Button>
+
+      {capturedPhotos.length > 0 && (
+        <div style={{ marginTop: '16px' }}>
+          <h3>Captured Photos: {capturedPhotos.length}</h3>
+        </div>
+      )}
+
+      <PhotoCaptureScreen
+        {...args}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onCapture={handleCapture}
+        onError={handleError}
+        flashEnabled={flashEnabled}
+        onFlashToggle={handleFlashToggle}
+      />
+    </div>
+  );
+};
+
+export const WithFlashToggle: Story = {
+  render: PhotoCaptureScreenWithFlash,
+  args: {
+    headerText: 'Photo with Flash',
+    footerText: 'Use the flash toggle in the top right to control the camera flash',
+    progressText: '1/5 photos complete',
+    overlayColor: '#10B981',
+    enableBlurDetection: false,
+    facingMode: 'environment', // Flash only works on rear camera
+    quality: 0.8,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+Flash toggle functionality for low-light photo capture.
+
+**Visual Indicators:**
+- ⚡ Flash icon = Flash enabled
+- ⚡/ Flash-off icon = Flash disabled
+
+**Browser Support:**
+- Chrome Android: Full support ✅
+- Samsung Internet: Full support ✅
+- Opera Mobile: Full support ✅
+- iOS Safari: NOT supported ❌
+- Desktop browsers: NOT supported ❌
+
+**Note:** Flash toggle only appears on rear camera (environment facing mode).
+        `
+      }
+    }
+  }
+};
