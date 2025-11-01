@@ -43,6 +43,7 @@ export default function PhotoGuidePage() {
   const [error, setError] = useState<string | null>(null);
   const [storageWarning, setStorageWarning] = useState<string | null>(null);
   const [blurWarning, setBlurWarning] = useState<string | null>(null);
+  const [flashEnabled, setFlashEnabled] = useState(false);
 
   // Get carrier-specific photo positions
   const photoPositions = getPhotoPositionsForCarrier(claim?.carrierId);
@@ -1146,6 +1147,8 @@ export default function PhotoGuidePage() {
         quality={0.8}
         maxWidth={1920}
         maxHeight={1080}
+        flashEnabled={flashEnabled}
+        onFlashToggle={setFlashEnabled}
       />
     </div>
   );
