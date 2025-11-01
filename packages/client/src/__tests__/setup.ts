@@ -71,10 +71,10 @@ if (!global.URL.revokeObjectURL) {
 
 // Mock requestAnimationFrame if not available
 if (!global.requestAnimationFrame) {
-  global.requestAnimationFrame = vi.fn((callback) => {
+  global.requestAnimationFrame = vi.fn((callback: FrameRequestCallback) => {
     callback(0);
     return 0;
-  }) as any;
+  }) as unknown as typeof requestAnimationFrame;
 }
 
 // Mock cancelAnimationFrame if not available

@@ -65,15 +65,15 @@ describe('useAssessmentExport', () => {
       download: '',
       click: vi.fn(),
       remove: vi.fn(),
-    }) as any;
+    } as unknown as HTMLElement);
     document.body.appendChild = vi.fn();
     document.body.removeChild = vi.fn();
     global.URL.createObjectURL = vi.fn().mockReturnValue('blob:mock-url');
     global.URL.revokeObjectURL = vi.fn();
-    global.requestAnimationFrame = vi.fn((cb) => {
+    global.requestAnimationFrame = vi.fn((cb: FrameRequestCallback) => {
       cb(0);
       return 0;
-    }) as any;
+    }) as unknown as typeof requestAnimationFrame;
   });
 
   afterEach(() => {
@@ -167,7 +167,7 @@ describe('useAssessmentExport', () => {
       mockGetClaim.mockReturnValue(mockClaim);
       mockSaveClaim.mockResolvedValue(undefined);
       mockCanShare.mockReturnValue(false);
-      document.createElement = vi.fn().mockReturnValue(mockLink) as any;
+      document.createElement = vi.fn().mockReturnValue(mockLink as unknown as HTMLElement);
 
       const { result } = renderHook(() => useAssessmentExport());
 
@@ -230,7 +230,7 @@ describe('useAssessmentExport', () => {
       mockGetClaim.mockReturnValue(mockClaim);
       mockSaveClaim.mockResolvedValue(undefined);
       mockCanShare.mockReturnValue(false); // Share not supported
-      document.createElement = vi.fn().mockReturnValue(mockLink) as any;
+      document.createElement = vi.fn().mockReturnValue(mockLink as unknown as HTMLElement);
 
       const { result } = renderHook(() => useAssessmentExport());
 
@@ -251,7 +251,7 @@ describe('useAssessmentExport', () => {
 
       // navigator.share exists but canShare returns false for this specific data
       mockCanShare.mockReturnValue(false);
-      document.createElement = vi.fn().mockReturnValue(mockLink) as any;
+      document.createElement = vi.fn().mockReturnValue(mockLink as unknown as HTMLElement);
 
       const { result } = renderHook(() => useAssessmentExport());
 
@@ -323,7 +323,7 @@ describe('useAssessmentExport', () => {
 
       // Setup download fallback
       const mockLink = { href: '', download: '', click: vi.fn() };
-      document.createElement = vi.fn().mockReturnValue(mockLink) as any;
+      document.createElement = vi.fn().mockReturnValue(mockLink as unknown as HTMLElement);
 
       const { result } = renderHook(() => useAssessmentExport());
 
@@ -349,7 +349,7 @@ describe('useAssessmentExport', () => {
 
       // Setup download fallback
       const mockLink = { href: '', download: '', click: vi.fn() };
-      document.createElement = vi.fn().mockReturnValue(mockLink) as any;
+      document.createElement = vi.fn().mockReturnValue(mockLink as unknown as HTMLElement);
 
       const { result } = renderHook(() => useAssessmentExport());
 
@@ -577,7 +577,7 @@ describe('useAssessmentExport', () => {
       mockGetClaim.mockReturnValue(mockClaim);
       mockSaveClaim.mockResolvedValue(undefined);
       mockCanShare.mockReturnValue(false);
-      document.createElement = vi.fn().mockReturnValue(mockLink) as any;
+      document.createElement = vi.fn().mockReturnValue(mockLink as unknown as HTMLElement);
 
       const { result } = renderHook(() => useAssessmentExport());
 
@@ -641,7 +641,7 @@ describe('useAssessmentExport', () => {
 
       mockGetClaim.mockReturnValue(mockClaim);
       mockSaveClaim.mockResolvedValue(undefined);
-      document.createElement = vi.fn().mockReturnValue(mockLink) as any;
+      document.createElement = vi.fn().mockReturnValue(mockLink as unknown as HTMLElement);
 
       const { result } = renderHook(() => useAssessmentExport());
 
