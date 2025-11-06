@@ -195,9 +195,10 @@ export default function VINEntryPage() {
             }
           }}
         >
-          <Logo 
-            size="md" 
-            variant="full" 
+          <Logo
+            size="md"
+            variant="full"
+            theme="dark"
             style={{ color: 'white' }}
           />
         </div>

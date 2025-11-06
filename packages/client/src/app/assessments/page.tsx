@@ -64,9 +64,10 @@ export default function AssessmentsPage() {
             }
           }}
         >
-          <Logo 
-            size="xl" 
-            variant="full" 
+          <Logo
+            size="xl"
+            variant="full"
+            theme="dark"
             style={{ color: 'white' }}
           />
         </div>

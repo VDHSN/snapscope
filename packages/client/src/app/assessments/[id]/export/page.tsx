@@ -193,7 +193,7 @@ export default function ExportPage() {
             }
           }}
         >
-          <Logo size="md" variant="full" style={{ color: 'white' }} />
+          <Logo size="md" variant="full" theme="dark" style={{ color: 'white' }} />
         </div>
 
         {/* Title */}
