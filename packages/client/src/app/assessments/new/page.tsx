@@ -134,56 +134,33 @@ export default function VINEntryPage() {
           color: 'white'
         }}
       >
-        {/* Back button and progress */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 'var(--space-xs)'
+        {/* Title at top */}
+        <Typography variant="h2" style={{
+          color: 'white',
+          marginBottom: 'var(--space-xs)',
+          fontSize: 'var(--font-size-h3)',
+          textAlign: 'center'
         }}>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={handleBack}
-            data-testid="vin-entry-back-button"
-            style={{
-              background: 'rgba(255, 255, 255, 0.2)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              color: 'white',
-              backdropFilter: 'blur(10px)'
-            }}
-          >
-            <ArrowLeftIcon size="sm" aria-hidden />
-            Back
-          </Button>
+          Enter Vehicle VIN
+        </Typography>
 
-          <Typography variant="caption" style={{
-            color: 'rgba(255, 255, 255, 0.9)',
-            fontWeight: 'var(--font-weight-semibold)',
-            marginRight: 'var(--space-sm)' // Extra margin to prevent overlap
-          }}>
-            Step 1 of 9
-          </Typography>
-        </div>
+        <Typography variant="body" style={{
+          color: 'rgba(255, 255, 255, 0.9)',
+          fontSize: 'var(--font-size-caption)',
+          textAlign: 'center',
+          marginBottom: 'var(--space-sm)'
+        }}>
+          We need the VIN to start your assessment
+        </Typography>
 
-        {/* Progress bar */}
-        <Progress
-          value={11.11} // 1/9 steps
-          size="sm"
-          style={{
-            background: 'rgba(255, 255, 255, 0.2)',
-            marginBottom: 'var(--space-sm)'
-          }}
-        />
-
-        {/* Logo */}
+        {/* Logo centered */}
         <div
           onClick={handleLogoClick}
           style={{
             cursor: 'pointer',
             display: 'flex',
             justifyContent: 'center',
-            marginBottom: 'var(--space-xs)'
+            marginBottom: 'var(--space-sm)'
           }}
           role="button"
           tabIndex={0}
@@ -197,27 +174,57 @@ export default function VINEntryPage() {
         >
           <Logo
             size="sm"
-            variant="full"
+            variant="icon"
             theme="dark"
             style={{ color: 'white' }}
           />
         </div>
 
-        {/* Title */}
-        <Typography variant="h2" style={{
-          color: 'white',
-          marginBottom: 'var(--space-xs)',
-          fontSize: 'var(--font-size-h3)'
+        {/* Navigation controls at bottom */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'var(--space-sm)',
+          justifyContent: 'space-between'
         }}>
-          Enter Vehicle VIN
-        </Typography>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={handleBack}
+            data-testid="vin-entry-back-button"
+            style={{
+              background: 'rgba(255, 255, 255, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              color: 'white',
+              backdropFilter: 'blur(10px)',
+              flexShrink: 0
+            }}
+          >
+            <ArrowLeftIcon size="sm" aria-hidden />
+            Back
+          </Button>
 
-        <Typography variant="body" style={{
-          color: 'rgba(255, 255, 255, 0.9)',
-          fontSize: 'var(--font-size-caption)'
-        }}>
-          We need the VIN to start your assessment
-        </Typography>
+          {/* Progress bar - takes up 75% of available space */}
+          <div style={{ flex: '0 0 75%' }}>
+            <Progress
+              value={11.11} // 1/9 steps
+              size="sm"
+              style={{
+                background: 'rgba(255, 255, 255, 0.2)'
+              }}
+            />
+          </div>
+
+          <Typography variant="caption" style={{
+            color: 'rgba(255, 255, 255, 0.9)',
+            fontWeight: 'var(--font-weight-semibold)',
+            fontSize: 'var(--font-size-caption)',
+            whiteSpace: 'nowrap',
+            flexShrink: 0
+          }}>
+            1/9
+          </Typography>
+        </div>
       </header>
 
       {/* Content */}
