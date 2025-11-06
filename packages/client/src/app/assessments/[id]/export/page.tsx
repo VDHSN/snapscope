@@ -147,15 +147,58 @@ export default function ExportPage() {
           padding: 'var(--space-sm) var(--space-md)',
           paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))',
           color: 'white',
+          position: 'relative'
         }}
       >
-        {/* Back button */}
+        {/* Logo in top left */}
+        <div
+          onClick={handleLogoClick}
+          style={{
+            cursor: 'pointer',
+            position: 'absolute',
+            top: 'var(--space-sm)',
+            left: 'var(--space-md)'
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Go to home"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleLogoClick();
+            }
+          }}
+        >
+          <Logo size="sm" variant="icon" theme="dark" style={{ color: 'white' }} />
+        </div>
+
+        {/* Title centered */}
+        <Typography
+          variant="h2"
+          style={{
+            color: 'white',
+            marginBottom: 'var(--space-xs)',
+            fontSize: 'var(--font-size-h3)',
+            textAlign: 'center',
+          }}
+        >
+          Export Assessment
+        </Typography>
+
+        <Typography variant="body" style={{
+          color: 'rgba(255, 255, 255, 0.9)',
+          fontSize: 'var(--font-size-caption)',
+          textAlign: 'center',
+          marginBottom: 'var(--space-sm)'
+        }}>
+          Download your completed assessment
+        </Typography>
+
+        {/* Back button at bottom */}
         <div
           style={{
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 'var(--space-xs)',
+            justifyContent: 'flex-start',
           }}
         >
           <Button
@@ -173,41 +216,6 @@ export default function ExportPage() {
             Back
           </Button>
         </div>
-
-        {/* Logo */}
-        <div
-          onClick={handleLogoClick}
-          style={{
-            cursor: 'pointer',
-            display: 'flex',
-            justifyContent: 'center',
-            marginBottom: 'var(--space-xs)',
-          }}
-          role="button"
-          tabIndex={0}
-          aria-label="Go to home"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              handleLogoClick();
-            }
-          }}
-        >
-          <Logo size="sm" variant="full" theme="dark" style={{ color: 'white' }} />
-        </div>
-
-        {/* Title */}
-        <Typography
-          variant="h2"
-          style={{
-            color: 'white',
-            marginBottom: 'var(--space-xs)',
-            fontSize: 'var(--font-size-h3)',
-            textAlign: 'center',
-          }}
-        >
-          Export Assessment
-        </Typography>
       </div>
 
       {/* Content */}
