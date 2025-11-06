@@ -142,24 +142,24 @@ export default function VehicleInfoPage() {
       </div>
 
       {/* Header with purple gradient */}
-      <div style={{ 
+      <div style={{
         background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-        padding: 'var(--space-md)',
+        padding: 'var(--space-sm) var(--space-md)',
         paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))', // Space for theme toggle
         color: 'white'
       }}>
         {/* Back button and progress */}
-        <div style={{ 
+        <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: 'var(--space-sm)'
+          marginBottom: 'var(--space-xs)'
         }}>
           <Button
             variant="secondary"
             size="sm"
             onClick={handleBack}
-            style={{ 
+            style={{
               background: 'rgba(255, 255, 255, 0.2)',
               border: '1px solid rgba(255, 255, 255, 0.3)',
               color: 'white',
@@ -170,7 +170,7 @@ export default function VehicleInfoPage() {
             Back
           </Button>
 
-          <Typography variant="caption" style={{ 
+          <Typography variant="caption" style={{
             color: 'rgba(255, 255, 255, 0.9)',
             fontWeight: 'var(--font-weight-semibold)',
             marginRight: 'var(--space-sm)'
@@ -180,23 +180,23 @@ export default function VehicleInfoPage() {
         </div>
 
         {/* Progress bar */}
-        <Progress 
+        <Progress
           value={22.22} // 2/9 steps
           size="sm"
           style={{
             background: 'rgba(255, 255, 255, 0.2)',
-            marginBottom: 'var(--space-md)'
+            marginBottom: 'var(--space-sm)'
           }}
         />
 
         {/* Logo */}
-        <div 
+        <div
           onClick={handleLogoClick}
-          style={{ 
+          style={{
             cursor: 'pointer',
             display: 'flex',
             justifyContent: 'center',
-            marginBottom: 'var(--space-md)'
+            marginBottom: 'var(--space-xs)'
           }}
           role="button"
           tabIndex={0}
@@ -209,7 +209,7 @@ export default function VehicleInfoPage() {
           }}
         >
           <Logo
-            size="md"
+            size="sm"
             variant="full"
             theme="dark"
             style={{ color: 'white' }}
@@ -217,17 +217,17 @@ export default function VehicleInfoPage() {
         </div>
 
         {/* Title */}
-        <Typography variant="h2" style={{ 
+        <Typography variant="h2" style={{
           color: 'white',
           marginBottom: 'var(--space-xs)',
-          fontSize: 'var(--font-size-h2)'
+          fontSize: 'var(--font-size-h3)'
         }}>
           Vehicle Information
         </Typography>
-        
-        <Typography variant="body" style={{ 
+
+        <Typography variant="body" style={{
           color: 'rgba(255, 255, 255, 0.9)',
-          fontSize: 'var(--font-size-small)'
+          fontSize: 'var(--font-size-caption)'
         }}>
           Help us identify your vehicle (optional)
         </Typography>

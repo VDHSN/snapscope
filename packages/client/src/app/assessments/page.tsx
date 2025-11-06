@@ -40,19 +40,19 @@ export default function AssessmentsPage() {
         role="banner"
         style={{
           background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-          padding: 'var(--space-xl) var(--space-md) var(--space-2xl)',
+          padding: 'var(--space-md)',
           paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))', // Space for theme toggle
           color: 'white',
           textAlign: 'center'
         }}
       >
-        <div 
+        <div
           onClick={handleLogoClick}
-          style={{ 
+          style={{
             cursor: 'pointer',
             display: 'flex',
             justifyContent: 'center',
-            marginBottom: 'var(--space-sm)'
+            marginBottom: 'var(--space-xs)'
           }}
           role="button"
           tabIndex={0}
@@ -65,13 +65,13 @@ export default function AssessmentsPage() {
           }}
         >
           <Logo
-            size="xl"
+            size="md"
             variant="full"
             theme="dark"
             style={{ color: 'white' }}
           />
         </div>
-        <Typography variant="body" style={{ 
+        <Typography variant="body" style={{
           color: 'rgba(255, 255, 255, 0.9)',
           fontSize: 'var(--font-size-small)'
         }}>

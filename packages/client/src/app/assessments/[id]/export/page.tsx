@@ -144,7 +144,7 @@ export default function ExportPage() {
         style={{
           background:
             'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-          padding: 'var(--space-md)',
+          padding: 'var(--space-sm) var(--space-md)',
           paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))',
           color: 'white',
         }}
@@ -155,7 +155,7 @@ export default function ExportPage() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginBottom: 'var(--space-sm)',
+            marginBottom: 'var(--space-xs)',
           }}
         >
           <Button
@@ -181,7 +181,7 @@ export default function ExportPage() {
             cursor: 'pointer',
             display: 'flex',
             justifyContent: 'center',
-            marginBottom: 'var(--space-md)',
+            marginBottom: 'var(--space-xs)',
           }}
           role="button"
           tabIndex={0}
@@ -193,7 +193,7 @@ export default function ExportPage() {
             }
           }}
         >
-          <Logo size="md" variant="full" theme="dark" style={{ color: 'white' }} />
+          <Logo size="sm" variant="full" theme="dark" style={{ color: 'white' }} />
         </div>
 
         {/* Title */}
@@ -202,7 +202,7 @@ export default function ExportPage() {
           style={{
             color: 'white',
             marginBottom: 'var(--space-xs)',
-            fontSize: 'var(--font-size-h2)',
+            fontSize: 'var(--font-size-h3)',
             textAlign: 'center',
           }}
         >

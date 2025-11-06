@@ -129,17 +129,17 @@ export default function VINEntryPage() {
         role="banner"
         style={{
           background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-          padding: 'var(--space-md)',
+          padding: 'var(--space-sm) var(--space-md)',
           paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))', // Space for theme toggle
           color: 'white'
         }}
       >
         {/* Back button and progress */}
-        <div style={{ 
+        <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: 'var(--space-sm)'
+          marginBottom: 'var(--space-xs)'
         }}>
           <Button
             variant="secondary"
@@ -157,7 +157,7 @@ export default function VINEntryPage() {
             Back
           </Button>
 
-          <Typography variant="caption" style={{ 
+          <Typography variant="caption" style={{
             color: 'rgba(255, 255, 255, 0.9)',
             fontWeight: 'var(--font-weight-semibold)',
             marginRight: 'var(--space-sm)' // Extra margin to prevent overlap
@@ -167,23 +167,23 @@ export default function VINEntryPage() {
         </div>
 
         {/* Progress bar */}
-        <Progress 
+        <Progress
           value={11.11} // 1/9 steps
           size="sm"
           style={{
             background: 'rgba(255, 255, 255, 0.2)',
-            marginBottom: 'var(--space-md)'
+            marginBottom: 'var(--space-sm)'
           }}
         />
 
         {/* Logo */}
-        <div 
+        <div
           onClick={handleLogoClick}
-          style={{ 
+          style={{
             cursor: 'pointer',
             display: 'flex',
             justifyContent: 'center',
-            marginBottom: 'var(--space-md)'
+            marginBottom: 'var(--space-xs)'
           }}
           role="button"
           tabIndex={0}
@@ -196,7 +196,7 @@ export default function VINEntryPage() {
           }}
         >
           <Logo
-            size="md"
+            size="sm"
             variant="full"
             theme="dark"
             style={{ color: 'white' }}
@@ -204,17 +204,17 @@ export default function VINEntryPage() {
         </div>
 
         {/* Title */}
-        <Typography variant="h2" style={{ 
+        <Typography variant="h2" style={{
           color: 'white',
           marginBottom: 'var(--space-xs)',
-          fontSize: 'var(--font-size-h2)'
+          fontSize: 'var(--font-size-h3)'
         }}>
           Enter Vehicle VIN
         </Typography>
-        
+
         <Typography variant="body" style={{
           color: 'rgba(255, 255, 255, 0.9)',
-          fontSize: 'var(--font-size-small)'
+          fontSize: 'var(--font-size-caption)'
         }}>
           We need the VIN to start your assessment
         </Typography>

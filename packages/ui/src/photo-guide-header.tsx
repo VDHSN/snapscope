@@ -49,7 +49,7 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: 'var(--space-sm)',
+          marginBottom: 'var(--space-xs)',
         },
       }),
       createResponsiveStyles('.photo-guide-theme-toggle', {
@@ -71,7 +71,7 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'center',
-          marginBottom: 'var(--space-md)',
+          marginBottom: 'var(--space-xs)',
         },
       }),
       createResponsiveStyles('.photo-guide-step-info', {
@@ -94,12 +94,12 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
         }
       }`,
       `@media (max-width: 639px) {
-        .photo-guide-logo .logo-md {
-          font-size: 1.25rem;
+        .photo-guide-logo .logo-sm {
+          font-size: 1rem;
         }
       }`,
-      `.photo-guide-logo .logo-md {
-        font-size: 1.5rem;
+      `.photo-guide-logo .logo-sm {
+        font-size: 1.25rem;
       }`,
     ].join('\n\n');
     
@@ -136,12 +136,12 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
       </div>
 
       {/* Progress bar */}
-      <Progress 
+      <Progress
         value={progressValue}
         size="sm"
         style={{
           background: 'rgba(255, 255, 255, 0.2)',
-          marginBottom: 'var(--space-md)'
+          marginBottom: 'var(--space-sm)'
         }}
       />
 
@@ -160,26 +160,26 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
         aria-label="Return to home"
       >
         <Logo
-          size="md"
+          size="sm"
           variant="full"
           theme="dark"
           style={{ color: 'white' }}
-          className="logo-md"
+          className="logo-sm"
         />
       </div>
 
       {/* Title and current position */}
-      <Typography variant="h2" style={{ 
+      <Typography variant="h2" style={{
         color: 'white',
         marginBottom: 'var(--space-xs)',
-        fontSize: 'var(--font-size-h2)'
+        fontSize: 'var(--font-size-h3)'
       }}>
         Photo Guide
       </Typography>
-      
-      <Typography variant="body" style={{ 
+
+      <Typography variant="body" style={{
         color: 'rgba(255, 255, 255, 0.9)',
-        fontSize: 'var(--font-size-small)'
+        fontSize: 'var(--font-size-caption)'
       }}>
         {completedCount ?? 0} of {requiredCount ?? 0} required photos completed
       </Typography>
