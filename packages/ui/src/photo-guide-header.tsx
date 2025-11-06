@@ -159,9 +159,10 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
         tabIndex={0}
         aria-label="Return to home"
       >
-        <Logo 
-          size="md" 
-          variant="full" 
+        <Logo
+          size="md"
+          variant="full"
+          theme="dark"
           style={{ color: 'white' }}
           className="logo-md"
         />
