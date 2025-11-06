@@ -146,35 +146,17 @@ export default function VehicleInfoPage() {
         background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
         padding: 'var(--space-sm) var(--space-md)',
         paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))', // Space for theme toggle
-        color: 'white'
+        color: 'white',
+        position: 'relative'
       }}>
-        {/* Title at top */}
-        <Typography variant="h2" style={{
-          color: 'white',
-          marginBottom: 'var(--space-xs)',
-          fontSize: 'var(--font-size-h3)',
-          textAlign: 'center'
-        }}>
-          Vehicle Information
-        </Typography>
-
-        <Typography variant="body" style={{
-          color: 'rgba(255, 255, 255, 0.9)',
-          fontSize: 'var(--font-size-caption)',
-          textAlign: 'center',
-          marginBottom: 'var(--space-sm)'
-        }}>
-          Help us identify your vehicle (optional)
-        </Typography>
-
-        {/* Logo centered */}
+        {/* Logo in top left */}
         <div
           onClick={handleLogoClick}
           style={{
             cursor: 'pointer',
-            display: 'flex',
-            justifyContent: 'center',
-            marginBottom: 'var(--space-sm)'
+            position: 'absolute',
+            top: 'var(--space-sm)',
+            left: 'var(--space-md)'
           }}
           role="button"
           tabIndex={0}
@@ -194,12 +176,52 @@ export default function VehicleInfoPage() {
           />
         </div>
 
-        {/* Navigation controls at bottom */}
+        {/* Title at top center */}
+        <Typography variant="h2" style={{
+          color: 'white',
+          marginBottom: 'var(--space-xs)',
+          fontSize: 'var(--font-size-h3)',
+          textAlign: 'center'
+        }}>
+          Vehicle Information
+        </Typography>
+
+        <Typography variant="body" style={{
+          color: 'rgba(255, 255, 255, 0.9)',
+          fontSize: 'var(--font-size-caption)',
+          textAlign: 'center',
+          marginBottom: 'var(--space-md)'
+        }}>
+          Help us identify your vehicle (optional)
+        </Typography>
+
+        {/* Step indicator centered above progress bar */}
+        <Typography variant="caption" style={{
+          color: 'rgba(255, 255, 255, 0.9)',
+          fontWeight: 'var(--font-weight-semibold)',
+          fontSize: 'var(--font-size-caption)',
+          textAlign: 'center',
+          display: 'block',
+          marginBottom: 'var(--space-xs)'
+        }}>
+          Step 2 of 9
+        </Typography>
+
+        {/* Progress bar */}
+        <div style={{ marginBottom: 'var(--space-sm)' }}>
+          <Progress
+            value={22.22} // 2/9 steps
+            size="sm"
+            style={{
+              background: 'rgba(255, 255, 255, 0.2)'
+            }}
+          />
+        </div>
+
+        {/* Back button at bottom */}
         <div style={{
           display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--space-sm)',
-          justifyContent: 'space-between'
+          justifyContent: 'flex-start'
         }}>
           <Button
             variant="secondary"
@@ -209,34 +231,12 @@ export default function VehicleInfoPage() {
               background: 'rgba(255, 255, 255, 0.2)',
               border: '1px solid rgba(255, 255, 255, 0.3)',
               color: 'white',
-              backdropFilter: 'blur(10px)',
-              flexShrink: 0
+              backdropFilter: 'blur(10px)'
             }}
           >
             <ArrowLeftIcon size="sm" aria-hidden />
             Back
           </Button>
-
-          {/* Progress bar - takes up 75% of available space */}
-          <div style={{ flex: '0 0 75%' }}>
-            <Progress
-              value={22.22} // 2/9 steps
-              size="sm"
-              style={{
-                background: 'rgba(255, 255, 255, 0.2)'
-              }}
-            />
-          </div>
-
-          <Typography variant="caption" style={{
-            color: 'rgba(255, 255, 255, 0.9)',
-            fontWeight: 'var(--font-weight-semibold)',
-            fontSize: 'var(--font-size-caption)',
-            whiteSpace: 'nowrap',
-            flexShrink: 0
-          }}>
-            2/9
-          </Typography>
         </div>
       </div>
 

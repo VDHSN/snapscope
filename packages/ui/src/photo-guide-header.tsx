@@ -44,14 +44,6 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
           paddingRight: `calc(${RESPONSIVE_SPACING.padding.tablet} + 40px + ${RESPONSIVE_SPACING.padding.tablet})`,
         },
       }),
-      createResponsiveStyles('.photo-guide-header-controls', {
-        base: {
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--space-sm)',
-          justifyContent: 'space-between',
-        },
-      }),
       createResponsiveStyles('.photo-guide-theme-toggle', {
         base: {
           position: 'absolute',
@@ -69,9 +61,15 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
       createResponsiveStyles('.photo-guide-logo', {
         base: {
           cursor: 'pointer',
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: 'var(--space-sm)',
+          position: 'absolute',
+        },
+        mobile: {
+          top: RESPONSIVE_SPACING.padding.mobile,
+          left: RESPONSIVE_SPACING.padding.mobile,
+        },
+        tablet: {
+          top: RESPONSIVE_SPACING.padding.tablet,
+          left: RESPONSIVE_SPACING.padding.tablet,
         },
       }),
       createResponsiveStyles('.photo-guide-title', {
@@ -83,18 +81,27 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
       createResponsiveStyles('.photo-guide-subtitle', {
         base: {
           textAlign: 'center',
-          marginBottom: 'var(--space-sm)',
-        },
-      }),
-      createResponsiveStyles('.photo-guide-progress-wrapper', {
-        base: {
-          flex: '0 0 75%',
+          marginBottom: 'var(--space-md)',
         },
       }),
       createResponsiveStyles('.photo-guide-step-info', {
         base: {
           color: 'rgba(255, 255, 255, 0.9)',
           fontWeight: 'var(--font-weight-semibold)',
+          textAlign: 'center',
+          display: 'block',
+          marginBottom: 'var(--space-xs)',
+        },
+      }),
+      createResponsiveStyles('.photo-guide-progress-wrapper', {
+        base: {
+          marginBottom: 'var(--space-sm)',
+        },
+      }),
+      createResponsiveStyles('.photo-guide-back-button', {
+        base: {
+          display: 'flex',
+          justifyContent: 'flex-start',
         },
       }),
       `@media (max-width: 639px) {
@@ -117,22 +124,7 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
         <ThemeToggle />
       </div>
 
-      {/* Title at top */}
-      <Typography variant="h2" className="photo-guide-title" style={{
-        color: 'white',
-        fontSize: 'var(--font-size-h3)'
-      }}>
-        Photo Guide
-      </Typography>
-
-      <Typography variant="body" className="photo-guide-subtitle" style={{
-        color: 'rgba(255, 255, 255, 0.9)',
-        fontSize: 'var(--font-size-caption)'
-      }}>
-        {completedCount ?? 0} of {requiredCount ?? 0} required photos completed
-      </Typography>
-
-      {/* Logo centered */}
+      {/* Logo in top left */}
       <div
         onClick={onLogoClick}
         onKeyDown={(e) => {
@@ -155,8 +147,39 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
         />
       </div>
 
-      {/* Navigation controls at bottom */}
-      <div className="photo-guide-header-controls">
+      {/* Title at top center */}
+      <Typography variant="h2" className="photo-guide-title" style={{
+        color: 'white',
+        fontSize: 'var(--font-size-h3)'
+      }}>
+        Photo Guide
+      </Typography>
+
+      <Typography variant="body" className="photo-guide-subtitle" style={{
+        color: 'rgba(255, 255, 255, 0.9)',
+        fontSize: 'var(--font-size-caption)'
+      }}>
+        {completedCount ?? 0} of {requiredCount ?? 0} required photos completed
+      </Typography>
+
+      {/* Step indicator centered above progress bar */}
+      <Typography variant="caption" className="photo-guide-step-info">
+        Step {currentStep ?? 1} of {totalSteps ?? 1}
+      </Typography>
+
+      {/* Progress bar */}
+      <div className="photo-guide-progress-wrapper">
+        <Progress
+          value={progressValue}
+          size="sm"
+          style={{
+            background: 'rgba(255, 255, 255, 0.2)'
+          }}
+        />
+      </div>
+
+      {/* Back button at bottom */}
+      <div className="photo-guide-back-button">
         <Button
           variant="secondary"
           size="sm"
@@ -165,31 +188,12 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
             background: 'rgba(255, 255, 255, 0.2)',
             border: '1px solid rgba(255, 255, 255, 0.3)',
             color: 'white',
-            backdropFilter: 'blur(10px)',
-            flexShrink: 0
+            backdropFilter: 'blur(10px)'
           }}
         >
           <ArrowLeftIcon size="sm" aria-hidden />
           Back
         </Button>
-
-        {/* Progress bar - takes up 75% of available space */}
-        <div className="photo-guide-progress-wrapper">
-          <Progress
-            value={progressValue}
-            size="sm"
-            style={{
-              background: 'rgba(255, 255, 255, 0.2)'
-            }}
-          />
-        </div>
-
-        <Typography variant="caption" className="photo-guide-step-info" style={{
-          whiteSpace: 'nowrap',
-          flexShrink: 0
-        }}>
-          {currentStep ?? 1}/{totalSteps ?? 1}
-        </Typography>
       </div>
     </div>
   );
