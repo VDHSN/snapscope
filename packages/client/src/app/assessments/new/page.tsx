@@ -129,17 +129,85 @@ export default function VINEntryPage() {
         role="banner"
         style={{
           background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-          padding: 'var(--space-md)',
+          padding: 'var(--space-sm) var(--space-md)',
           paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))', // Space for theme toggle
-          color: 'white'
+          color: 'white',
+          position: 'relative'
         }}
       >
-        {/* Back button and progress */}
-        <div style={{ 
+        {/* Logo in top left */}
+        <div
+          onClick={handleLogoClick}
+          style={{
+            cursor: 'pointer',
+            position: 'absolute',
+            top: 'var(--space-sm)',
+            left: 'var(--space-md)'
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Go to home"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleLogoClick();
+            }
+          }}
+        >
+          <Logo
+            size="sm"
+            variant="icon"
+            theme="dark"
+            style={{ color: 'white' }}
+          />
+        </div>
+
+        {/* Title at top center */}
+        <Typography variant="h2" style={{
+          color: 'white',
+          marginBottom: 'var(--space-xs)',
+          fontSize: 'var(--font-size-h3)',
+          textAlign: 'center'
+        }}>
+          Enter Vehicle VIN
+        </Typography>
+
+        <Typography variant="body" style={{
+          color: 'rgba(255, 255, 255, 0.9)',
+          fontSize: 'var(--font-size-caption)',
+          textAlign: 'center',
+          marginBottom: 'var(--space-md)'
+        }}>
+          We need the VIN to start your assessment
+        </Typography>
+
+        {/* Step indicator centered above progress bar */}
+        <Typography variant="caption" style={{
+          color: 'rgba(255, 255, 255, 0.9)',
+          fontWeight: 'var(--font-weight-semibold)',
+          fontSize: 'var(--font-size-caption)',
+          textAlign: 'center',
+          display: 'block',
+          marginBottom: 'var(--space-xs)'
+        }}>
+          Step 1 of 9
+        </Typography>
+
+        {/* Progress bar */}
+        <div style={{ marginBottom: 'var(--space-sm)' }}>
+          <Progress
+            value={11.11} // 1/9 steps
+            size="sm"
+            style={{
+              background: 'rgba(255, 255, 255, 0.2)'
+            }}
+          />
+        </div>
+
+        {/* Back button at bottom */}
+        <div style={{
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 'var(--space-sm)'
+          justifyContent: 'flex-start'
         }}>
           <Button
             variant="secondary"
@@ -156,67 +224,7 @@ export default function VINEntryPage() {
             <ArrowLeftIcon size="sm" aria-hidden />
             Back
           </Button>
-
-          <Typography variant="caption" style={{ 
-            color: 'rgba(255, 255, 255, 0.9)',
-            fontWeight: 'var(--font-weight-semibold)',
-            marginRight: 'var(--space-sm)' // Extra margin to prevent overlap
-          }}>
-            Step 1 of 9
-          </Typography>
         </div>
-
-        {/* Progress bar */}
-        <Progress 
-          value={11.11} // 1/9 steps
-          size="sm"
-          style={{
-            background: 'rgba(255, 255, 255, 0.2)',
-            marginBottom: 'var(--space-md)'
-          }}
-        />
-
-        {/* Logo */}
-        <div 
-          onClick={handleLogoClick}
-          style={{ 
-            cursor: 'pointer',
-            display: 'flex',
-            justifyContent: 'center',
-            marginBottom: 'var(--space-md)'
-          }}
-          role="button"
-          tabIndex={0}
-          aria-label="Go to home"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              handleLogoClick();
-            }
-          }}
-        >
-          <Logo 
-            size="md" 
-            variant="full" 
-            style={{ color: 'white' }}
-          />
-        </div>
-
-        {/* Title */}
-        <Typography variant="h2" style={{ 
-          color: 'white',
-          marginBottom: 'var(--space-xs)',
-          fontSize: 'var(--font-size-h2)'
-        }}>
-          Enter Vehicle VIN
-        </Typography>
-        
-        <Typography variant="body" style={{
-          color: 'rgba(255, 255, 255, 0.9)',
-          fontSize: 'var(--font-size-small)'
-        }}>
-          We need the VIN to start your assessment
-        </Typography>
       </header>
 
       {/* Content */}

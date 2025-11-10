@@ -44,14 +44,6 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
           paddingRight: `calc(${RESPONSIVE_SPACING.padding.tablet} + 40px + ${RESPONSIVE_SPACING.padding.tablet})`,
         },
       }),
-      createResponsiveStyles('.photo-guide-header-controls', {
-        base: {
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 'var(--space-sm)',
-        },
-      }),
       createResponsiveStyles('.photo-guide-theme-toggle', {
         base: {
           position: 'absolute',
@@ -69,8 +61,26 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
       createResponsiveStyles('.photo-guide-logo', {
         base: {
           cursor: 'pointer',
-          display: 'flex',
-          justifyContent: 'center',
+          position: 'absolute',
+        },
+        mobile: {
+          top: RESPONSIVE_SPACING.padding.mobile,
+          left: RESPONSIVE_SPACING.padding.mobile,
+        },
+        tablet: {
+          top: RESPONSIVE_SPACING.padding.tablet,
+          left: RESPONSIVE_SPACING.padding.tablet,
+        },
+      }),
+      createResponsiveStyles('.photo-guide-title', {
+        base: {
+          textAlign: 'center',
+          marginBottom: 'var(--space-xs)',
+        },
+      }),
+      createResponsiveStyles('.photo-guide-subtitle', {
+        base: {
+          textAlign: 'center',
           marginBottom: 'var(--space-md)',
         },
       }),
@@ -78,28 +88,29 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
         base: {
           color: 'rgba(255, 255, 255, 0.9)',
           fontWeight: 'var(--font-weight-semibold)',
-          marginRight: 'var(--space-sm)',
+          textAlign: 'center',
+          display: 'block',
+          marginBottom: 'var(--space-xs)',
         },
       }),
-      // Additional styles for very small screens
-      `@media (max-width: 479px) {
-        .photo-guide-header-controls {
-          flex-direction: column;
-          gap: var(--space-xs);
-          align-items: flex-start;
-        }
-        .photo-guide-step-info {
-          margin-right: 0;
-          font-size: var(--font-size-xs);
-        }
-      }`,
+      createResponsiveStyles('.photo-guide-progress-wrapper', {
+        base: {
+          marginBottom: 'var(--space-sm)',
+        },
+      }),
+      createResponsiveStyles('.photo-guide-back-button', {
+        base: {
+          display: 'flex',
+          justifyContent: 'flex-start',
+        },
+      }),
       `@media (max-width: 639px) {
-        .photo-guide-logo .logo-md {
-          font-size: 1.25rem;
+        .photo-guide-logo .logo-sm {
+          font-size: 1rem;
         }
       }`,
-      `.photo-guide-logo .logo-md {
-        font-size: 1.5rem;
+      `.photo-guide-logo .logo-sm {
+        font-size: 1.25rem;
       }`,
     ].join('\n\n');
     
@@ -113,40 +124,8 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
         <ThemeToggle />
       </div>
 
-      {/* Back button and progress */}
-      <div className="photo-guide-header-controls">
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={onBack}
-          style={{ 
-            background: 'rgba(255, 255, 255, 0.2)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            color: 'white',
-            backdropFilter: 'blur(10px)'
-          }}
-        >
-          <ArrowLeftIcon size="sm" aria-hidden />
-          Back
-        </Button>
-
-        <Typography variant="caption" className="photo-guide-step-info">
-          Step {currentStep ?? 1} of {totalSteps ?? 1}
-        </Typography>
-      </div>
-
-      {/* Progress bar */}
-      <Progress 
-        value={progressValue}
-        size="sm"
-        style={{
-          background: 'rgba(255, 255, 255, 0.2)',
-          marginBottom: 'var(--space-md)'
-        }}
-      />
-
-      {/* Logo */}
-      <div 
+      {/* Logo in top left */}
+      <div
         onClick={onLogoClick}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -159,29 +138,63 @@ export const PhotoGuideHeader = React.memo<PhotoGuideHeaderProps>(({
         tabIndex={0}
         aria-label="Return to home"
       >
-        <Logo 
-          size="md" 
-          variant="full" 
+        <Logo
+          size="sm"
+          variant="icon"
+          theme="dark"
           style={{ color: 'white' }}
-          className="logo-md"
+          className="logo-sm"
         />
       </div>
 
-      {/* Title and current position */}
-      <Typography variant="h2" style={{ 
+      {/* Title at top center */}
+      <Typography variant="h2" className="photo-guide-title" style={{
         color: 'white',
-        marginBottom: 'var(--space-xs)',
-        fontSize: 'var(--font-size-h2)'
+        fontSize: 'var(--font-size-h3)'
       }}>
         Photo Guide
       </Typography>
-      
-      <Typography variant="body" style={{ 
+
+      <Typography variant="body" className="photo-guide-subtitle" style={{
         color: 'rgba(255, 255, 255, 0.9)',
-        fontSize: 'var(--font-size-small)'
+        fontSize: 'var(--font-size-caption)'
       }}>
         {completedCount ?? 0} of {requiredCount ?? 0} required photos completed
       </Typography>
+
+      {/* Step indicator centered above progress bar */}
+      <Typography variant="caption" className="photo-guide-step-info">
+        Step {currentStep ?? 1} of {totalSteps ?? 1}
+      </Typography>
+
+      {/* Progress bar */}
+      <div className="photo-guide-progress-wrapper">
+        <Progress
+          value={progressValue}
+          size="sm"
+          style={{
+            background: 'rgba(255, 255, 255, 0.2)'
+          }}
+        />
+      </div>
+
+      {/* Back button at bottom */}
+      <div className="photo-guide-back-button">
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={onBack}
+          style={{
+            background: 'rgba(255, 255, 255, 0.2)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            color: 'white',
+            backdropFilter: 'blur(10px)'
+          }}
+        >
+          <ArrowLeftIcon size="sm" aria-hidden />
+          Back
+        </Button>
+      </div>
     </div>
   );
 });

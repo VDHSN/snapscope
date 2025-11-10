@@ -40,19 +40,20 @@ export default function AssessmentsPage() {
         role="banner"
         style={{
           background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-          padding: 'var(--space-xl) var(--space-md) var(--space-2xl)',
+          padding: 'var(--space-sm) var(--space-md)',
           paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))', // Space for theme toggle
           color: 'white',
-          textAlign: 'center'
+          position: 'relative'
         }}
       >
-        <div 
+        {/* Logo in top left */}
+        <div
           onClick={handleLogoClick}
-          style={{ 
+          style={{
             cursor: 'pointer',
-            display: 'flex',
-            justifyContent: 'center',
-            marginBottom: 'var(--space-sm)'
+            position: 'absolute',
+            top: 'var(--space-sm)',
+            left: 'var(--space-md)'
           }}
           role="button"
           tabIndex={0}
@@ -64,15 +65,28 @@ export default function AssessmentsPage() {
             }
           }}
         >
-          <Logo 
-            size="xl" 
-            variant="full" 
+          <Logo
+            size="sm"
+            variant="icon"
+            theme="dark"
             style={{ color: 'white' }}
           />
         </div>
-        <Typography variant="body" style={{ 
+
+        {/* Title centered */}
+        <Typography variant="h2" style={{
+          color: 'white',
+          fontSize: 'var(--font-size-h3)',
+          textAlign: 'center',
+          marginBottom: 'var(--space-xs)'
+        }}>
+          My Assessments
+        </Typography>
+
+        <Typography variant="body" style={{
           color: 'rgba(255, 255, 255, 0.9)',
-          fontSize: 'var(--font-size-small)'
+          fontSize: 'var(--font-size-caption)',
+          textAlign: 'center'
         }}>
           Vehicle Damage Assessment
         </Typography>

@@ -142,61 +142,21 @@ export default function VehicleInfoPage() {
       </div>
 
       {/* Header with purple gradient */}
-      <div style={{ 
+      <div style={{
         background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-        padding: 'var(--space-md)',
+        padding: 'var(--space-sm) var(--space-md)',
         paddingRight: 'calc(var(--space-md) + 40px + var(--space-md))', // Space for theme toggle
-        color: 'white'
+        color: 'white',
+        position: 'relative'
       }}>
-        {/* Back button and progress */}
-        <div style={{ 
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 'var(--space-sm)'
-        }}>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={handleBack}
-            style={{ 
-              background: 'rgba(255, 255, 255, 0.2)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              color: 'white',
-              backdropFilter: 'blur(10px)'
-            }}
-          >
-            <ArrowLeftIcon size="sm" aria-hidden />
-            Back
-          </Button>
-
-          <Typography variant="caption" style={{ 
-            color: 'rgba(255, 255, 255, 0.9)',
-            fontWeight: 'var(--font-weight-semibold)',
-            marginRight: 'var(--space-sm)'
-          }}>
-            Step 2 of 9
-          </Typography>
-        </div>
-
-        {/* Progress bar */}
-        <Progress 
-          value={22.22} // 2/9 steps
-          size="sm"
-          style={{
-            background: 'rgba(255, 255, 255, 0.2)',
-            marginBottom: 'var(--space-md)'
-          }}
-        />
-
-        {/* Logo */}
-        <div 
+        {/* Logo in top left */}
+        <div
           onClick={handleLogoClick}
-          style={{ 
+          style={{
             cursor: 'pointer',
-            display: 'flex',
-            justifyContent: 'center',
-            marginBottom: 'var(--space-md)'
+            position: 'absolute',
+            top: 'var(--space-sm)',
+            left: 'var(--space-md)'
           }}
           role="button"
           tabIndex={0}
@@ -208,28 +168,76 @@ export default function VehicleInfoPage() {
             }
           }}
         >
-          <Logo 
-            size="md" 
-            variant="full" 
+          <Logo
+            size="sm"
+            variant="icon"
+            theme="dark"
             style={{ color: 'white' }}
           />
         </div>
 
-        {/* Title */}
-        <Typography variant="h2" style={{ 
+        {/* Title at top center */}
+        <Typography variant="h2" style={{
           color: 'white',
           marginBottom: 'var(--space-xs)',
-          fontSize: 'var(--font-size-h2)'
+          fontSize: 'var(--font-size-h3)',
+          textAlign: 'center'
         }}>
           Vehicle Information
         </Typography>
-        
-        <Typography variant="body" style={{ 
+
+        <Typography variant="body" style={{
           color: 'rgba(255, 255, 255, 0.9)',
-          fontSize: 'var(--font-size-small)'
+          fontSize: 'var(--font-size-caption)',
+          textAlign: 'center',
+          marginBottom: 'var(--space-md)'
         }}>
           Help us identify your vehicle (optional)
         </Typography>
+
+        {/* Step indicator centered above progress bar */}
+        <Typography variant="caption" style={{
+          color: 'rgba(255, 255, 255, 0.9)',
+          fontWeight: 'var(--font-weight-semibold)',
+          fontSize: 'var(--font-size-caption)',
+          textAlign: 'center',
+          display: 'block',
+          marginBottom: 'var(--space-xs)'
+        }}>
+          Step 2 of 9
+        </Typography>
+
+        {/* Progress bar */}
+        <div style={{ marginBottom: 'var(--space-sm)' }}>
+          <Progress
+            value={22.22} // 2/9 steps
+            size="sm"
+            style={{
+              background: 'rgba(255, 255, 255, 0.2)'
+            }}
+          />
+        </div>
+
+        {/* Back button at bottom */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-start'
+        }}>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={handleBack}
+            style={{
+              background: 'rgba(255, 255, 255, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              color: 'white',
+              backdropFilter: 'blur(10px)'
+            }}
+          >
+            <ArrowLeftIcon size="sm" aria-hidden />
+            Back
+          </Button>
+        </div>
       </div>
 
       {/* Content */}

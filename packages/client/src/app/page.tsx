@@ -49,13 +49,24 @@ export default function Home() {
           }}
         >
           {/* Logo/Brand area */}
-          <div style={{ 
+          <div style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             gap: 'var(--space-lg)',
           }}>
-            <Logo size="xl" variant="icon" showText={false} />
+            <Logo
+              size="xl"
+              variant="icon"
+              showText={false}
+              theme="light"
+              style={{
+                padding: 'var(--space-md)',
+                background: 'rgba(255, 255, 255, 0.5)',
+                borderRadius: '50%',
+                boxShadow: '0 4px 12px rgba(139, 92, 246, 0.2)',
+              }}
+            />
           </div>
 
           {/* Marketing Video */}
