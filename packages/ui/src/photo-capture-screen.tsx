@@ -15,8 +15,8 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Button } from './button';
 import { Typography } from './typography';
 import { Icon } from './icon';
-import { usePermissions, type PermissionRequestOptions } from './hooks/use-permissions';
-import { detectBlur, quickBlurCheck } from './blur-detection';
+import { usePermissions } from './hooks/use-permissions';
+import { detectBlur } from './blur-detection';
 import { cssVars } from './tokens';
 
 export interface PhotoCaptureScreenProps {
@@ -110,10 +110,11 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
   const [shouldRequestPermission, setShouldRequestPermission] = useState(false);
   const [torchSupported, setTorchSupported] = useState(false);
   const [isTogglingFlash, setIsTogglingFlash] = useState(false);
+  const [isLandscape, setIsLandscape] = useState(false);
   const maxRetries = 2;
 
   // Use the permissions hook
-  const { permission, requestPermission, checkPermission } = usePermissions();
+  const { permission, requestPermission } = usePermissions();
   
   // Check if camera is supported
   const isCameraSupported = useCallback(() => {
@@ -575,6 +576,27 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
     };
   }, [stopCamera]);
 
+  // Detect landscape orientation
+  useEffect(() => {
+    const checkOrientation = () => {
+      // Check if viewport is wider than it is tall (landscape)
+      const isLandscapeOrientation = window.innerWidth > window.innerHeight;
+      setIsLandscape(isLandscapeOrientation);
+    };
+
+    // Check on mount
+    checkOrientation();
+
+    // Listen for resize and orientation changes
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+
+    return () => {
+      window.removeEventListener('resize', checkOrientation);
+      window.removeEventListener('orientationchange', checkOrientation);
+    };
+  }, []);
+
   // Handle permission request after permission_check state is rendered
   useEffect(() => {
     if (!shouldRequestPermission || cameraState !== 'permission_check') return;
@@ -653,9 +675,9 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: cssVars.spaceSm,
-        padding: cssVars.spaceMd,
-        background: 'rgba(0, 0, 0, 0.5)',
+        gap: isLandscape ? cssVars.spaceXs : cssVars.spaceSm,
+        padding: isLandscape ? `${cssVars.spaceXs} ${cssVars.spaceSm}` : cssVars.spaceMd,
+        background: isLandscape ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.5)',
         color: 'white',
       }}>
         <div style={{
@@ -663,11 +685,18 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-          <Typography variant="h3" style={{ color: 'white' }}>
+          <Typography
+            variant={isLandscape ? "body" : "h3"}
+            style={{
+              color: 'white',
+              fontSize: isLandscape ? '14px' : undefined,
+              fontWeight: isLandscape ? '600' : undefined,
+            }}
+          >
             {headerText}
           </Typography>
-          
-          <div style={{ display: 'flex', gap: cssVars.spaceSm }}>
+
+          <div style={{ display: 'flex', gap: cssVars.spaceXs }}>
             {/* Flash toggle button (if torch supported) */}
             {cameraState === 'ready' && torchSupported && onFlashToggle && (
               <Button
@@ -678,6 +707,8 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
                   background: 'rgba(255, 255, 255, 0.2)',
                   border: '1px solid rgba(255, 255, 255, 0.3)',
                   color: 'white',
+                  padding: isLandscape ? '4px 8px' : undefined,
+                  minHeight: isLandscape ? '32px' : undefined,
                 }}
                 aria-label={flashEnabled ? 'Turn flash off' : 'Turn flash on'}
                 title={flashEnabled ? 'Turn flash off' : 'Turn flash on'}
@@ -696,6 +727,8 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
                   background: 'rgba(255, 255, 255, 0.2)',
                   border: '1px solid rgba(255, 255, 255, 0.3)',
                   color: 'white',
+                  padding: isLandscape ? '4px 8px' : undefined,
+                  minHeight: isLandscape ? '32px' : undefined,
                 }}
                 title="Switch camera"
               >
@@ -712,15 +745,17 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
                 background: 'rgba(255, 255, 255, 0.2)',
                 border: '1px solid rgba(255, 255, 255, 0.3)',
                 color: 'white',
+                padding: isLandscape ? '4px 8px' : undefined,
+                minHeight: isLandscape ? '32px' : undefined,
               }}
             >
               ✕
             </Button>
           </div>
         </div>
-        
-        {/* Progress text */}
-        {progressText && (
+
+        {/* Progress text - hide in landscape to save space */}
+        {progressText && !isLandscape && (
           <Typography variant="small" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
             {progressText}
           </Typography>
@@ -957,43 +992,55 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
             {cameraState === 'ready' && showCameraWarning && (
               <div style={{
                 position: 'absolute',
-                top: cssVars.spaceMd,
-                left: cssVars.spaceMd,
-                right: cssVars.spaceMd,
+                top: isLandscape ? cssVars.spaceXs : cssVars.spaceMd,
+                left: isLandscape ? cssVars.spaceXs : cssVars.spaceMd,
+                right: isLandscape ? cssVars.spaceXs : cssVars.spaceMd,
                 background: 'rgba(255, 193, 7, 0.9)',
                 color: 'black',
-                padding: cssVars.spaceSm,
+                padding: isLandscape ? cssVars.spaceXs : cssVars.spaceSm,
                 borderRadius: cssVars.borderRadiusSm,
                 display: 'flex',
                 alignItems: 'center',
                 gap: cssVars.spaceXs,
-                fontSize: '14px',
+                fontSize: isLandscape ? '12px' : '14px',
                 zIndex: 10,
               }}>
                 <span>⚠️</span>
                 <div>
-                  <div style={{ fontWeight: 'bold' }}>Front camera detected</div>
-                  <div style={{ fontSize: '12px', opacity: 0.8 }}>
-                    Trying to use rear camera but got {streamInfo?.facingMode ?? 'unknown'}. Switch camera or rotate device.
+                  <div style={{ fontWeight: 'bold', fontSize: isLandscape ? '12px' : '14px' }}>
+                    {isLandscape ? 'Front camera' : 'Front camera detected'}
                   </div>
+                  {!isLandscape && (
+                    <div style={{ fontSize: '12px', opacity: 0.8 }}>
+                      Trying to use rear camera but got {streamInfo?.facingMode ?? 'unknown'}. Switch camera or rotate device.
+                    </div>
+                  )}
                 </div>
               </div>
             )}
 
-            {/* Capture Button - Bottom-right positioning as per mockup */}
+            {/* Capture Button - Responsive positioning for portrait/landscape */}
             {cameraState === 'ready' && (
               <div style={{
                 position: 'absolute',
-                bottom: cssVars.spaceXl,
-                right: cssVars.spaceXl, // Position in bottom-right corner
+                // In landscape: position on right side, vertically centered
+                // In portrait: position at bottom-right corner
+                ...(isLandscape ? {
+                  right: cssVars.spaceMd,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                } : {
+                  bottom: cssVars.spaceXl,
+                  right: cssVars.spaceXl,
+                }),
                 display: 'flex',
                 flexDirection: 'column',
-                gap: cssVars.spaceMd,
+                gap: cssVars.spaceSm,
                 alignItems: 'center',
                 zIndex: 5,
               }}>
                 {/* Stream info for debugging (only in development) */}
-                {process.env.NODE_ENV === 'development' && streamInfo && (
+                {process.env.NODE_ENV === 'development' && streamInfo && !isLandscape && (
                   <div style={{
                     background: 'rgba(0, 0, 0, 0.7)',
                     color: 'white',
@@ -1013,21 +1060,22 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
                     color: 'white',
                     padding: cssVars.spaceXs,
                     borderRadius: '4px',
-                    fontSize: '12px',
+                    fontSize: '10px',
                     textAlign: 'center',
+                    whiteSpace: 'nowrap',
                   }}>
-                    Analyzing image...
+                    Analyzing...
                   </div>
                 )}
 
-                {/* Capture Button - Circular, mobile-optimized */}
+                {/* Capture Button - Circular, mobile-optimized, size adjusts for landscape */}
                 <button
                   onClick={capturePhoto}
                   disabled={isCapturing || isAnalyzingBlur}
                   style={{
-                    // Minimum 44px touch target recommended for mobile
-                    width: '64px',
-                    height: '64px',
+                    // Slightly smaller in landscape to fit better
+                    width: isLandscape ? '56px' : '64px',
+                    height: isLandscape ? '56px' : '64px',
                     borderRadius: '50%',
                     border: '3px solid white',
                     background: (isCapturing || isAnalyzingBlur) ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)',
@@ -1038,9 +1086,9 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
                     transition: 'all 0.2s ease',
                     // Better touch feedback
                     WebkitTapHighlightColor: 'rgba(255, 255, 255, 0.3)',
-                    // Larger touch area on mobile
-                    minWidth: '64px',
-                    minHeight: '64px',
+                    // Minimum touch target
+                    minWidth: isLandscape ? '56px' : '64px',
+                    minHeight: isLandscape ? '56px' : '64px',
                     // Shadow for better visibility
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
                   }}
@@ -1048,8 +1096,8 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
                   aria-label="Take photo"
                 >
                   <div style={{
-                    width: '44px',
-                    height: '44px',
+                    width: isLandscape ? '38px' : '44px',
+                    height: isLandscape ? '38px' : '44px',
                     borderRadius: '50%',
                     background: 'white',
                     opacity: (isCapturing || isAnalyzingBlur) ? 0.7 : 1,
@@ -1062,8 +1110,8 @@ export const PhotoCaptureScreen: React.FC<PhotoCaptureScreenProps> = ({
         )}
       </div>
 
-      {/* Footer Text */}
-      {footerText && (
+      {/* Footer Text - hide in landscape to save vertical space */}
+      {footerText && !isLandscape && (
         <div style={{
           padding: cssVars.spaceMd,
           background: 'rgba(0, 0, 0, 0.5)',
