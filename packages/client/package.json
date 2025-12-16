@@ -20,7 +20,7 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "jszip": "^3.10.1",
-    "next": "15.5.0",
+    "next": "15.5.9",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "serwist": "^9.1.1",
