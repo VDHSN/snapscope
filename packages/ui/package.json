@@ -1,0 +1,214 @@
+{
+  "name": "@snapscope/ui",
+  "version": "0.0.1",
+  "sideEffects": false,
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm run build:components && pnpm run build:storybook",
+    "build:components": "tsup src/button.tsx src/typography.tsx src/input.tsx src/textarea.tsx src/vin-input.tsx src/badge.tsx src/card.tsx src/progress.tsx src/theme-toggle.tsx src/logo.tsx src/video-player.tsx src/assessment-card.tsx src/assessment-list.tsx src/feature-card.tsx src/icon.tsx src/camera-capture.tsx src/photo-capture-screen.tsx src/blur-detection.ts src/photo-preview-grid.tsx src/photo-position-card.tsx src/photo-progress-grid.tsx src/photo-guide-header.tsx src/photo-guide-types.ts src/photo-utils.ts src/responsive-utils.ts src/error-boundary.tsx src/types.ts src/carrier-card.tsx src/photo-step-card.tsx src/carrier-selector.tsx src/workflow-builder.tsx src/toast.tsx src/photo-notes-display.tsx src/export-button.tsx src/completion-summary.tsx src/hooks/use-debounced-callback.ts src/hooks/use-fullscreen-orientation.ts --format esm,cjs --dts",
+    "dev": "storybook dev -p 6006",
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "lint-fix": "eslint src/**/*.{ts,tsx} --fix",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
+    "storybook": "pnpm dev",
+    "build:storybook": "storybook build"
+  },
+  "exports": {
+    "./button": {
+      "types": "./src/button.tsx",
+      "import": "./dist/button.mjs",
+      "require": "./dist/button.js"
+    },
+    "./typography": {
+      "types": "./src/typography.tsx",
+      "import": "./src/typography.tsx"
+    },
+    "./input": {
+      "types": "./src/input.tsx",
+      "import": "./src/input.tsx"
+    },
+    "./vin-input": {
+      "types": "./src/vin-input.tsx",
+      "import": "./src/vin-input.tsx"
+    },
+    "./badge": {
+      "types": "./src/badge.tsx",
+      "import": "./src/badge.tsx"
+    },
+    "./card": {
+      "types": "./src/card.tsx",
+      "import": "./src/card.tsx"
+    },
+    "./progress": {
+      "types": "./src/progress.tsx",
+      "import": "./src/progress.tsx"
+    },
+    "./theme-toggle": {
+      "types": "./src/theme-toggle.tsx",
+      "import": "./src/theme-toggle.tsx"
+    },
+    "./tokens": {
+      "types": "./src/tokens/index.ts",
+      "import": "./src/tokens/index.ts"
+    },
+    "./tokens/css": "./src/tokens/index.css",
+    "./theme": {
+      "types": "./src/tokens/theme.ts",
+      "import": "./src/tokens/theme.ts"
+    },
+    "./logo": {
+      "types": "./src/logo.tsx",
+      "import": "./src/logo.tsx"
+    },
+    "./video-player": {
+      "types": "./src/video-player.tsx",
+      "import": "./src/video-player.tsx"
+    },
+    "./assessment-card": {
+      "types": "./src/assessment-card.tsx",
+      "import": "./src/assessment-card.tsx"
+    },
+    "./assessment-list": {
+      "types": "./src/assessment-list.tsx",
+      "import": "./src/assessment-list.tsx"
+    },
+    "./icon": {
+      "types": "./src/icon.tsx",
+      "import": "./src/icon.tsx"
+    },
+    "./types": {
+      "types": "./src/types.ts",
+      "import": "./src/types.ts"
+    },
+    "./feature-card": {
+      "types": "./src/feature-card.tsx",
+      "import": "./src/feature-card.tsx"
+    },
+    "./camera-capture": {
+      "types": "./src/camera-capture.tsx",
+      "import": "./src/camera-capture.tsx"
+    },
+    "./photo-preview-grid": {
+      "types": "./src/photo-preview-grid.tsx",
+      "import": "./src/photo-preview-grid.tsx"
+    },
+    "./photo-position-card": {
+      "types": "./src/photo-position-card.tsx",
+      "import": "./src/photo-position-card.tsx"
+    },
+    "./photo-progress-grid": {
+      "types": "./src/photo-progress-grid.tsx",
+      "import": "./src/photo-progress-grid.tsx"
+    },
+    "./photo-guide-header": {
+      "types": "./src/photo-guide-header.tsx",
+      "import": "./src/photo-guide-header.tsx"
+    },
+    "./photo-guide-types": {
+      "types": "./src/photo-guide-types.ts",
+      "import": "./src/photo-guide-types.ts"
+    },
+    "./photo-utils": {
+      "types": "./src/photo-utils.ts",
+      "import": "./src/photo-utils.ts"
+    },
+    "./error-boundary": {
+      "types": "./src/error-boundary.tsx",
+      "import": "./src/error-boundary.tsx"
+    },
+    "./responsive-utils": {
+      "types": "./src/responsive-utils.ts",
+      "import": "./src/responsive-utils.ts"
+    },
+    "./photo-capture-screen": {
+      "types": "./src/photo-capture-screen.tsx",
+      "import": "./src/photo-capture-screen.tsx"
+    },
+    "./blur-detection": {
+      "types": "./src/blur-detection.ts",
+      "import": "./src/blur-detection.ts"
+    },
+    "./carrier-card": {
+      "types": "./src/carrier-card.tsx",
+      "import": "./src/carrier-card.tsx"
+    },
+    "./photo-step-card": {
+      "types": "./src/photo-step-card.tsx",
+      "import": "./src/photo-step-card.tsx"
+    },
+    "./carrier-selector": {
+      "types": "./src/carrier-selector.tsx",
+      "import": "./src/carrier-selector.tsx"
+    },
+    "./workflow-builder": {
+      "types": "./src/workflow-builder.tsx",
+      "import": "./src/workflow-builder.tsx"
+    },
+    "./toast": {
+      "types": "./src/toast.tsx",
+      "import": "./src/toast.tsx"
+    },
+    "./textarea": {
+      "types": "./src/textarea.tsx",
+      "import": "./src/textarea.tsx"
+    },
+    "./photo-notes-display": {
+      "types": "./src/photo-notes-display.tsx",
+      "import": "./src/photo-notes-display.tsx"
+    },
+    "./hooks/use-debounced-callback": {
+      "types": "./src/hooks/use-debounced-callback.ts",
+      "import": "./src/hooks/use-debounced-callback.ts"
+    },
+    "./hooks/use-fullscreen-orientation": {
+      "types": "./src/hooks/use-fullscreen-orientation.ts",
+      "import": "./src/hooks/use-fullscreen-orientation.ts"
+    },
+    "./export-button": {
+      "types": "./src/export-button.tsx",
+      "import": "./src/export-button.tsx"
+    },
+    "./completion-summary": {
+      "types": "./src/completion-summary.tsx",
+      "import": "./src/completion-summary.tsx"
+    }
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/addon-interactions": "^8.6.14",
+    "@storybook/addon-links": "^8.6.14",
+    "@storybook/blocks": "^8.6.14",
+    "@storybook/react": "^8.6.14",
+    "@storybook/react-vite": "^8.6.14",
+    "@storybook/test": "^8.6.14",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/node": "^20",
+    "@vitest/ui": "^3.2.2",
+    "eslint": "^9",
+    "jsdom": "^26.1.0",
+    "storybook": "^8.6.14",
+    "typescript": "^5",
+    "typescript-eslint": "^8.38.0",
+    "vite": "^5.4.11",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@types/react": "^19.1.11",
+    "@types/react-dom": "^19",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "tsup": "^8.0.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

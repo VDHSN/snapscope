@@ -1,0 +1,27 @@
+{
+  "version": "0.0.1",
+  "packageManager": "pnpm@9.15.9",
+  "scripts": {
+    "build": "pnpm turbo build",
+    "clean": "pnpm dev:clean",
+    "dev": "pnpm turbo dev",
+    "lint-fix": "pnpm turbo lint-fix",
+    "design-system": "cd packages/ui && pnpm storybook",
+    "claude": "claude --model sonnet --ide",
+    "checks": "pnpm install && pnpm turbo run build lint-fix type-check",
+    "test": "pnpm turbo test",
+    "dev:start": "devpod up --open-ide=false .",
+    "dev:connect": "ssh snapscope.devpod",
+    "dev:clean": "devpod delete .",
+    "dev:omnara": "caffeinate -i -s uv run omnara",
+    "postinstall": "ln -sf CLAUDE.md AGENTS.md"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@anthropic-ai/claude-code": "^1.0.89",
+    "next": "15.5.9",
+    "turbo": "^2.5.6"
+  }
+}

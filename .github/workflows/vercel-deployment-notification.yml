@@ -1,0 +1,25 @@
+name: Vercel Deployment Notification
+
+on:
+  deployment_status
+
+jobs:
+  notify-deployment:
+    if: github.event.deployment_status.state == 'success' || github.event.deployment_status.state == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Discord Notification
+        run: |
+          STATUS="${{ github.event.deployment_status.state }}"
+          URL="${{ github.event.deployment_status.target_url }}"
+
+          if [ "$STATUS" = "success" ]; then
+            MESSAGE="✅ Vercel deployment successful: $URL"
+          else
+            MESSAGE="❌ Vercel deployment failed: $URL"
+          fi
+
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"content\": \"$MESSAGE\"}" \
+               ${{ secrets.DISCORD_WEBHOOK_URL }}
